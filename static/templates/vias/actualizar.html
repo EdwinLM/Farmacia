@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% load static %}
+{% load widget_tweaks %}
+{% block title %}ERP Farmacias Bienestar{% endblock %}
+{% block content %}
+
+<main role="main">
+
+        <div class="container text-center mt-5">
+
+          <div class="row mb-5">
+
+            <div class="col-md-12">
+
+              <div class="table-responsive">
+
+                <nav aria-label="breadcrumb mb-3">
+                  <ol class="breadcrumb">
+                      <li class="breadcrumb-item"><a href="../">Vías de Administración</a></li>
+                      <li class="breadcrumb-item"><a href="#">Editar</a></li>
+                      <li class="breadcrumb-item active" aria-current="page">{{object.descripcion}}</a></li>
+                  </ol>
+                </nav>
+
+                <div class="formulario" align="left">
+
+                  <h4>Actualizar</h4>
+
+                  <form method="post" enctype="multipart/form-data">
+                  {% csrf_token %}
+                    <!-- {{ form.as_p }} -->
+                    <div class="form-group">
+                        <label for="descripcion" class="txt_negrita">Descripción</label>
+                        {{ form.descripcion|add_class:"form-control" }}
+                    </div>
+                    <div class="form-group">
+                        <input type="hidden" name="estado" value="A" class="form-control">
+                        <input type="hidden" name="id_empresa" value="1" class="form-control">
+                        
+                        <label for="abreviatura" class="txt_negrita">Abreviatura</label>
+                        {{ form.abreviatura|add_class:"form-control" }}
+                    </div>
+                    <button type="submit" class="btn btn-primary">Aceptar</button>
+                    <a href="../" type="submit" class="btn btn-primary">Volver</a>
+                  </form>
+
+                </div>
+                
+              </div>
+
+            </div>
+
+          </div>          
+
+          <hr>
+
+    </main>
+
+    <script type="text/javascript">
+        $('.form-group').html(function (i, t) {
+          return t.replace('Actualmente:', '<span class="ocultar">Actualmente:</span>');
+        });
+
+         $('.form-group').html(function (i, t) {
+          return t.replace('Currently:', '<span class="ocultar">Currently:</span>');
+        });
+      </script> 
+
+{% endblock %}

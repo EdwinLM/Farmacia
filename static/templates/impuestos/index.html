@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}ERP Farmacias Bienestar{% endblock %}
+
+
+{% block content %}
+
+        <div class="container text-center mt-5">
+
+          <div class="row">
+            <div class="col-md-12">
+              <h3>Lista de Impuestos</h3>
+            </div>
+          </div>
+
+          <div class="row mb-5">
+
+            <div class="col-md-12">
+
+              <div class="table-responsive">
+
+                {% if messages %}
+                <ul class="messages list-group mb-3">
+                    {% for message in messages %}
+                    <li{% if message.tags %} class="{{ message.tags }} list-group-item list-group-item-primary"{% endif %}>{{ message }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+
+                <div align="left" class="btn_crear mb-3">
+                  <a href="crear" type="button" class="btn btn-primary">Crear</a>
+                </div>
+                
+                <table id="myTable" class="table table-striped table-hover">
+                  <thead>
+                    <tr>
+                      <th width="35%">Descripcion</th>
+                      <th>Porcentaje</th>
+                      <th>Abreviatura</th>
+                      <th>Acciones</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for categoria in object_list %}
+                    <tr>
+                      <td>{{ categoria.descripcion }}</td>
+                      <td>{{ categoria.porcentaje }}</td>
+                      <td>{{ categoria.abreviatura }}</td>
+                      <td>
+                        
+                        <form method="POST" action="eliminar/{{categoria.id_impuesto}}">
+                          
+                          {% csrf_token %}
+                          
+                          <div class="btn-group">
+                            <a href="detalle/{{categoria.id_impuesto}}" title="Ver" type="button" class="btn btn-success">Ver </a>
+                            <a href="editar/{{categoria.id_impuesto}}" title="Editar" type="button" class="btn btn-primary">Editar </a>
+                            <button class="btn btn-danger" onclick="return eliminar();" type="submit">
+                              Eliminar
+                            </button>
+                            <!-- <a href="eliminar/{{postre.id}}" title="Eliminar"><i class="fas fa-trash"></i> </a> -->                          
+                          </div>
+
+                        </form>
+
+                      </td>
+                    </tr>
+                  {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+
+            </div>
+
+          </div>    
+
+    <script type="text/javascript">
+      function eliminar() {
+        var x = confirm("Eliminar Impuesto?");
+        if (x)
+          return true;
+        else
+          return false;
+      }
+    </script>
+{% endblock %}

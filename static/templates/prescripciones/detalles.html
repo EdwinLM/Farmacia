@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% load static %}
+{% load widget_tweaks %}
+{% block title %}ERP Farmacias Bienestar{% endblock %}
+{% block content %}
+
+<main role="main">
+
+        <div class="container text-center mt-5">
+
+          <div class="row mb-5">
+
+            <div class="col-md-12">
+
+              <div class="table-responsive">
+
+                <nav aria-label="breadcrumb mb-3">
+                  <ol class="breadcrumb">
+                      <li class="breadcrumb-item"><a href="../">Tipos de Prescripción</a></li>
+                      <li class="breadcrumb-item active" aria-current="page">Ver</a></li>
+                  </ol>
+                </nav>
+
+                <div class="formulario" align="left">
+
+                  <h4>Detalles</h4>
+
+                  <p><span class="txt_negrita">Descripción:</span> <br> {{object.descripcion}}</p>
+                  <p><span class="txt_negrita">Abreviatura:</span> <br> {{object.abreviatura}}</p>
+                  <p><span class="txt_negrita">Creado:</span> <br> {{object.created_at}}</p>
+                  <p><span class="txt_negrita">Actualizado:</span> <br> {{object.updated_at}}</p>
+
+                  <a href="../" type="submit" class="btn btn-primary">Volver</a>
+
+                </div>
+                
+              </div>
+
+            </div>
+
+          </div>          
+
+          <hr>
+
+    </main>
+
+{% endblock %}

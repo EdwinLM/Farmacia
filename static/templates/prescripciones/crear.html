@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% load static %}
+{% load widget_tweaks %}
+{% block title %}ERP Farmacias Bienestar{% endblock %}
+{% block content %}
+
+<main role="main">
+
+        <div class="container text-center mt-5">
+
+          <div class="row mb-5">
+
+            <div class="col-md-12">
+
+              <div class="table-responsive">
+
+                <nav aria-label="breadcrumb mb-3">
+                  <ol class="breadcrumb">
+                      <li class="breadcrumb-item"><a href="./">Tipos de Prescripción</a></li>
+                      <li class="breadcrumb-item active">Crear</li>
+                  </ol>
+                </nav>
+
+                <div class="formulario" align="left">
+
+                  <h4>Crear</h4>
+
+                  <form method="post" enctype="multipart/form-data">
+                  {% csrf_token %}
+                    <!-- {{ form.as_p }} -->
+                    <div class="form-group">
+                        <label for="descripcion" class="txt_negrita">Descripcion</label>                        
+                        <input type="text" name="descripcion" value="" class="form-control" autofocus>
+                    </div>
+                    <div class="form-group">
+                        <label for="abreviatura" class="txt_negrita">Abreviatura</label>
+                        <input type="text" name="abreviatura" value="" class="form-control">
+
+                        <input type="hidden" name="estado" value="A" class="form-control">
+                        <input type="hidden" name="id_empresa" value="1" class="form-control">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Aceptar</button>
+                    <a href="./" type="submit" class="btn btn-primary">Cancelar</a>
+                  </form>
+
+                </div>
+                
+              </div>
+
+            </div>
+
+          </div>          
+
+          <hr>
+
+    </main>
+
+{% endblock %}
