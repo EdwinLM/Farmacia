@@ -1,0 +1,142 @@
+{% extends "base.html" %}
+{% load static %}
+{% load widget_tweaks %}
+{% block title %}ERP Farmacias Bienestar{% endblock %}
+{% block content %}
+
+<main role="main">
+
+        <div class="container text-center mt-5">
+
+          <div class="row mb-5">
+
+            <div class="col-md-12">
+
+              <div class="table-responsive">
+
+                <nav aria-label="breadcrumb mb-3">
+                  <ol class="breadcrumb">
+                      <li class="breadcrumb-item"><a href="../">Productos</a></li>
+                      <li class="breadcrumb-item"><a href="#">Editar</a></li>
+                      <li class="breadcrumb-item active" aria-current="page">{{object.nombre_compra}}</a></li>
+                  </ol>
+                </nav>
+
+                <div class="formulario" align="left">
+
+                  <h4>Actualizar</h4>
+
+                  <form method="post" enctype="multipart/form-data">
+                  {% csrf_token %}
+                    <!-- {{ form.as_p }} -->
+                    <div class="form-group">
+                        <label for="codigo_barras_1" class="txt_negrita">Código de Barras 1</label>
+                        {{ form.codigo_barras_1|add_class:"form-control" }}
+                    </div>
+                    <div class="form-group">
+                        <label for="codigo_barras_2" class="txt_negrita">Código de Barras 2</label>
+                        {{ form.codigo_barras_2|add_class:"form-control" }}
+                    </div>
+                    <div class="form-group">
+                        <label for="nombre_compra" class="txt_negrita">Nombre de Compra</label>
+                        {{ form.nombre_compra|add_class:"form-control" }}
+                    </div>
+                    <div class="form-group">
+                        <label for="nombre_venta" class="txt_negrita">Nombre de Venta</label>
+                        {{ form.nombre_venta|add_class:"form-control" }}
+                    </div>
+                    <div class="form-group">
+                        <label for="nombre_corto" class="txt_negrita">Nombre Corto</label>
+                        {{ form.nombre_corto|add_class:"form-control" }}
+                    </div>
+                    <div class="form-group">
+                        <label for="id_categoria" class="txt_negrita">Categoría</label>
+                        {{ form.id_categoria|add_class:"form-control" }}
+                    </div>
+                    <div class="form-group">
+                        <label for="id_fabricante" class="txt_negrita">Fabricante</label>
+                        {{ form.id_fabricante|add_class:"form-control" }}
+                    </div>
+                    <div class="form-group">
+                        <label for="id_presentacion" class="txt_negrita">Presentación</label>
+                        {{ form.id_presentacion|add_class:"form-control" }}
+                    </div>
+                    <div class="form-group">
+                        <label for="id_pais" class="txt_negrita">País</label>
+                        {{ form.id_pais|add_class:"form-control" }}
+                    </div>
+                    <div class="form-group">
+                        <label for="id_unidad_medida" class="txt_negrita">Unidad de Medida</label>
+                        {{ form.id_unidad_medida|add_class:"form-control" }}
+                    </div>
+                    <div class="form-group">
+                        <label for="conversion" class="txt_negrita">Conversión</label>
+                        {{ form.conversion|add_class:"form-control" }}
+                    </div>
+                    <div class="form-group">
+                        <label for="id_via_administracion" class="txt_negrita">Vía de Administración</label>
+                        {{ form.id_via_administracion|add_class:"form-control" }}
+                    </div>
+                    <div class="form-group">
+                        <label for="prioridad" class="txt_negrita">Prioridad</label>
+                        {{ form.prioridad|add_class:"form-control" }}
+                    </div>
+                    <div class="form-group">
+                        <label for="imagen" class="txt_negrita">Imagen</label>
+                        {{ form.imagen|add_class:"form-control" }}
+                    </div>
+                    <div class="form-group">
+                        <label for="id_tipo_prescripcion" class="txt_negrita">Tipo de Prescripción</label>
+                        {{ form.id_tipo_prescripcion|add_class:"form-control" }}
+                    </div>
+                    <div class="form-group">
+                        <label for="afecto_impuesto" class="txt_negrita">Afecto a Impuestos</label>
+                        {{ form.afecto_impuesto|add_class:"form-control" }}
+                    </div>
+                    <div class="form-group">
+                        <label for="registro_sanitario" class="txt_negrita">Registro Sanitario</label>
+                        {{ form.registro_sanitario|add_class:"form-control" }}
+                    </div>
+                    <div class="form-group">
+                        <label for="precio_costo" class="txt_negrita">Precio Costo</label>
+                        {{ form.precio_costo|add_class:"form-control" }}
+                    </div>
+                    <div class="form-group">
+                        <label for="precio_venta" class="txt_negrita">Precio Venta</label>
+                        {{ form.precio_venta|add_class:"form-control" }}
+                    </div>
+
+                    <div class="form-group">
+                        <input type="hidden" name="estado" value="A" class="form-control">
+                        <input type="hidden" name="id_empresa" value="1" class="form-control">
+                        
+                        <label for="clasificacion_abc" class="txt_negrita">Clasificación ABC</label>
+                        {{ form.clasificacion_abc|add_class:"form-control" }}
+                    </div>
+                    <button type="submit" class="btn btn-primary">Aceptar</button>
+                    <a href="../" type="submit" class="btn btn-primary">Volver</a>
+                  </form>
+
+                </div>
+                
+              </div>
+
+            </div>
+
+          </div>          
+
+          <hr>
+
+    </main>
+
+    <script type="text/javascript">
+        $('.form-group').html(function (i, t) {
+          return t.replace('Actualmente:', '<span class="ocultar">Actualmente:</span>');
+        });
+
+         $('.form-group').html(function (i, t) {
+          return t.replace('Currently:', '<span class="ocultar">Currently:</span>');
+        });
+      </script> 
+
+{% endblock %}

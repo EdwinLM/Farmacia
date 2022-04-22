@@ -12,4 +12,5 @@ urlpatterns = [
     url(r'^$', views.indicaciones, name='indicaciones'),
     url(r'^$', views.impuestos, name='impuestos'),
     url(r'^$', views.paises, name='paises'),
+    url(r'^$', views.productos, name='productos'),
 ]

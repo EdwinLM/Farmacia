@@ -1,7 +1,9 @@
 from django.shortcuts import render
 from django.views.generic import ListView, DetailView 
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
-from Modulos.Productos.models import Categoria, Fabricante, Presentacion, Unidad_Medida, Via_Administracion, Tipo_Prescripcion, Componente, Indicacion, Impuesto, Pais
+from Modulos.Productos.models import Categoria, Fabricante, Presentacion, Unidad_Medida, Via_Administracion, Tipo_Prescripcion, Componente, Indicacion, Impuesto, Pais, Producto
+
+from Modulos.Productos.forms import ProductoForm
 
 # Nos sirve para redireccionar despues de una acción revertiendo patrones de expresiones regulares 
 from django.urls import reverse
@@ -437,4 +439,78 @@ class PaisEliminar(SuccessMessageMixin, DeleteView):
         success_message = 'Pais Eliminado Correctamente !'
         messages.success (self.request, (success_message))
         return reverse('leer')
+
+
+# ***************
+# ** PRODUCTOS **
+# ***************
+
+class ProductosListado(ListView):
+    model = Producto
+    #paginate_by = 2
+
+def ProductoCrear(request):
+    form = ProductoForm()
+    success_message = 'Producto Creado Correctamente !'
+    if request.method == "POST":
+        form = ProductoForm(request.POST)
+        if form.is_valid():
+            print("Valido")
+            product = Producto()
+            product.codigo_barras_1 = form.cleaned_data['codigo_barras_1']
+            product.codigo_barras_2 = form.cleaned_data['codigo_barras_2']
+            product.nombre_compra = form.cleaned_data['nombre_compra']
+            product.nombre_venta = form.cleaned_data['nombre_venta']
+            product.nombre_corto = form.cleaned_data['nombre_corto']
+            product.id_categoria = form.cleaned_data['id_categoria']
+            product.id_fabricante = form.cleaned_data['id_fabricante']
+            product.id_presentacion = form.cleaned_data['id_presentacion']
+            product.id_pais = form.cleaned_data['id_pais']
+            product.id_unidad_medida = form.cleaned_data['id_unidad_medida']
+            product.conversion = form.cleaned_data['conversion']
+            product.id_via_administracion = form.cleaned_data['id_via_administracion']
+            product.prioridad = form.cleaned_data['prioridad']
+            #product.imagen = form.cleaned_data['imagen']
+            product.id_tipo_prescripcion = form.cleaned_data['id_tipo_prescripcion']
+            product.afecto_impuesto = form.cleaned_data['afecto_impuesto']
+            product.registro_sanitario = form.cleaned_data['registro_sanitario']
+            product.precio_costo = form.cleaned_data['precio_costo']
+            product.precio_venta = form.cleaned_data['precio_venta']
+            product.clasificacion_abc = form.cleaned_data['clasificacion_abc']
+            product.estado = 'A'
+            product.id_empresa = 1
+            product.save()
+        else:
+            print("Invalido")
+
+    return render(request, 'productos/crear.html', { 'form' : form })
+ 
+    # Redireccionamos a la página principal luego de crear un registro o categoria
+    #def get_success_url(self):
+    #    return reverse('leer')
+
+class ProductoDetalle(DetailView):
+    model = Producto
+
+class ProductoActualizar(SuccessMessageMixin, UpdateView):
+    model = Producto
+    form = Producto
+    fields = "__all__"
+    success_message = 'Producto Actualizado Correctamente !'
+ 
+    # Redireccionamos a la página principal luego de actualizar un registro o Categoria
+    def get_success_url(self):
+        return reverse('leer')
+ 
+class ProductoEliminar(SuccessMessageMixin, DeleteView):
+    model = Producto
+    form = Producto
+    fields = "__all__"     
+ 
+    # Redireccionamos a la página principal luego de eliminar un registro o Categoria
+    def get_success_url(self):
+        success_message = 'Producto Eliminado Correctamente !'
+        messages.success (self.request, (success_message))
+        return reverse('leer')
+
 

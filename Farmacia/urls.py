@@ -15,6 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from Modulos.Productos import views
 from Modulos.Productos.views import CategoriasListado, CategoriaDetalle, CategoriaCrear, CategoriaActualizar, CategoriaEliminar
 from Modulos.Productos.views import LaboratoriosListado, LaboratorioDetalle, LaboratorioCrear, LaboratorioActualizar, LaboratorioEliminar
 from Modulos.Productos.views import PresentacionesListado, PresentacionDetalle, PresentacionCrear, PresentacionActualizar, PresentacionEliminar
@@ -25,6 +26,7 @@ from Modulos.Productos.views import ComponentesListado, ComponenteDetalle, Compo
 from Modulos.Productos.views import IndicacionesListado, IndicacionDetalle, IndicacionCrear, IndicacionActualizar, IndicacionEliminar
 from Modulos.Productos.views import ImpuestosListado, ImpuestoDetalle, ImpuestoCrear, ImpuestoActualizar, ImpuestoEliminar
 from Modulos.Productos.views import PaisesListado, PaisDetalle, PaisCrear, PaisActualizar, PaisEliminar
+from Modulos.Productos.views import ProductosListado, ProductoDetalle, ProductoCrear, ProductoActualizar, ProductoEliminar
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -88,5 +90,11 @@ urlpatterns = [
     path('paises/crear', PaisCrear.as_view(template_name = "paises/crear.html"), name='crear'),
     path('paises/editar/<int:pk>', PaisActualizar.as_view(template_name = "paises/actualizar.html"), name='actualizar'), 
     path('paises/eliminar/<int:pk>', PaisEliminar.as_view(), name='eliminar'),
+
+    path('productos/', ProductosListado.as_view(template_name = "productos/index.html"), name='leer'),
+    path('productos/detalle/<int:pk>', ProductoDetalle.as_view(template_name = "productos/detalles.html"), name='detalles'),
+    path('productos/crear', views.ProductoCrear, name='crear'),
+    path('productos/editar/<int:pk>', ProductoActualizar.as_view(template_name = "productos/actualizar.html"), name='actualizar'), 
+    path('productos/eliminar/<int:pk>', ProductoEliminar.as_view(), name='eliminar'),
     
-]
+]   

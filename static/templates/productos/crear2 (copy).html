@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+{% load static %}
+{% load widget_tweaks %}
+{% block title %}ERP Farmacias Bienestar{% endblock %}
+{% block content %}
+
+<main role="main">
+
+        <div class="container text-center mt-5">
+
+          <div class="row mb-5">
+
+            <div class="col-md-12">
+
+              <div class="table-responsive">
+
+                <nav aria-label="breadcrumb mb-3">
+                  <ol class="breadcrumb">
+                      <li class="breadcrumb-item"><a href="./">Productos</a></li>
+                      <li class="breadcrumb-item active">Crear</li>
+                  </ol>
+                </nav>
+
+                <div class="formulario" align="left">
+
+                  <h4>Crear</h4>
+
+                  <form method="post" enctype="multipart/form-data">
+                  {% csrf_token %}
+                    {{ form }}
+                    <div class="form-group">
+                        <label for="codigo_barras_1" class="txt_negrita">Código de Barras 1</label>                        
+                        <input type="text" name="codigo_barras_1" value="" class="form-control" autofocus>
+                    </div>
+                    <div class="form-group">
+                        <label for="codigo_barras_2" class="txt_negrita">Código de Barras 2</label>                        
+                        <input type="text" name="codigo_barras_2" value="" class="form-control" autofocus>
+                    </div>
+                    <div class="form-group">
+                        <label for="nombre_compra" class="txt_negrita">Nombre de Compra</label>                        
+                        <input type="text" name="nombre_compra" value="" class="form-control" autofocus>
+                    </div>
+                    <div class="form-group">
+                        <label for="nombre_venta" class="txt_negrita">Nombre de Venta</label>                        
+                        <input type="text" name="nombre_venta" value="" class="form-control" autofocus>
+                    </div>
+                    <div class="form-group">
+                        <label for="nombre_corto" class="txt_negrita">Nombre Corto</label>                        
+                        <input type="text" name="nombre_corto" value="" class="form-control" autofocus>
+                    </div>
+                    <div class="form-group">
+                        <label for="id_categoria" class="txt_negrita">Categoría</label>                        
+                        <input type="text" name="id_categoria" value="" class="form-control" autofocus>
+                    </div>
+                    <div class="form-group">
+                        <label for="id_fabricante" class="txt_negrita">Fabricante</label>                        
+                        <input type="text" name="id_fabricante" value="" class="form-control" autofocus>
+                    </div>
+                    <div class="form-group">
+                        <label for="id_presentacion" class="txt_negrita">Presentación</label>                        
+                        <input type="text" name="id_presentacion" value="" class="form-control" autofocus>
+                    </div>
+                    <div class="form-group">
+                        <label for="id_pais" class="txt_negrita">País</label>                        
+                        <input type="text" name="id_pais" value="" class="form-control" autofocus>
+                    </div>
+                    <div class="form-group">
+                        <label for="id_unidad_medida" class="txt_negrita">Unidad de Medida</label>                        
+                        <input type="text" name="id_unidad_medida" value="" class="form-control" autofocus>
+                    </div>
+                    <div class="form-group">
+                        <label for="conversion" class="txt_negrita">Conversión</label>                        
+                        <input type="text" name="conversion" value="" class="form-control" autofocus>
+                    </div>
+                    <div class="form-group">
+                        <label for="id_via_administracion" class="txt_negrita">Vía de Administración</label>                        
+                        <input type="text" name="id_via_administracion" value="" class="form-control" autofocus>
+                    </div>
+                    <div class="form-group">
+                        <label for="prioridad" class="txt_negrita">Prioridad</label>                        
+                        <input type="text" name="prioridad" value="" class="form-control" autofocus>
+                    </div>
+                    <div class="form-group">
+                        <label for="imagen" class="txt_negrita">Imagen</label>                        
+                        <input type="text" name="imagen" value="" class="form-control" autofocus>
+                    </div>
+                    <div class="form-group">
+                        <label for="id_tipo_prescripcion" class="txt_negrita">Tipo de Prescripción</label>                        
+                        <input type="text" name="id_tipo_prescripcion" value="" class="form-control" autofocus>
+                    </div>
+                    <div class="form-group">
+                        <label for="afecto_impuesto" class="txt_negrita">Afecto a Impuestos</label>
+                        <input type="text" name="afecto_impuesto" value="" class="form-control" autofocus>
+                    </div>
+                    <div class="form-group">
+                        <label for="registro_sanitario" class="txt_negrita">Registro Sanitario</label>                        
+                        <input type="text" name="registro_sanitario" value="" class="form-control" autofocus>
+                    </div>
+                    <div class="form-group">
+                        <label for="precio_costo" class="txt_negrita">Precio Costo</label>                        
+                        <input type="text" name="precio_costo" value="" class="form-control" autofocus>
+                    </div>
+                    <div class="form-group">
+                        <label for="precio_venta" class="txt_negrita">Precio Venta</label>                        
+                        <input type="text" name="precio_venta" value="" class="form-control" autofocus>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="clasificacion_abc" class="txt_negrita">Clasificación ABC</label>
+                        <input type="text" name="clasificacion_abc" value="" class="form-control" maxlength="5">
+
+                        <input type="hidden" name="estado" value="A" class="form-control">
+                        <input type="hidden" name="id_empresa" value="1" class="form-control">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Aceptar</button>
+                    <a href="./" type="submit" class="btn btn-primary">Cancelar</a>
+                  </form>
+
+                </div>
+                
+              </div>
+
+            </div>
+
+          </div>          
+
+          <hr>
+
+    </main>
+
+{% endblock %}
