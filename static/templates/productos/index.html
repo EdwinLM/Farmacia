@@ -34,26 +34,13 @@
                 <table id="myTable" class="table table-striped table-hover">
                   <thead>
                     <tr>
-                      <th>Código de Barras 1</th>
-                      <th>Código de Barras 2</th>
-                      <th>Nombre de Compra</th>
-                      <th>Nombre de Venta</th>
-                      <th>Nombre Corto</th>
+                      <th width="50%">Nombre de Venta</th>
                       <th>Categoría</th>
                       <th>Fabricante</th>
                       <th>Presentación</th>
-                      <th>País</th>
-                      <th>Unidad Medida</th>
-                      <th>Conversión</th>
-                      <th>Vía Administración</th>
-                      <th>Prioridad</th>
-                      <th>Imagen</th>
                       <th>Tipo Prescripción</th>
-                      <th>Afecto Impuesto</th>
-                      <th>Registro Sanitario</th>
                       <th>Precio Costo</th>
                       <th>Precio Venta</th>
-                      <th>Clasificación</th>
 
                       <th>Acciones</th>
                     </tr>
@@ -61,26 +48,13 @@
                   <tbody>
                     {% for categoria in object_list %}
                     <tr>
-                      <td>{{ categoria.codigo_barras_1 }}</td>
-                      <td>{{ categoria.codigo_barras_2 }}</td>
-                      <td>{{ categoria.nombre_compra }}</td>
                       <td>{{ categoria.nombre_venta }}</td>
-                      <td>{{ categoria.nombre_corto }}</td>
                       <td>{{ categoria.id_categoria }}</td>
                       <td>{{ categoria.id_fabricante }}</td>
                       <td>{{ categoria.id_presentacion }}</td>
-                      <td>{{ categoria.id_pais }}</td>
-                      <td>{{ categoria.id_unidad_medida }}</td>
-                      <td>{{ categoria.conversion }}</td>
-                      <td>{{ categoria.id_via_administracion }}</td>
-                      <td>{{ categoria.prioridad }}</td>
-                      <td>{{ categoria.imagen }}</td>
                       <td>{{ categoria.id_tipo_prescripcion }}</td>
-                      <td>{{ categoria.afecto_impuesto }}</td>
-                      <td>{{ categoria.registro_sanitario }}</td>
                       <td>{{ categoria.precio_costo }}</td>
                       <td>{{ categoria.precio_venta }}</td>
-                      <td>{{ categoria.clasificacion_abc }}</td>
                       <td>
                         
                         <form method="POST" action="eliminar/{{categoria.id_producto}}">

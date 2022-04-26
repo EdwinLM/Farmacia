@@ -180,7 +180,7 @@ class Producto(models.Model):
 	conversion = models.PositiveIntegerField(null=False, blank=False, default=1, help_text = 'Ingrese la conversión del producto en sucursales')
 	id_via_administracion = models.ForeignKey(Via_Administracion, null=False, blank=False, on_delete=models.CASCADE, help_text="Ingrese ")
 	prioridad = models.PositiveIntegerField(default=3, null=False, blank=False, help_text='Ingrese la prioridad del producto')
-	imagen = models.ImageField(upload_to='media/images', help_text='Seleccione la imagen del producto')
+	imagen = models.ImageField(upload_to='media/images', help_text='Seleccione la imagen del producto', null=True, blank=True)
 	id_tipo_prescripcion = models.ForeignKey(Tipo_Prescripcion, null=False, blank=False, on_delete=models.CASCADE, help_text="Seleccione las prescripciones del producto")
 	afecto_impuesto = models.BooleanField(default=False, help_text='Marque si el producto es afecto a impuestos')
 	registro_sanitario = models.CharField(max_length=20, help_text="Ingrese el registro sanitario del producto")
@@ -228,6 +228,7 @@ class Producto_Indicacion(models.Model):
 
 
 # *******************************************************
-
-# ** **
+# ** CLASES PARA MANEJO DE LOS PRODUCTOS EN EL SISTEMA **
 # *******************************************************
+
+

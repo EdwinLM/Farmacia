@@ -23,7 +23,11 @@ from django import forms
 
 class CategoriasListado(ListView):
     model = Categoria
-    #paginate_by = 2
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Listado de Categorías'
+        return context
 
 class CategoriaCrear(SuccessMessageMixin, CreateView):
     model = Categoria
@@ -33,7 +37,7 @@ class CategoriaCrear(SuccessMessageMixin, CreateView):
  
     # Redireccionamos a la página principal luego de crear un registro o categoria
     def get_success_url(self):
-        return reverse('leer')
+        return reverse('leercat')
 
 class CategoriaDetalle(DetailView):
     model = Categoria
@@ -46,7 +50,7 @@ class CategoriaActualizar(SuccessMessageMixin, UpdateView):
  
     # Redireccionamos a la página principal luego de actualizar un registro o Categoria
     def get_success_url(self):
-        return reverse('leer')
+        return reverse('leercat')
  
 class CategoriaEliminar(SuccessMessageMixin, DeleteView):
     model = Categoria 
@@ -57,7 +61,7 @@ class CategoriaEliminar(SuccessMessageMixin, DeleteView):
     def get_success_url(self):
         success_message = 'Categoria Eliminada Correctamente !'
         messages.success (self.request, (success_message))
-        return reverse('leer')
+        return reverse('leercat')
  
 # ******************
 # ** LABORATORIOS **
@@ -65,7 +69,11 @@ class CategoriaEliminar(SuccessMessageMixin, DeleteView):
 
 class LaboratoriosListado(ListView):
     model = Fabricante
-    #paginate_by = 2
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Listado de Laboratorios'
+        return context
 
 class LaboratorioCrear(SuccessMessageMixin, CreateView):
     model = Fabricante
@@ -75,7 +83,7 @@ class LaboratorioCrear(SuccessMessageMixin, CreateView):
  
     # Redireccionamos a la página principal luego de crear un registro o categoria
     def get_success_url(self):
-        return reverse('leer')
+        return reverse('leerlab')
 
 class LaboratorioDetalle(DetailView):
     model = Fabricante
@@ -88,7 +96,7 @@ class LaboratorioActualizar(SuccessMessageMixin, UpdateView):
  
     # Redireccionamos a la página principal luego de actualizar un registro o Categoria
     def get_success_url(self):
-        return reverse('leer')
+        return reverse('leerlab')
  
 class LaboratorioEliminar(SuccessMessageMixin, DeleteView):
     model = Fabricante 
@@ -99,7 +107,7 @@ class LaboratorioEliminar(SuccessMessageMixin, DeleteView):
     def get_success_url(self):
         success_message = 'Laboratorio Eliminado Correctamente !'
         messages.success (self.request, (success_message))
-        return reverse('leer')
+        return reverse('leerlab')
 
 # ********************
 # ** PRESENTACIONES **
@@ -107,7 +115,11 @@ class LaboratorioEliminar(SuccessMessageMixin, DeleteView):
 
 class PresentacionesListado(ListView):
     model = Presentacion
-    #paginate_by = 2
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Listado de Presentaciones'
+        return context
 
 class PresentacionCrear(SuccessMessageMixin, CreateView):
     model = Presentacion
@@ -117,7 +129,7 @@ class PresentacionCrear(SuccessMessageMixin, CreateView):
  
     # Redireccionamos a la página principal luego de crear un registro o categoria
     def get_success_url(self):
-        return reverse('leer')
+        return reverse('leerpre')
 
 class PresentacionDetalle(DetailView):
     model = Presentacion
@@ -130,7 +142,7 @@ class PresentacionActualizar(SuccessMessageMixin, UpdateView):
  
     # Redireccionamos a la página principal luego de actualizar un registro o Categoria
     def get_success_url(self):
-        return reverse('leer')
+        return reverse('leerpre')
  
 class PresentacionEliminar(SuccessMessageMixin, DeleteView):
     model = Presentacion
@@ -141,7 +153,7 @@ class PresentacionEliminar(SuccessMessageMixin, DeleteView):
     def get_success_url(self):
         success_message = 'Presentación Eliminada Correctamente !'
         messages.success (self.request, (success_message))
-        return reverse('leer')
+        return reverse('leerpre')
 
 # ************************
 # ** UNIDADES DE MEDIDA **
@@ -149,7 +161,11 @@ class PresentacionEliminar(SuccessMessageMixin, DeleteView):
 
 class UnidadesListado(ListView):
     model = Unidad_Medida
-    #paginate_by = 2
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Listado de Unidades de Medida'
+        return context
 
 class UnidadCrear(SuccessMessageMixin, CreateView):
     model = Unidad_Medida
@@ -159,7 +175,7 @@ class UnidadCrear(SuccessMessageMixin, CreateView):
  
     # Redireccionamos a la página principal luego de crear un registro o categoria
     def get_success_url(self):
-        return reverse('leer')
+        return reverse('leeruni')
 
 class UnidadDetalle(DetailView):
     model = Unidad_Medida
@@ -172,7 +188,7 @@ class UnidadActualizar(SuccessMessageMixin, UpdateView):
  
     # Redireccionamos a la página principal luego de actualizar un registro o Categoria
     def get_success_url(self):
-        return reverse('leer')
+        return reverse('leeruni')
  
 class UnidadEliminar(SuccessMessageMixin, DeleteView):
     model = Unidad_Medida
@@ -183,7 +199,7 @@ class UnidadEliminar(SuccessMessageMixin, DeleteView):
     def get_success_url(self):
         success_message = 'Unidad de Medida Eliminada Correctamente !'
         messages.success (self.request, (success_message))
-        return reverse('leer')
+        return reverse('leeruni')
 
 # ****************************
 # ** VÍAS DE ADMINISTRACIÓN **
@@ -191,17 +207,26 @@ class UnidadEliminar(SuccessMessageMixin, DeleteView):
 
 class ViasListado(ListView):
     model = Via_Administracion
-    #paginate_by = 2
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Listado de Vias de Administración'
+        return context
 
 class ViaCrear(SuccessMessageMixin, CreateView):
     model = Via_Administracion
     form = Via_Administracion
     fields = "__all__"
     success_message = 'Vía de Administración Creada Correctamente !'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Creación de Vias de Administración'
+        return context
  
     # Redireccionamos a la página principal luego de crear un registro o categoria
     def get_success_url(self):
-        return reverse('leer')
+        return reverse('leervia')
 
 class ViaDetalle(DetailView):
     model = Via_Administracion
@@ -214,7 +239,7 @@ class ViaActualizar(SuccessMessageMixin, UpdateView):
  
     # Redireccionamos a la página principal luego de actualizar un registro o Categoria
     def get_success_url(self):
-        return reverse('leer')
+        return reverse('leervia')
  
 class ViaEliminar(SuccessMessageMixin, DeleteView):
     model = Via_Administracion
@@ -225,7 +250,7 @@ class ViaEliminar(SuccessMessageMixin, DeleteView):
     def get_success_url(self):
         success_message = 'Vía de Administración Eliminada Correctamente !'
         messages.success (self.request, (success_message))
-        return reverse('leer')
+        return reverse('leervia')
 
 # ***************************
 # ** TIPOS DE PRESCRIPCIÓN **
@@ -233,7 +258,11 @@ class ViaEliminar(SuccessMessageMixin, DeleteView):
 
 class PrescripcionesListado(ListView):
     model = Tipo_Prescripcion
-    #paginate_by = 2
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Listado de Prescripciones'
+        return context
 
 class PrescripcionCrear(SuccessMessageMixin, CreateView):
     model = Tipo_Prescripcion
@@ -243,7 +272,7 @@ class PrescripcionCrear(SuccessMessageMixin, CreateView):
  
     # Redireccionamos a la página principal luego de crear un registro o categoria
     def get_success_url(self):
-        return reverse('leer')
+        return reverse('leerprr')
 
 class PrescripcionDetalle(DetailView):
     model = Tipo_Prescripcion
@@ -256,7 +285,7 @@ class PrescripcionActualizar(SuccessMessageMixin, UpdateView):
  
     # Redireccionamos a la página principal luego de actualizar un registro o Categoria
     def get_success_url(self):
-        return reverse('leer')
+        return reverse('leerprr')
  
 class PrescripcionEliminar(SuccessMessageMixin, DeleteView):
     model = Tipo_Prescripcion
@@ -267,7 +296,7 @@ class PrescripcionEliminar(SuccessMessageMixin, DeleteView):
     def get_success_url(self):
         success_message = 'Tipo de Prescripcion Eliminado Correctamente !'
         messages.success (self.request, (success_message))
-        return reverse('leer')
+        return reverse('leerprr')
 
 
 # *************************
@@ -276,7 +305,11 @@ class PrescripcionEliminar(SuccessMessageMixin, DeleteView):
 
 class ComponentesListado(ListView):
     model = Componente
-    #paginate_by = 2
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Listado de Componentes Activos'
+        return context
 
 class ComponenteCrear(SuccessMessageMixin, CreateView):
     model = Componente
@@ -286,7 +319,7 @@ class ComponenteCrear(SuccessMessageMixin, CreateView):
  
     # Redireccionamos a la página principal luego de crear un registro o categoria
     def get_success_url(self):
-        return reverse('leer')
+        return reverse('leercom')
 
 class ComponenteDetalle(DetailView):
     model = Componente
@@ -299,7 +332,7 @@ class ComponenteActualizar(SuccessMessageMixin, UpdateView):
  
     # Redireccionamos a la página principal luego de actualizar un registro o Categoria
     def get_success_url(self):
-        return reverse('leer')
+        return reverse('leercom')
  
 class ComponenteEliminar(SuccessMessageMixin, DeleteView):
     model = Componente
@@ -310,7 +343,7 @@ class ComponenteEliminar(SuccessMessageMixin, DeleteView):
     def get_success_url(self):
         success_message = 'Componente Activo Eliminado Correctamente !'
         messages.success (self.request, (success_message))
-        return reverse('leer')
+        return reverse('leercom')
 
 # ******************
 # ** INDICACIONES **
@@ -318,7 +351,11 @@ class ComponenteEliminar(SuccessMessageMixin, DeleteView):
 
 class IndicacionesListado(ListView):
     model = Indicacion
-    #paginate_by = 2
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Listado de Indicaciones'
+        return context
 
 class IndicacionCrear(SuccessMessageMixin, CreateView):
     model = Indicacion
@@ -328,7 +365,7 @@ class IndicacionCrear(SuccessMessageMixin, CreateView):
  
     # Redireccionamos a la página principal luego de crear un registro o categoria
     def get_success_url(self):
-        return reverse('leer')
+        return reverse('leerind')
 
 class IndicacionDetalle(DetailView):
     model = Indicacion
@@ -341,7 +378,7 @@ class IndicacionActualizar(SuccessMessageMixin, UpdateView):
  
     # Redireccionamos a la página principal luego de actualizar un registro o Categoria
     def get_success_url(self):
-        return reverse('leer')
+        return reverse('leerind')
  
 class IndicacionEliminar(SuccessMessageMixin, DeleteView):
     model = Indicacion
@@ -352,7 +389,7 @@ class IndicacionEliminar(SuccessMessageMixin, DeleteView):
     def get_success_url(self):
         success_message = 'Indicación Eliminada Correctamente !'
         messages.success (self.request, (success_message))
-        return reverse('leer')
+        return reverse('leerind')
 
 
 # ***************
@@ -361,7 +398,11 @@ class IndicacionEliminar(SuccessMessageMixin, DeleteView):
 
 class ImpuestosListado(ListView):
     model = Impuesto
-    #paginate_by = 2
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Listado de Impuestos'
+        return context
 
 class ImpuestoCrear(SuccessMessageMixin, CreateView):
     model = Impuesto
@@ -371,7 +412,7 @@ class ImpuestoCrear(SuccessMessageMixin, CreateView):
  
     # Redireccionamos a la página principal luego de crear un registro o categoria
     def get_success_url(self):
-        return reverse('leer')
+        return reverse('leerimp')
 
 class ImpuestoDetalle(DetailView):
     model = Impuesto
@@ -384,7 +425,7 @@ class ImpuestoActualizar(SuccessMessageMixin, UpdateView):
  
     # Redireccionamos a la página principal luego de actualizar un registro o Categoria
     def get_success_url(self):
-        return reverse('leer')
+        return reverse('leerimp')
  
 class ImpuestoEliminar(SuccessMessageMixin, DeleteView):
     model = Impuesto
@@ -395,7 +436,7 @@ class ImpuestoEliminar(SuccessMessageMixin, DeleteView):
     def get_success_url(self):
         success_message = 'Impuesto Eliminado Correctamente !'
         messages.success (self.request, (success_message))
-        return reverse('leer')
+        return reverse('leerimp')
 
 
 # ************
@@ -404,7 +445,11 @@ class ImpuestoEliminar(SuccessMessageMixin, DeleteView):
 
 class PaisesListado(ListView):
     model = Pais
-    #paginate_by = 2
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Listado de Paises'
+        return context
 
 class PaisCrear(SuccessMessageMixin, CreateView):
     model = Pais
@@ -414,7 +459,7 @@ class PaisCrear(SuccessMessageMixin, CreateView):
  
     # Redireccionamos a la página principal luego de crear un registro o categoria
     def get_success_url(self):
-        return reverse('leer')
+        return reverse('leerpai')
 
 class PaisDetalle(DetailView):
     model = Pais
@@ -427,7 +472,7 @@ class PaisActualizar(SuccessMessageMixin, UpdateView):
  
     # Redireccionamos a la página principal luego de actualizar un registro o Categoria
     def get_success_url(self):
-        return reverse('leer')
+        return reverse('leerpai')
  
 class PaisEliminar(SuccessMessageMixin, DeleteView):
     model = Pais
@@ -438,7 +483,7 @@ class PaisEliminar(SuccessMessageMixin, DeleteView):
     def get_success_url(self):
         success_message = 'Pais Eliminado Correctamente !'
         messages.success (self.request, (success_message))
-        return reverse('leer')
+        return reverse('leerpai')
 
 
 # ***************
@@ -447,7 +492,11 @@ class PaisEliminar(SuccessMessageMixin, DeleteView):
 
 class ProductosListado(ListView):
     model = Producto
-    #paginate_by = 2
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Listado de Productos'
+        return context
 
 def ProductoCrear(request):
     form = ProductoForm()
@@ -480,6 +529,11 @@ def ProductoCrear(request):
             product.estado = 'A'
             product.id_empresa = 1
             product.save()
+
+            #CREAR PRODUCTO EN TABLA DE INVENTARIO EN CEDIS Y SUCURSALES
+
+
+            return reverse('leerpro')
         else:
             print("Invalido")
 
@@ -487,7 +541,7 @@ def ProductoCrear(request):
  
     # Redireccionamos a la página principal luego de crear un registro o categoria
     #def get_success_url(self):
-    #    return reverse('leer')
+    #    return reverse('leerpro')
 
 class ProductoDetalle(DetailView):
     model = Producto
@@ -500,7 +554,7 @@ class ProductoActualizar(SuccessMessageMixin, UpdateView):
  
     # Redireccionamos a la página principal luego de actualizar un registro o Categoria
     def get_success_url(self):
-        return reverse('leer')
+        return reverse('leerpro')
  
 class ProductoEliminar(SuccessMessageMixin, DeleteView):
     model = Producto
@@ -511,6 +565,6 @@ class ProductoEliminar(SuccessMessageMixin, DeleteView):
     def get_success_url(self):
         success_message = 'Producto Eliminado Correctamente !'
         messages.success (self.request, (success_message))
-        return reverse('leer')
+        return reverse('leerpro')
 
 

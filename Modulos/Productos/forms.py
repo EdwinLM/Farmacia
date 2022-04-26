@@ -7,6 +7,7 @@ class CategoriaForm(forms.ModelForm):
     class Meta:
         model = Categoria
         fields = ('descripcion','abreviatura',)
+    
 
 class ProductoForm(forms.Form):
     codigo_barras_1 = forms.CharField(max_length=13, label="Código de Barras #1")
@@ -24,7 +25,7 @@ class ProductoForm(forms.Form):
     prioridad = forms.IntegerField(label='Prioridad')
     #imagen = forms.ImageField(upload_to='media/images', label='Imagen')
     id_tipo_prescripcion = forms.ModelChoiceField(queryset=Tipo_Prescripcion.objects.all(), label="Tipo de Prescripción")
-    afecto_impuesto = forms.BooleanField(label='Afecto a Impuestos')
+    afecto_impuesto = forms.BooleanField(label='Afecto a Impuestos', required=False)
     registro_sanitario = forms.CharField(max_length=20, label="Registro Sanitario")
     precio_costo = forms.DecimalField(max_digits=10, decimal_places=5, label="Precio Costo")
     precio_venta = forms.DecimalField(max_digits=7, decimal_places=2, label="Precio Venta")
