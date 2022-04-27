@@ -7,11 +7,17 @@ class CategoriaForm(forms.ModelForm):
     class Meta:
         model = Categoria
         fields = ('descripcion','abreviatura',)
-    
 
 class ProductoForm(forms.Form):
-    codigo_barras_1 = forms.CharField(max_length=13, label="Código de Barras #1")
-    codigo_barras_2 = forms.CharField(max_length=13, label="Código de Barras #2")
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for form in self.visible_fields():
+            form.field.widget.attrs['class'] = 'form-control'
+            form.field.widget.attrs['autocomplete'] = 'off'
+        self.fields['codigo_barras_1'].widget.attrs['autofocus'] = True
+
+    codigo_barras_1 = forms.CharField(max_length=13, label="Código de Barras Compras")
+    codigo_barras_2 = forms.CharField(max_length=13, label="Código de Barras Ventas")
     nombre_compra = forms.CharField(max_length=60, label="Nombre de Compra")
     nombre_venta = forms.CharField(max_length=60, label="Nombre de Venta")
     nombre_corto = forms.CharField(max_length=15, label="Nombre Corto")
@@ -30,5 +36,4 @@ class ProductoForm(forms.Form):
     precio_costo = forms.DecimalField(max_digits=10, decimal_places=5, label="Precio Costo")
     precio_venta = forms.DecimalField(max_digits=7, decimal_places=2, label="Precio Venta")
     clasificacion_abc = forms.CharField(max_length=1, label="Clasificación ABC")
-
 
