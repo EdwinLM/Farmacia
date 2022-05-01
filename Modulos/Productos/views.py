@@ -1,6 +1,11 @@
 from django.shortcuts import render
+from django.http import JsonResponse
+from django.utils.decorators import method_decorator
+from django.contrib.auth.decorators import login_required
+from django.views.decorators.csrf import csrf_exempt
+from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView 
-from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from django.views.generic import CreateView, UpdateView, DeleteView
 from Modulos.Productos.models import Categoria, Fabricante, Presentacion, Unidad_Medida, Via_Administracion, Tipo_Prescripcion, Componente, Indicacion, Impuesto, Pais, Producto
 
 from Modulos.Productos.forms import ProductoForm
@@ -207,10 +212,30 @@ class UnidadEliminar(SuccessMessageMixin, DeleteView):
 
 class ViasListado(ListView):
     model = Via_Administracion
+
+    @method_decorator(csrf_exempt)
+    #@method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        data = {}
+        try:
+            action = request.POST['action']
+            if action == 'searchdata':
+                data = []
+                for i in Via_Administracion.objects.all():
+                    data.append(i.toJSON())
+            else:
+                data['error'] = 'Ha ocurrido un error'
+        except Exception as e:
+            data['error'] = str(e)
+        return JsonResponse(data, safe=False)
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Listado de Vias de Administración'
+        context['create_url'] = reverse_lazy('crearvia')
         return context
 
 class ViaCrear(SuccessMessageMixin, CreateView):
@@ -218,6 +243,10 @@ class ViaCrear(SuccessMessageMixin, CreateView):
     form = Via_Administracion
     fields = "__all__"
     success_message = 'Vía de Administración Creada Correctamente !'
+
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -492,13 +521,73 @@ class PaisEliminar(SuccessMessageMixin, DeleteView):
 
 class ProductosListado(ListView):
     model = Producto
+
+    @method_decorator(csrf_exempt)
+    #@method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    #def post(self, request, *args, **kwargs):
+    #    data = {}
+    #    try:
+    #        action = request.GET['action']
+    #        if action == 'searchdata':
+    #            data = []
+    #            for i in Producto.objects.all():
+    #                data.append(i)
+    #        else:
+    #            data['error'] = 'Ha ocurrido un error'
+    #    except Exception as e:
+    #        data['error'] = str(e)
+    #    return JsonResponse(data, safe=False)
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Listado de Productos'
+        context['create_url'] = reverse_lazy('crearpro')
+        context['list_url'] = reverse_lazy('leerpro')
+        context['entity'] = 'Producto'
         return context
 
-def ProductoCrear(request):
+
+class ProductoCrear(CreateView):
+    model = Producto
+    form_class = ProductoForm
+    template_name = 'productos/crear.html'
+    success_message = 'Producto Creado Correctamente!'
+    success_url = reverse_lazy('leerpro')
+
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    #def post(self, request, *args, **kwargs):
+    #    data = {}
+    #    try:
+    #        action = request.POST['action']
+    #        if action == 'add':
+    #            form = self.get_form()
+    #            data = form.save()
+    #        else:
+    #            data['error'] = 'No ha ingresado a ninguna acción'
+    #    except Exception as e:
+    #        data['error'] = str(e)
+    #    return JsonResponse(data)
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Creación de Productos'
+        context['entity'] = 'Producto'
+        context['list_url'] = reverse_lazy('leerpro')
+        context['action'] = 'add'
+        return context
+
+    # Redireccionamos a la página principal luego de crear un registro o categoria
+    #def get_success_url(self):
+    #    return reverse('leerpro')
+
+
+
+def ProductoCrear2(request):
     form = ProductoForm()
     success_message = 'Producto Creado Correctamente !'
     if request.method == "POST":

@@ -1,87 +1,102 @@
-{% extends "base.html" %}
+{% extends "list.html" %}
 {% load static %}
 {% block title %}ERP Farmacias Bienestar{% endblock %}
 
-
-{% block content %}
-
-        <div class="container text-center mt-5">
-
-          <div class="row">
-            <div class="col-md-12">
-              <h3>Lista de Productos</h3>              
-            </div>
+{% block miheader %}
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1>Farmacias Bienestar</h1>
           </div>
-
-          <div class="row mb-5">
-
-            <div class="col-md-12">
-
-              <div class="table-responsive">
-
-                {% if messages %}
-                <ul class="messages list-group mb-3">
-                    {% for message in messages %}
-                    <li{% if message.tags %} class="{{ message.tags }} list-group-item list-group-item-primary"{% endif %}>{{ message }}</li>
-                    {% endfor %}
-                </ul>
-                {% endif %}
-
-                <div align="left" class="btn_crear mb-3">
-                  <a href="crear" type="button" class="btn btn-primary">Crear</a>
-                </div>
-                
-                <table id="myTable" class="table table-striped table-hover">
-                  <thead>
-                    <tr>
-                      <th width="50%">Nombre de Venta</th>
-                      <th>Categoría</th>
-                      <th>Fabricante</th>
-                      <th>Presentación</th>
-                      <th>Tipo Prescripción</th>
-                      <th>Precio Costo</th>
-                      <th>Precio Venta</th>
-
-                      <th>Acciones</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {% for categoria in object_list %}
-                    <tr>
-                      <td>{{ categoria.nombre_venta }}</td>
-                      <td>{{ categoria.id_categoria }}</td>
-                      <td>{{ categoria.id_fabricante }}</td>
-                      <td>{{ categoria.id_presentacion }}</td>
-                      <td>{{ categoria.id_tipo_prescripcion }}</td>
-                      <td>{{ categoria.precio_costo }}</td>
-                      <td>{{ categoria.precio_venta }}</td>
-                      <td>
-                        
-                        <form method="POST" action="eliminar/{{categoria.id_producto}}">
-                          
-                          {% csrf_token %}
-                          
-                          <div class="btn-group">
-                            <a href="detalle/{{categoria.id_producto}}" title="Ver" type="button" class="btn btn-success">Ver </a>
-                            <a href="editar/{{categoria.id_producto}}" title="Editar" type="button" class="btn btn-primary">Editar </a>
-                            <button class="btn btn-danger" onclick="return eliminar();" type="submit">
-                              Eliminar
-                            </button>
-                            <!-- <a href="eliminar/{{postre.id}}" title="Eliminar"><i class="fas fa-trash"></i> </a> -->                          
-                          </div>
-
-                        </form>
-
-                      </td>
-                    </tr>
-                  {% endfor %}
-                  </tbody>
-                </table>
-              </div>
-
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="#">Catálogos</a></li>
+              <li class="breadcrumb-item"><a href="#">Productos</a></li>
+              <li class="breadcrumb-item active">Listado</li>
+            </ol>
+          </div>
+          {% if messages %}
+            <div class="alert alert-primary alert-dismissible">
+              <button type="button" class="close" data-dismiss="alert" aria-hidden="true">x</button>
+              <ul>
+                {% for message in messages %}
+                  <li>{{ message }}</li>
+                {% endfor %}
+              </ul>
             </div>
+          {% endif %}
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+{% endblock %}
 
-          </div>    
+{% block columns %}
+<tr>
+  <th>Id</th>
+  <th>Codigo de Barras Compras</th>
+  <th>Codigo de Barras Ventas</th>
+  <th>Nombre de Compra</th>
+  <th>Nombre de Venta</th>
+  <th>Nombre Corto</th>
+  <th>Categoría</th>
+  <th>Fabricante</th>
+  <th>Presentación</th>
+  <th>País</th>
+  <th>Unidad de Medida</th>
+  <th>Conversión</th>
+  <th>Vía de Administración</th>
+  <th>Prioridad</th>
+  <th>Imagen</th>
+  <th>Tipo de Prescripción</th>
+  <th>Afecto a Impuestos</th>
+  <th>Registro Sanitario</th>
+  <th>Precio Costo</th>
+  <th>Precio Venta</th>
+  <th>Clasificación ABC</th>
+  <th>Estado</th>
+  <th>Empresa</th>
+  <th>Acciones</th>
+</tr>
+{% endblock %}
+                  
+{% block rows %}
+  {% for obj in object_list %}
+        <tr>
+            <td>{{ obj.id_producto }}</td>
+            <td>{{ obj.codigo_barras_1 }}</td>
+            <td>{{ obj.codigo_barras_2 }}</td>
+            <td>{{ obj.nombre_compra }}</td>
+            <td>{{ obj.nombre_venta }}</td>
+            <td>{{ obj.nombre_corto }}</td>
+            <td>{{ obj.id_categoria.descripcion }}</td>
+            <td>{{ obj.id_fabricante.nombre }}</td>
+            <td>{{ obj.id_presentacion.descripcion }}</td>
+            <td>{{ obj.id_pais.nombre }}</td>
+            <td>{{ obj.id_unidad_medida.descripcion }}</td>
+            <td>{{ obj.conversion }}</td>
+            <td>{{ obj.id_via_administracion.descripcion }}</td>
+            <td>{{ obj.prioridad }}</td>
+            <td class="text-center">
+                <img src="{{ obj.get_image }}" class="img-fluid d-block mx-auto" style="width: 20px; height: 20px;">
+            </td>
+            <td>{{ obj.id_tipo_prescripcion.descripcion }}</td>
+            <td>{{ obj.afecto_impuesto }}</td>
+            <td>{{ obj.registro_sanitario }}</td>
+            <td>{{ obj.precio_costo }}</td>
+            <td>{{ obj.precio_venta }}</td>
+            <td>{{ obj.clasificacion_abc }}</td>
+            <td>{{ obj.estado }}</td>
+            <td>{{ obj.id_empresa }}</td>
+            <td class="text-center">
+                <a href="editar/{{obj.id_producto}}" class="btn btn-warning btn-xs btn-flat"><i class="fas fa-edit"></i></a>
+                <button class="btn btn-danger btn-xs btn-flat" onclick="return eliminar();" type="submit"><i class="fas fa-trash-alt"></i></button>
+            </td>
+        </tr>
+    {% endfor %}
+{% endblock %}
+
+  {% block addjavascript %}
 
     <script type="text/javascript">
       function eliminar() {
@@ -92,4 +107,5 @@
           return false;
       }
     </script>
-{% endblock %}
+
+  {% endblock %}

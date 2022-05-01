@@ -15,6 +15,9 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from django.conf import settings
+from django.conf.urls.static import static
+
 from Modulos.Productos import views
 from Modulos.Productos.views import CategoriasListado, CategoriaDetalle, CategoriaCrear, CategoriaActualizar, CategoriaEliminar
 from Modulos.Productos.views import LaboratoriosListado, LaboratorioDetalle, LaboratorioCrear, LaboratorioActualizar, LaboratorioEliminar
@@ -27,9 +30,13 @@ from Modulos.Productos.views import IndicacionesListado, IndicacionDetalle, Indi
 from Modulos.Productos.views import ImpuestosListado, ImpuestoDetalle, ImpuestoCrear, ImpuestoActualizar, ImpuestoEliminar
 from Modulos.Productos.views import PaisesListado, PaisDetalle, PaisCrear, PaisActualizar, PaisEliminar
 from Modulos.Productos.views import ProductosListado, ProductoDetalle, ProductoCrear, ProductoActualizar, ProductoEliminar
+from Modulos.Login.views import *
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('login/', LoginFormView.as_view(), name='login'),
+    path('logout/', LogoutView.as_view(next_page='login'), name='logout'),
+    path('dashboard/', DashboardView.as_view(), name='dashboard'),
 
     path('categorias/', CategoriasListado.as_view(template_name = "categorias/index.html"), name='leercat'),
     path('categorias/detalle/<int:pk>', CategoriaDetalle.as_view(template_name = "categorias/detalles.html"), name='detallescat'),
@@ -93,8 +100,13 @@ urlpatterns = [
 
     path('productos/', ProductosListado.as_view(template_name = "productos/index.html"), name='leerpro'),
     path('productos/detalle/<int:pk>', ProductoDetalle.as_view(template_name = "productos/detalles.html"), name='detallespro'),
-    path('productos/crear', views.ProductoCrear, name='crearpro'),
+    path('productos/crear', ProductoCrear.as_view(template_name = "productos/crear.html"), name='crearpro'),
     path('productos/editar/<int:pk>', ProductoActualizar.as_view(template_name = "productos/actualizar.html"), name='actualizarpro'), 
     path('productos/eliminar/<int:pk>', ProductoEliminar.as_view(), name='eliminarpro'),
     
 ]   
+
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+#path('productos/crear', views.ProductoCrear, name='crearpro'),
+

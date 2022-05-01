@@ -1,4 +1,6 @@
 from django.db import models
+from django.forms import model_to_dict
+from Farmacia.settings import MEDIA_URL, STATIC_URL
 
 # *******************************************************
 # ** CLASES PARA MANEJO DE LOS PRODUCTOS EN EL SISTEMA **
@@ -86,7 +88,7 @@ class Unidad_Medida(models.Model):
 
 class Via_Administracion(models.Model): #Vias de Administración
 	id_via_administracion = models.AutoField(primary_key=True)
-	descripcion = models.CharField(max_length=100, null=False, blank=False, help_text="Ingrese la descripción de la vía de administración (oral, tópica, vaginal, etc.)")
+	descripcion = models.CharField(max_length=100, null=False, blank=False, unique=True, help_text="Ingrese la descripción de la vía de administración (oral, tópica, vaginal, etc.)")
 	abreviatura = models.CharField(max_length=5, null=False, blank=False, help_text="Ingrese la abreviatura a utilizar")
 	estado = models.CharField(max_length=1, default='A', help_text="Ingrese el estado")
 	created_at = models.DateTimeField(auto_now_add=True)
@@ -95,6 +97,10 @@ class Via_Administracion(models.Model): #Vias de Administración
 
 	def __str__(self):
 		return self.descripcion
+
+	def toJSON(self):
+		item = model_to_dict(self)
+		return item
 
 	class Meta:
 		ordering = [ "descripcion" ]
@@ -180,7 +186,7 @@ class Producto(models.Model):
 	conversion = models.PositiveIntegerField(null=False, blank=False, default=1, help_text = 'Ingrese la conversión del producto en sucursales')
 	id_via_administracion = models.ForeignKey(Via_Administracion, null=False, blank=False, on_delete=models.CASCADE, help_text="Ingrese ")
 	prioridad = models.PositiveIntegerField(default=3, null=False, blank=False, help_text='Ingrese la prioridad del producto')
-	imagen = models.ImageField(upload_to='media/images', help_text='Seleccione la imagen del producto', null=True, blank=True)
+	imagen = models.ImageField(upload_to='product/%Y/%m/%d', help_text='Seleccione la imagen del producto', null=True, blank=True)
 	id_tipo_prescripcion = models.ForeignKey(Tipo_Prescripcion, null=False, blank=False, on_delete=models.CASCADE, help_text="Seleccione las prescripciones del producto")
 	afecto_impuesto = models.BooleanField(default=False, help_text='Marque si el producto es afecto a impuestos')
 	registro_sanitario = models.CharField(max_length=20, help_text="Ingrese el registro sanitario del producto")
@@ -194,6 +200,15 @@ class Producto(models.Model):
 
 	def __str__(self):
 		return self.nombre_venta
+
+	def get_image(self):
+		if self.imagen:
+			return '{}{}'.format(MEDIA_URL, self.imagen)
+		return '{}{}'.format(MEDIA_URL, 'images/empty.png')
+
+	def toJSON(self):
+		item = model_to_dict(self)
+		return item
 
 	class Meta:
 		ordering = [ "nombre_venta" ]

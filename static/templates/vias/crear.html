@@ -3,18 +3,17 @@
 {% load widget_tweaks %}
 {% block title %}ERP Farmacias Bienestar{% endblock %}
 
-
 {% block miheader %}
 
     <section class="content-header">
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            
+            <h1>Farmacias Bienestar</h1>
           </div>
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a href="#">Productos</a></li>
+              <li class="breadcrumb-item"><a href="#">Catálogos</a></li>
               <li class="breadcrumb-item"><a href="#">Vías de Administración</a></li>
               <li class="breadcrumb-item active">Crear</li>
             </ol>
@@ -31,7 +30,6 @@
     </section>
 {% endblock %}
 
-
 {% block content %}
 <form method="post">
   {% csrf_token %}
@@ -43,6 +41,24 @@
       </h3>
     </div>
     <div class="card-body">
+
+      {% if form.errors %}
+        <div class="alert alert-danger alert-dismissible">
+          <button type="button" class="close" data-dismiss="alert" aria-hidden="true">x</button>
+          <h5><i class="icon fas fa-ban"></i> Ha ocurrido un error al querer guardar el registro</h5>
+          <ul>
+            {% for field in form %}
+              {% for error in field.errors %}
+                <li>{{ error }}</li>
+              {% endfor %}
+              {% for error in form.non_field_errors %}
+                <li>{{ error }}</li>
+              {% endfor %}
+            {% endfor %}
+          </ul>
+        </div>
+      {% endif %}
+
       <div class="formulario" align="left">
           <!-- {{ form.as_p }} -->
           <div class="form-group">
@@ -64,6 +80,38 @@
     </div>
   </div>
 </form>
+
+
+  {% block javascript %}
+
+    <script src="{% static 'libs/sweetalert2.js' %}"></script>
+
+    {% block addjavascript %}
+
+    <script>
+      {% if form.errors %}
+        var errores = '';
+        {% for field in form %}
+          {% for error in field.errors %}
+            errores += '{{ error }}\n';
+          {% endfor%}
+        {% endfor%}
+        Swal.fire({
+          title: 'Error!',
+          text: errores,
+          icon: 'error'
+        });
+      {% endif %}
+    </script>
+
+    <script type="text/javascript">
+      alert_jqueryconfirm();
+    </script>
+
+    {% endblock %}
+
+  {% endblock %}
+
 
 
 {% endblock %}
