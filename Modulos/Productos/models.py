@@ -8,8 +8,8 @@ from Farmacia.settings import MEDIA_URL, STATIC_URL
 
 class Categoria(models.Model):
 	id_categoria = models.AutoField(primary_key=True)
-	descripcion = models.CharField(max_length=30, null=False, blank=False, help_text="Ingrese la descripción de la categoría")
-	abreviatura = models.CharField(max_length=5, null=False, blank=False, help_text="Ingrese la abreviatura a utilizar")
+	descripcion = models.CharField(max_length=30, null=False, blank=False, unique=True, help_text="Ingrese la descripción de la categoría")
+	abreviatura = models.CharField(max_length=5, null=True, blank=True, help_text="Ingrese la abreviatura a utilizar")
 	estado = models.CharField(max_length=1, default='A', help_text="Ingrese el estado")
 	created_at = models.DateTimeField(auto_now_add=True)
 	updated_at = models.DateTimeField(auto_now=True)
@@ -24,8 +24,8 @@ class Categoria(models.Model):
 
 class Fabricante(models.Model):
 	id_fabricante = models.AutoField(primary_key=True)
-	nombre = models.CharField(max_length=100, null=False, blank=False, help_text="Ingrese el nombre del fabricante")
-	abreviatura = models.CharField(max_length=5, help_text="Ingrese la abreviatura a utilizar")
+	nombre = models.CharField(max_length=100, null=False, blank=False, unique=True, help_text="Ingrese el nombre del fabricante")
+	abreviatura = models.CharField(max_length=5, null=True, blank=True, help_text="Ingrese la abreviatura a utilizar")
 	estado = models.CharField(max_length=1, default='A', help_text="Ingrese el estado")
 	created_at = models.DateTimeField(auto_now_add=True)
 	updated_at = models.DateTimeField(auto_now=True)
@@ -40,8 +40,8 @@ class Fabricante(models.Model):
 
 class Presentacion(models.Model): #Formas Farmaceuticas
 	id_presentacion = models.AutoField(primary_key=True)
-	descripcion = models.CharField(max_length=100, null=False, blank=False, help_text="Ingrese la descripción de la presentación (tabletas, jarabe, etc.)")
-	abreviatura = models.CharField(max_length=5, null=False, blank=False, help_text="Ingrese la abreviatura a utilizar")
+	descripcion = models.CharField(max_length=100, null=False, blank=False, unique=True, help_text="Ingrese la descripción de la presentación (tabletas, jarabe, etc.)")
+	abreviatura = models.CharField(max_length=5, null=True, blank=True, help_text="Ingrese la abreviatura a utilizar")
 	estado = models.CharField(max_length=1, default='A', help_text="Ingrese el estado")
 	created_at = models.DateTimeField(auto_now_add=True)
 	updated_at = models.DateTimeField(auto_now=True)
@@ -56,8 +56,8 @@ class Presentacion(models.Model): #Formas Farmaceuticas
 
 class Pais(models.Model): #Paises
 	id_pais = models.AutoField(primary_key=True)
-	nombre = models.CharField(max_length=100, null=False, blank=False, help_text="Ingrese el nombre del país")
-	abreviatura = models.CharField(max_length=5, null=False, blank=False, help_text="Ingrese la abreviatura a utilizar")
+	nombre = models.CharField(max_length=100, null=False, blank=False, unique=True, help_text="Ingrese el nombre del país")
+	abreviatura = models.CharField(max_length=5, null=True, blank=True, help_text="Ingrese la abreviatura a utilizar")
 	estado = models.CharField(max_length=1, default='A', help_text="Ingrese el estado")
 	created_at = models.DateTimeField(auto_now_add=True)
 	updated_at = models.DateTimeField(auto_now=True)
@@ -72,8 +72,8 @@ class Pais(models.Model): #Paises
 
 class Unidad_Medida(models.Model):
 	id_unidad_medida = models.AutoField(primary_key=True)
-	descripcion = models.CharField(max_length=30, null=False, blank=False, help_text="Ingrese la descripción de la unidad de medida (caja, frasco, botella, etc.)")
-	abreviatura = models.CharField(max_length=5, null=False, blank=False, help_text="Ingrese la abreviatura a utilizar")
+	descripcion = models.CharField(max_length=30, null=False, blank=False, unique=True, help_text="Ingrese la descripción de la unidad de medida (caja, frasco, botella, etc.)")
+	abreviatura = models.CharField(max_length=5, null=True, blank=True, help_text="Ingrese la abreviatura a utilizar")
 	estado = models.CharField(max_length=1, default='A', help_text="Ingrese el estado")
 	created_at = models.DateTimeField(auto_now_add=True)
 	updated_at = models.DateTimeField(auto_now=True)
@@ -89,7 +89,7 @@ class Unidad_Medida(models.Model):
 class Via_Administracion(models.Model): #Vias de Administración
 	id_via_administracion = models.AutoField(primary_key=True)
 	descripcion = models.CharField(max_length=100, null=False, blank=False, unique=True, help_text="Ingrese la descripción de la vía de administración (oral, tópica, vaginal, etc.)")
-	abreviatura = models.CharField(max_length=5, null=False, blank=False, help_text="Ingrese la abreviatura a utilizar")
+	abreviatura = models.CharField(max_length=5, null=True, blank=True, help_text="Ingrese la abreviatura a utilizar")
 	estado = models.CharField(max_length=1, default='A', help_text="Ingrese el estado")
 	created_at = models.DateTimeField(auto_now_add=True)
 	updated_at = models.DateTimeField(auto_now=True)
@@ -108,8 +108,8 @@ class Via_Administracion(models.Model): #Vias de Administración
 
 class Tipo_Prescripcion(models.Model): #Tipo de Prescripción
 	id_tipo_prescripcion = models.AutoField(primary_key=True)
-	descripcion = models.CharField(max_length=30, null=False, blank=False, help_text="Ingrese la descripción del tipo de prescripción")
-	abreviatura = models.CharField(max_length=5, null=False, blank=False, help_text="Ingrese la abreviatura a utilizar")
+	descripcion = models.CharField(max_length=30, null=False, blank=False, unique=True, help_text="Ingrese la descripción del tipo de prescripción")
+	abreviatura = models.CharField(max_length=5, null=True, blank=True, help_text="Ingrese la abreviatura a utilizar")
 	estado = models.CharField(max_length=1, default='A', help_text="Ingrese el estado")
 	created_at = models.DateTimeField(auto_now_add=True)
 	updated_at = models.DateTimeField(auto_now=True)
@@ -124,8 +124,8 @@ class Tipo_Prescripcion(models.Model): #Tipo de Prescripción
 
 class Componente(models.Model): #Principios Activos
 	id_componente = models.AutoField(primary_key=True)
-	descripcion = models.CharField(max_length=150, null=False, blank=False, help_text="Ingrese la descripción descripción del ingrediente activo")
-	abreviatura = models.CharField(max_length=15, help_text="Ingrese la abreviatura a utilizar")
+	descripcion = models.CharField(max_length=150, null=False, blank=False, unique=True, help_text="Ingrese la descripción descripción del ingrediente activo")
+	abreviatura = models.CharField(max_length=15, null=True, blank=True, help_text="Ingrese la abreviatura a utilizar")
 	estado = models.CharField(max_length=1, default='A', help_text="Ingrese el estado")
 	created_at = models.DateTimeField(auto_now_add=True)
 	updated_at = models.DateTimeField(auto_now=True)
@@ -140,7 +140,7 @@ class Componente(models.Model): #Principios Activos
 
 class Impuesto(models.Model): #Impuestos
 	id_impuesto = models.AutoField(primary_key=True)
-	descripcion = models.CharField(max_length=30, null=False, blank=False, help_text="Ingrese la descripción del impuesto")
+	descripcion = models.CharField(max_length=30, null=False, blank=False, unique=True, help_text="Ingrese la descripción del impuesto")
 	porcentaje = models.DecimalField(max_digits=5, null=False, blank=False, decimal_places=3, help_text="Ingrese la abreviatura a utilizar")
 	abreviatura = models.CharField(max_length=10, default='', help_text="Ingrese la abreviatura a utilizar")
 	estado = models.CharField(max_length=1, default='A', help_text="Ingrese el estado")
@@ -157,7 +157,7 @@ class Impuesto(models.Model): #Impuestos
 
 class Indicacion(models.Model):
 	id_indicacion = models.AutoField(primary_key=True)
-	descripcion = models.CharField(max_length=100, null=False, blank=False, help_text="Ingrese la descripción de la indicación")
+	descripcion = models.CharField(max_length=100, null=False, blank=False, unique=True, help_text="Ingrese la descripción de la indicación")
 	estado = models.CharField(max_length=1, default='A', help_text="Ingrese el estado")
 	#abreviatura = models.CharField(max_length=5, help_text="Ingrese la abreviatura a utilizar")
 	created_at = models.DateTimeField(auto_now_add=True)
@@ -175,9 +175,9 @@ class Producto(models.Model):
 	id_producto = models.AutoField(primary_key=True)
 	codigo_barras_1 = models.CharField(max_length=13, help_text="Ingrese el código de barras")
 	codigo_barras_2 = models.CharField(max_length=13, help_text="Ingrese el código de barras secundario")
-	nombre_compra = models.CharField(max_length=60, null=False, blank=False, help_text="Ingrese el nombre para efectos de compras")
-	nombre_venta = models.CharField(max_length=60, null=False, blank=False, help_text="Ingrese el nombre para efectos de ventas")
-	nombre_corto = models.CharField(max_length=15, help_text="Ingrese el nombre corto para facturación")
+	nombre_compra = models.CharField(max_length=60, null=False, blank=False, unique=True, help_text="Ingrese el nombre para efectos de compras")
+	nombre_venta = models.CharField(max_length=60, null=False, blank=False, unique=True, help_text="Ingrese el nombre para efectos de ventas")
+	nombre_corto = models.CharField(max_length=15, unique=True, help_text="Ingrese el nombre corto para facturación")
 	id_categoria = models.ForeignKey(Categoria, null=False, blank=False, on_delete=models.CASCADE, help_text="Seleccione la categoría a la que pertenece")
 	id_fabricante = models.ForeignKey(Fabricante, null=False, blank=False, on_delete=models.CASCADE, help_text="Seleccione el fabricante del producto")
 	id_presentacion = models.ForeignKey(Presentacion, null=False, blank=False, on_delete=models.CASCADE, help_text="Seleccione la presentación del producto")
@@ -242,8 +242,37 @@ class Producto_Indicacion(models.Model):
 	id_empresa = models.PositiveIntegerField(default=1)
 
 
-# *******************************************************
-# ** CLASES PARA MANEJO DE LOS PRODUCTOS EN EL SISTEMA **
-# *******************************************************
+# ********************************************************
+# ** CLASES PARA MANEJO DE LAS SUCURSALES EN EL SISTEMA **
+# ********************************************************
 
+class Sucursal(models.Model):
+	id_sucursal = models.AutoField(primary_key=True)
+	descripcion = models.CharField(max_length=30, null=False, blank=False, unique=True, help_text="Ingrese la descripción de la sucursal")
+	direccion = models.CharField(max_length=100, null=False, blank=False, help_text="Ingrese la dirección de la sucursal")
+	telefono = models.CharField(max_length=30, null=False, blank=False, help_text="Ingrese el teléfono de la sucursal")
+	abreviatura = models.CharField(max_length=8, null=False, blank=False, help_text="Ingrese la abreviatura a utilizar")
+	encargado = models.CharField(max_length=100, null=False, blank=False, help_text="Ingrese el nombre del encargado de la sucursal")
+	email = models.EmailField(max_length=100, null=False, blank=False, help_text="Ingrese el correo del encargado de la sucursal")
+	tipo = models.CharField(max_length=1, null=False, blank=False, help_text='C = Centro de Distribución, S = Sucursal')
+	estado = models.CharField(max_length=1, default='A', help_text="Ingrese el estado")
+	created_at = models.DateTimeField(auto_now_add=True)
+	updated_at = models.DateTimeField(auto_now=True)
+	id_empresa = models.PositiveIntegerField(default=1)
+
+	def __str__(self):
+		return self.descripcion
+
+	class Meta:
+		ordering = [ "descripcion" ]
+
+class Inventario(models.Model):
+	id_inventario = models.BigAutoField(primary_key=True)
+	id_sucursal = models.ForeignKey(Sucursal, null=False, blank=False, on_delete=models.CASCADE, help_text="Seleccione la sucursal a la que pertenece")
+	id_producto = models.ForeignKey(Producto, null=False, blank=False, on_delete=models.CASCADE, help_text="Seleccione el producto al que pertenece")
+	existencia = models.IntegerField(default=0, null=False, blank=False)
+	ubicacion = models.CharField(max_length=100, null=False, blank=False, help_text="Ingrese la ubicación del producto en la sucursal")
+	created_at = models.DateTimeField(auto_now_add=True)
+	updated_at = models.DateTimeField(auto_now=True)
+	id_empresa = models.PositiveIntegerField(default=1)
 

@@ -12,17 +12,33 @@ class ProductoForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['codigo_barras_1'].widget.attrs['autofocus'] = True
+        self.fields['codigo_barras_1'].label = 'Código de Barras para Compras'
+        self.fields['codigo_barras_1'].widget.attrs['placeholder'] = 'Ingrese el código de barras para compras'
+        self.fields['codigo_barras_2'].label = 'Código de Barras para Ventas'
+        self.fields['codigo_barras_2'].widget.attrs['placeholder'] = 'Ingrese el código de barras para ventas'
+        self.fields['nombre_compra'].widget.attrs['placeholder'] = 'Ingrese la descripción para compras'
+        self.fields['nombre_venta'].widget.attrs['placeholder'] = 'Ingrese la descripción para ventas'
+        self.fields['nombre_corto'].widget.attrs['placeholder'] = 'Ingrese la descripción corta para ventas'
+        self.fields['registro_sanitario'].widget.attrs['placeholder'] = 'Ingrese el registro sanitario'
+        self.fields['precio_costo'].widget.attrs['placeholder'] = 'Ingrese el precio costo'
+        self.fields['precio_venta'].widget.attrs['placeholder'] = 'Ingrese el precio venta'
+        self.fields['clasificacion_abc'].label = ''
+        self.fields['clasificacion_abc'].widget.attrs['hidden'] = True
+        self.fields['estado'].label = ''
+        self.fields['estado'].widget.attrs['hidden'] = True
+        self.fields['id_empresa'].label = ''
+        self.fields['id_empresa'].widget.attrs['hidden'] = True
 
     class Meta:
         model = Producto
         fields = '__all__'
-        widgets = {
-            'nombre_compra': TextInput(
-                attrs={
-                    'placeholder': 'Ingrese el nombre de compras',
-                }
-            ),
-        }
+        #widgets = {
+        #    'nombre_compra': TextInput(
+        #        attrs={
+        #            'placeholder': 'Ingrese el nombre de compras',
+        #        }
+        #    ),
+        #}
 
     #codigo_barras_1 = forms.CharField(max_length=13, label="Código de Barras Compras")
     #codigo_barras_2 = forms.CharField(max_length=13, label="Código de Barras Ventas")

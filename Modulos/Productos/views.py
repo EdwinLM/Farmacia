@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.db import transaction
 from django.http import JsonResponse
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
@@ -6,7 +7,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView 
 from django.views.generic import CreateView, UpdateView, DeleteView
-from Modulos.Productos.models import Categoria, Fabricante, Presentacion, Unidad_Medida, Via_Administracion, Tipo_Prescripcion, Componente, Indicacion, Impuesto, Pais, Producto
+from Modulos.Productos.models import Categoria, Fabricante, Presentacion, Unidad_Medida, Via_Administracion, Tipo_Prescripcion, Componente, Indicacion, Impuesto, Pais, Producto, Sucursal, Inventario
 
 from Modulos.Productos.forms import ProductoForm
 
@@ -28,10 +29,30 @@ from django import forms
 
 class CategoriasListado(ListView):
     model = Categoria
+
+    @method_decorator(csrf_exempt)
+    #@method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    #def post(self, request, *args, **kwargs):
+    #    data = {}
+    #    try:
+    #        action = request.POST['action']
+    #        if action == 'searchdata':
+    #            data = []
+    #            for i in Categoria.objects.all():
+    #                data.append(i.toJSON())
+    #        else:
+    #            data['error'] = 'Ha ocurrido un error'
+    #    except Exception as e:
+    #        data['error'] = str(e)
+    #    return JsonResponse(data, safe=False)
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Listado de Categorías'
+        context['create_url'] = reverse_lazy('crearcat')
         return context
 
 class CategoriaCrear(SuccessMessageMixin, CreateView):
@@ -39,6 +60,14 @@ class CategoriaCrear(SuccessMessageMixin, CreateView):
     form = Categoria
     fields = "__all__"
     success_message = 'Categoria Creada Correctamente !'
+
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Creación de Categorías'
+        return context
  
     # Redireccionamos a la página principal luego de crear un registro o categoria
     def get_success_url(self):
@@ -74,10 +103,30 @@ class CategoriaEliminar(SuccessMessageMixin, DeleteView):
 
 class LaboratoriosListado(ListView):
     model = Fabricante
+
+    @method_decorator(csrf_exempt)
+    #@method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        data = {}
+        try:
+            action = request.POST['action']
+            if action == 'searchdata':
+                data = []
+                for i in Fabricante.objects.all():
+                    data.append(i.toJSON())
+            else:
+                data['error'] = 'Ha ocurrido un error'
+        except Exception as e:
+            data['error'] = str(e)
+        return JsonResponse(data, safe=False)
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Listado de Laboratorios'
+        context['create_url'] = reverse_lazy('crearlab')
         return context
 
 class LaboratorioCrear(SuccessMessageMixin, CreateView):
@@ -85,6 +134,14 @@ class LaboratorioCrear(SuccessMessageMixin, CreateView):
     form = Fabricante
     fields = "__all__"
     success_message = 'Laboratorio Creado Correctamente !'
+
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Creación de Laboratorios'
+        return context
  
     # Redireccionamos a la página principal luego de crear un registro o categoria
     def get_success_url(self):
@@ -120,10 +177,30 @@ class LaboratorioEliminar(SuccessMessageMixin, DeleteView):
 
 class PresentacionesListado(ListView):
     model = Presentacion
+
+    @method_decorator(csrf_exempt)
+    #@method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        data = {}
+        try:
+            action = request.POST['action']
+            if action == 'searchdata':
+                data = []
+                for i in Presentacion.objects.all():
+                    data.append(i.toJSON())
+            else:
+                data['error'] = 'Ha ocurrido un error'
+        except Exception as e:
+            data['error'] = str(e)
+        return JsonResponse(data, safe=False)
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Listado de Presentaciones'
+        context['create_url'] = reverse_lazy('crearpre')
         return context
 
 class PresentacionCrear(SuccessMessageMixin, CreateView):
@@ -131,6 +208,14 @@ class PresentacionCrear(SuccessMessageMixin, CreateView):
     form = Presentacion
     fields = "__all__"
     success_message = 'Presentación Creada Correctamente !'
+
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Creación de Presentaciones'
+        return context
  
     # Redireccionamos a la página principal luego de crear un registro o categoria
     def get_success_url(self):
@@ -166,10 +251,30 @@ class PresentacionEliminar(SuccessMessageMixin, DeleteView):
 
 class UnidadesListado(ListView):
     model = Unidad_Medida
+
+    @method_decorator(csrf_exempt)
+    #@method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        data = {}
+        try:
+            action = request.POST['action']
+            if action == 'searchdata':
+                data = []
+                for i in Unidad_Medida.objects.all():
+                    data.append(i.toJSON())
+            else:
+                data['error'] = 'Ha ocurrido un error'
+        except Exception as e:
+            data['error'] = str(e)
+        return JsonResponse(data, safe=False)
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Listado de Unidades de Medida'
+        context['create_url'] = reverse_lazy('crearuni')
         return context
 
 class UnidadCrear(SuccessMessageMixin, CreateView):
@@ -177,6 +282,14 @@ class UnidadCrear(SuccessMessageMixin, CreateView):
     form = Unidad_Medida
     fields = "__all__"
     success_message = 'Unidad de Medida Creada Correctamente !'
+
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Creación de Unidades de Medida'
+        return context
  
     # Redireccionamos a la página principal luego de crear un registro o categoria
     def get_success_url(self):
@@ -244,7 +357,6 @@ class ViaCrear(SuccessMessageMixin, CreateView):
     fields = "__all__"
     success_message = 'Vía de Administración Creada Correctamente !'
 
-    @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
 
@@ -287,17 +399,45 @@ class ViaEliminar(SuccessMessageMixin, DeleteView):
 
 class PrescripcionesListado(ListView):
     model = Tipo_Prescripcion
+
+    @method_decorator(csrf_exempt)
+    #@method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        data = {}
+        try:
+            action = request.POST['action']
+            if action == 'searchdata':
+                data = []
+                for i in Tipo_Prescripcion.objects.all():
+                    data.append(i.toJSON())
+            else:
+                data['error'] = 'Ha ocurrido un error'
+        except Exception as e:
+            data['error'] = str(e)
+        return JsonResponse(data, safe=False)
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = 'Listado de Prescripciones'
+        context['title'] = 'Listado de Tipos de Prescripción'
+        context['create_url'] = reverse_lazy('crearprr')
         return context
-
+    
 class PrescripcionCrear(SuccessMessageMixin, CreateView):
     model = Tipo_Prescripcion
     form = Tipo_Prescripcion
     fields = "__all__"
     success_message = 'Tipo de Prescripcion Creado Correctamente !'
+
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Creación de Tipos de Prescripción'
+        return context
  
     # Redireccionamos a la página principal luego de crear un registro o categoria
     def get_success_url(self):
@@ -334,10 +474,30 @@ class PrescripcionEliminar(SuccessMessageMixin, DeleteView):
 
 class ComponentesListado(ListView):
     model = Componente
+
+    @method_decorator(csrf_exempt)
+    #@method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        data = {}
+        try:
+            action = request.POST['action']
+            if action == 'searchdata':
+                data = []
+                for i in Componente.objects.all():
+                    data.append(i.toJSON())
+            else:
+                data['error'] = 'Ha ocurrido un error'
+        except Exception as e:
+            data['error'] = str(e)
+        return JsonResponse(data, safe=False)
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = 'Listado de Componentes Activos'
+        context['title'] = 'Listado de Componentes'
+        context['create_url'] = reverse_lazy('crearcom')
         return context
 
 class ComponenteCrear(SuccessMessageMixin, CreateView):
@@ -345,6 +505,14 @@ class ComponenteCrear(SuccessMessageMixin, CreateView):
     form = Componente
     fields = "__all__"
     success_message = 'Componente Activo Creado Correctamente !'
+
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Creación de Componentes Activos'
+        return context
  
     # Redireccionamos a la página principal luego de crear un registro o categoria
     def get_success_url(self):
@@ -380,10 +548,30 @@ class ComponenteEliminar(SuccessMessageMixin, DeleteView):
 
 class IndicacionesListado(ListView):
     model = Indicacion
+
+    @method_decorator(csrf_exempt)
+    #@method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        data = {}
+        try:
+            action = request.POST['action']
+            if action == 'searchdata':
+                data = []
+                for i in Indicacion.objects.all():
+                    data.append(i.toJSON())
+            else:
+                data['error'] = 'Ha ocurrido un error'
+        except Exception as e:
+            data['error'] = str(e)
+        return JsonResponse(data, safe=False)
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Listado de Indicaciones'
+        context['create_url'] = reverse_lazy('crearind')
         return context
 
 class IndicacionCrear(SuccessMessageMixin, CreateView):
@@ -391,6 +579,14 @@ class IndicacionCrear(SuccessMessageMixin, CreateView):
     form = Indicacion
     fields = "__all__"
     success_message = 'Indicación Creada Correctamente !'
+
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Creación de Indicaciones'
+        return context
  
     # Redireccionamos a la página principal luego de crear un registro o categoria
     def get_success_url(self):
@@ -427,10 +623,30 @@ class IndicacionEliminar(SuccessMessageMixin, DeleteView):
 
 class ImpuestosListado(ListView):
     model = Impuesto
+
+    @method_decorator(csrf_exempt)
+    #@method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        data = {}
+        try:
+            action = request.POST['action']
+            if action == 'searchdata':
+                data = []
+                for i in Impuesto.objects.all():
+                    data.append(i.toJSON())
+            else:
+                data['error'] = 'Ha ocurrido un error'
+        except Exception as e:
+            data['error'] = str(e)
+        return JsonResponse(data, safe=False)
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Listado de Impuestos'
+        context['create_url'] = reverse_lazy('crearimp')
         return context
 
 class ImpuestoCrear(SuccessMessageMixin, CreateView):
@@ -438,6 +654,14 @@ class ImpuestoCrear(SuccessMessageMixin, CreateView):
     form = Impuesto
     fields = "__all__"
     success_message = 'Impuesto Creado Correctamente !'
+
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Creación de Impuestos'
+        return context
  
     # Redireccionamos a la página principal luego de crear un registro o categoria
     def get_success_url(self):
@@ -474,10 +698,30 @@ class ImpuestoEliminar(SuccessMessageMixin, DeleteView):
 
 class PaisesListado(ListView):
     model = Pais
+
+    @method_decorator(csrf_exempt)
+    #@method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        data = {}
+        try:
+            action = request.POST['action']
+            if action == 'searchdata':
+                data = []
+                for i in Pais.objects.all():
+                    data.append(i.toJSON())
+            else:
+                data['error'] = 'Ha ocurrido un error'
+        except Exception as e:
+            data['error'] = str(e)
+        return JsonResponse(data, safe=False)
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Listado de Paises'
+        context['create_url'] = reverse_lazy('crearpai')
         return context
 
 class PaisCrear(SuccessMessageMixin, CreateView):
@@ -485,6 +729,14 @@ class PaisCrear(SuccessMessageMixin, CreateView):
     form = Pais
     fields = "__all__"
     success_message = 'Pais Creado Correctamente !'
+
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Creación de Paises'
+        return context
  
     # Redireccionamos a la página principal luego de crear un registro o categoria
     def get_success_url(self):
@@ -548,7 +800,6 @@ class ProductosListado(ListView):
         context['list_url'] = reverse_lazy('leerpro')
         context['entity'] = 'Producto'
         return context
-
 
 class ProductoCrear(CreateView):
     model = Producto
@@ -655,5 +906,231 @@ class ProductoEliminar(SuccessMessageMixin, DeleteView):
         success_message = 'Producto Eliminado Correctamente !'
         messages.success (self.request, (success_message))
         return reverse('leerpro')
+
+
+# *****************************
+# ** CENTROS DE DISTRIBUCION **
+# *****************************
+
+class CedisListado(ListView):
+    model = Sucursal
+
+    @method_decorator(csrf_exempt)
+    #@method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_queryset(self):
+        return Sucursal.objects.filter(tipo='C')
+
+    def post(self, request, *args, **kwargs):
+        data = {}
+        try:
+            action = request.POST['action']
+            if action == 'searchdata':
+                data = []
+                for i in Sucursal.objects.filter(tipo='C'):
+                    data.append(i.toJSON())
+            else:
+                data['error'] = 'Ha ocurrido un error'
+        except Exception as e:
+            data['error'] = str(e)
+        return JsonResponse(data, safe=False)
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Listado de Centros de Distribución'
+        context['create_url'] = reverse_lazy('crearced')
+        return context
+
+class CedisCrear(SuccessMessageMixin, CreateView):
+    model = Sucursal
+    form = Sucursal
+    fields = "__all__"
+    success_message = 'Centro de Distribución Creado Correctamente !'
+    success_url = reverse_lazy('leerced')
+    url_redirect = success_url
+
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        data = {}
+        try:
+            action = request.POST['action']
+            if action == 'add':
+                with transaction.atomic():
+                    suc = Sucursal()
+                    suc.descripcion = request.POST['descripcion']
+                    suc.direccion = request.POST['direccion']
+                    suc.telefono = request.POST['telefono']
+                    suc.abreviatura = request.POST['abreviatura']
+                    suc.encargado = request.POST['encargado']
+                    suc.email = request.POST['email']
+                    suc.tipo = request.POST['tipo']
+                    suc.estado = request.POST['estado']
+                    suc.id_empresa = int(request.POST['id_empresa'])
+                    suc.save()
+                    for p in Producto.objects.all():
+                        i = Inventario()
+                        i.id_sucursal = suc
+                        i.id_producto = p
+                        i.existencia = 0
+                        i.ubicacion = ""
+                        i.id_empresa = 1
+                        i.save()
+                    data = {'id': suc.id_sucursal}
+
+        except Exception as e:
+            data['error'] = str(e)
+        return JsonResponse(data, safe=False)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Creación de Centros de Distribución'
+        context['action'] = 'add'
+        context['list_url'] = reverse_lazy('leerced')
+        return context
+ 
+    # Redireccionamos a la página principal luego de crear un registro o categoria
+    def get_success_url(self):
+        return reverse('leerced')
+
+class CedisDetalle(DetailView):
+    model = Sucursal
+
+class CedisActualizar(SuccessMessageMixin, UpdateView):
+    model = Sucursal
+    form = Sucursal
+    fields = "__all__"
+    success_message = 'Centro de Distribución Actualizado Correctamente !'
+ 
+    # Redireccionamos a la página principal luego de actualizar un registro o Categoria
+    def get_success_url(self):
+        return reverse('leerced')
+ 
+class CedisEliminar(SuccessMessageMixin, DeleteView):
+    model = Sucursal
+    form = Sucursal
+    fields = "__all__"     
+ 
+    # Redireccionamos a la página principal luego de eliminar un registro o Categoria
+    def get_success_url(self):
+        success_message = 'Centro de Distribución Eliminado Correctamente !'
+        messages.success (self.request, (success_message))
+        return reverse('leerced')
+
+
+# ****************
+# ** SUCURSALES **
+# ****************
+
+class SucursalListado(ListView):
+    model = Sucursal
+
+    @method_decorator(csrf_exempt)
+    #@method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_queryset(self):
+        return Sucursal.objects.filter(tipo='S')
+
+    def post(self, request, *args, **kwargs):
+        data = {}
+        try:
+            action = request.POST['action']
+            if action == 'searchdata':
+                data = []
+                for i in Sucursal.objects.filter(tipo='S'):
+                    data.append(i.toJSON())
+            else:
+                data['error'] = 'Ha ocurrido un error'
+        except Exception as e:
+            data['error'] = str(e)
+        return JsonResponse(data, safe=False)
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Listado de Sucursales'
+        context['create_url'] = reverse_lazy('crearsuc')
+        return context
+
+class SucursalCrear(SuccessMessageMixin, CreateView):
+    model = Sucursal
+    form = Sucursal
+    fields = "__all__"
+    success_message = 'Sucursal Creada Correctamente !'
+    success_url = reverse_lazy('leersuc')
+    url_redirect = success_url
+
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        data = {}
+        try:
+            action = request.POST['action']
+            if action == 'add':
+                with transaction.atomic():
+                    suc = Sucursal()
+                    suc.descripcion = request.POST['descripcion']
+                    suc.direccion = request.POST['direccion']
+                    suc.telefono = request.POST['telefono']
+                    suc.abreviatura = request.POST['abreviatura']
+                    suc.encargado = request.POST['encargado']
+                    suc.email = request.POST['email']
+                    suc.tipo = request.POST['tipo']
+                    suc.estado = request.POST['estado']
+                    suc.id_empresa = int(request.POST['id_empresa'])
+                    suc.save()
+                    for p in Producto.objects.all():
+                        i = Inventario()
+                        i.id_sucursal = suc
+                        i.id_producto = p
+                        i.existencia = 0
+                        i.ubicacion = ""
+                        i.id_empresa = 1
+                        i.save()
+                    data = {'id': suc.id_sucursal}
+
+        except Exception as e:
+            data['error'] = str(e)
+        return JsonResponse(data, safe=False)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Creación de Sucursales'
+        context['action'] = 'add'
+        context['list_url'] = reverse_lazy('leersuc')
+        return context
+ 
+    # Redireccionamos a la página principal luego de crear un registro o categoria
+    def get_success_url(self):
+        return reverse('leersuc')
+
+class SucursalDetalle(DetailView):
+    model = Sucursal
+
+class SucursalActualizar(SuccessMessageMixin, UpdateView):
+    model = Sucursal
+    form = Sucursal
+    fields = "__all__"
+    success_message = 'Sucursal Actualizada Correctamente !'
+ 
+    # Redireccionamos a la página principal luego de actualizar un registro o Categoria
+    def get_success_url(self):
+        return reverse('leersuc')
+ 
+class SucursalEliminar(SuccessMessageMixin, DeleteView):
+    model = Sucursal
+    form = Sucursal
+    fields = "__all__"     
+ 
+    # Redireccionamos a la página principal luego de eliminar un registro o Categoria
+    def get_success_url(self):
+        success_message = 'Sucursal Eliminada Correctamente !'
+        messages.success (self.request, (success_message))
+        return reverse('leersuc')
 
 

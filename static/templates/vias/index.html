@@ -3,7 +3,6 @@
 {% block title %}ERP Farmacias Bienestar{% endblock %}
 
 {% block miheader %}
-
     <section class="content-header">
       <div class="container-fluid">
         <div class="row mb-2">
@@ -13,7 +12,7 @@
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="#">Catálogos</a></li>
-              <li class="breadcrumb-item"><a href="#">Vías de Administración</a></li>
+              <li class="breadcrumb-item"><a href="#">Vias de Administración</a></li>
               <li class="breadcrumb-item active">Listado</li>
             </ol>
           </div>
@@ -32,23 +31,26 @@
     </section>
 {% endblock %}
 
-                
 {% block columns %}
 <tr>
-  <th>Id</th>
-  <th>Descripcion</th>
-  <th>Abreviatura</th>
-  <th>Estado</th>
-  <th>Empresa</th>
+  <th width="90%">Descripción</th>
   <th>Acciones</th>
 </tr>
 {% endblock %}
                   
 {% block rows %}
+  {% for obj in object_list %}
+    <tr>
+      <td>{{ obj.descripcion }}</td>
+      <td class="text-center">
+          <a href="editar/{{obj.id_via_administracion}}" class="btn btn-warning btn-sm btn-flat" title="Editar"><i class="fas fa-edit"></i></a>
+          <button class="btn btn-danger btn-sm btn-flat" title="Eliminar" onclick="return eliminar();" type="submit"><i class="fas fa-trash-alt"></i></button>
+      </td>
+    </tr>
+  {% endfor %}
 {% endblock %}
 
   {% block addjavascript %}
-    <script src="{% static 'vias/js/list.js' %}"></script>
 
     <script type="text/javascript">
       function eliminar() {
@@ -59,5 +61,7 @@
           return false;
       }
     </script>
+
+    <script type="text/javascript">$('#myTable').DataTable();</script>
 
   {% endblock %}

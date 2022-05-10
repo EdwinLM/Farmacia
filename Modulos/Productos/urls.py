@@ -13,4 +13,6 @@ urlpatterns = [
     url(r'^$', views.impuestos, name='impuestos'),
     url(r'^$', views.paises, name='paises'),
     url(r'^$', views.productos, name='productos'),
+    url(r'^$', views.cedis, name='cedis'),
+    url(r'^$', views.sucursales, name='sucursales'),
 ]

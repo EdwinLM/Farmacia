@@ -1,69 +1,101 @@
-{% extends "base.html" %}
+{% extends "bases.html" %}
 {% load static %}
 {% load widget_tweaks %}
 {% block title %}ERP Farmacias Bienestar{% endblock %}
+
+{% block miheader %}
+
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1>Farmacias Bienestar</h1>
+          </div>
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="#">Catálogos</a></li>
+              <li class="breadcrumb-item"><a href="#">Componentes</a></li>
+              <li class="breadcrumb-item active">Editar</li>
+            </ol>
+          </div>
+        </div>
+          {% if messages %}
+            <ul class="messages list-group mb-3">
+            {% for message in messages %}
+            <li{% if message.tags %} class="{{ message.tags }} list-group-item list-group-item-primary"{% endif %}>{{ message }}</li>
+            {% endfor %}
+            </ul>
+          {% endif %}
+      </div><!-- /.container-fluid -->
+    </section>
+{% endblock %}
+
+
 {% block content %}
 
 <main role="main">
+  <div class="card card-primary">
+    <div class="card-header">
+      <h3 class="card-title">
+               <i class="fas fa-edit"></i>
+               Actualización de Componentes
+             </h3>
+    </div>
 
-        <div class="container text-center mt-5">
+    <div class="formulario" align="left">
 
-          <div class="row mb-5">
-
-            <div class="col-md-12">
-
-              <div class="table-responsive">
-
-                <nav aria-label="breadcrumb mb-3">
-                  <ol class="breadcrumb">
-                      <li class="breadcrumb-item"><a href="../">Componentes Activos</a></li>
-                      <li class="breadcrumb-item"><a href="#">Editar</a></li>
-                      <li class="breadcrumb-item active" aria-current="page">{{object.descripcion}}</a></li>
-                  </ol>
-                </nav>
-
-                <div class="formulario" align="left">
-
-                  <h4>Actualizar</h4>
-
-                  <form method="post" enctype="multipart/form-data">
+        <form method="post" enctype="multipart/form-data">
                   {% csrf_token %}
                     <!-- {{ form.as_p }} -->
                     <div class="form-group">
                         <label for="descripcion" class="txt_negrita">Descripción</label>
                         {{ form.descripcion|add_class:"form-control" }}
-                    </div>
-                    <div class="form-group">
+
                         <input type="hidden" name="estado" value="A" class="form-control">
                         <input type="hidden" name="id_empresa" value="1" class="form-control">
-                        
-                        <label for="abreviatura" class="txt_negrita">Abreviatura</label>
-                        {{ form.abreviatura|add_class:"form-control" }}
+                        <input type="hidden" name="abreviatura" value="1" class="form-control">
                     </div>
-                    <button type="submit" class="btn btn-primary">Aceptar</button>
-                    <a href="../" type="submit" class="btn btn-primary">Volver</a>
-                  </form>
 
-                </div>
-                
-              </div>
+                    <div class="card-footer">
+                        <button type="submit" class="btn btn-success"><i class="fas fa-save"></i> Aceptar</button>
+                        <a href="../" class="btn btn-danger"><i class="fas fa-ban"></i> Cancelar</a>
+                    </div>
+        </form>
 
-            </div>
+    </div>
 
-          </div>          
+</main>
 
-          <hr>
+<script type="text/javascript">
+    $('.form-group').html(function (i, t) {
+      return t.replace('Actualmente:', '<span class="ocultar">Actualmente:</span>');
+    });
 
-    </main>
+    $('.form-group').html(function (i, t) {
+      return t.replace('Currently:', '<span class="ocultar">Currently:</span>');
+    });
+</script> 
 
-    <script type="text/javascript">
-        $('.form-group').html(function (i, t) {
-          return t.replace('Actualmente:', '<span class="ocultar">Actualmente:</span>');
-        });
+<script src="{% static 'libs/sweetalert2.js' %}"></script>
 
-         $('.form-group').html(function (i, t) {
-          return t.replace('Currently:', '<span class="ocultar">Currently:</span>');
-        });
-      </script> 
+<script>
+  {% if form.errors %}
+    var errores = '';
+    {% for field in form %}
+      {% for error in field.errors %}
+        errores += '{{ error }}\n';
+      {% endfor%}
+    {% endfor%}
+    Swal.fire({
+      title: 'Error!',
+      text: errores,
+      icon: 'error'
+    });
+  {% endif %}
+</script>
+
+<script type="text/javascript">
+  alert_jqueryconfirm();
+</script>
 
 {% endblock %}

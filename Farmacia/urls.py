@@ -30,6 +30,8 @@ from Modulos.Productos.views import IndicacionesListado, IndicacionDetalle, Indi
 from Modulos.Productos.views import ImpuestosListado, ImpuestoDetalle, ImpuestoCrear, ImpuestoActualizar, ImpuestoEliminar
 from Modulos.Productos.views import PaisesListado, PaisDetalle, PaisCrear, PaisActualizar, PaisEliminar
 from Modulos.Productos.views import ProductosListado, ProductoDetalle, ProductoCrear, ProductoActualizar, ProductoEliminar
+from Modulos.Productos.views import CedisListado, CedisDetalle, CedisCrear, CedisActualizar, CedisEliminar
+from Modulos.Productos.views import SucursalListado, SucursalDetalle, SucursalCrear, SucursalActualizar, SucursalEliminar
 from Modulos.Login.views import *
 
 urlpatterns = [
@@ -103,6 +105,18 @@ urlpatterns = [
     path('productos/crear', ProductoCrear.as_view(template_name = "productos/crear.html"), name='crearpro'),
     path('productos/editar/<int:pk>', ProductoActualizar.as_view(template_name = "productos/actualizar.html"), name='actualizarpro'), 
     path('productos/eliminar/<int:pk>', ProductoEliminar.as_view(), name='eliminarpro'),
+
+    path('cedis/', CedisListado.as_view(template_name = "cedis/index.html"), name='leerced'),
+    path('cedis/detalle/<int:pk>', CedisDetalle.as_view(template_name = "cedis/detalles.html"), name='detallesced'),
+    path('cedis/crear', CedisCrear.as_view(template_name = "cedis/crear.html"), name='crearced'),
+    path('cedis/editar/<int:pk>', CedisActualizar.as_view(template_name = "cedis/actualizar.html"), name='actualizarced'),
+    path('cedis/eliminar/<int:pk>', CedisEliminar.as_view(), name='eliminarced'),
+
+    path('sucursales/', SucursalListado.as_view(template_name = "sucursales/index.html"), name='leersuc'),
+    path('sucursales/detalle/<int:pk>', SucursalDetalle.as_view(template_name = "sucursales/detalles.html"), name='detallessuc'),
+    path('sucursales/crear', SucursalCrear.as_view(template_name = "sucursales/crear.html"), name='crearsuc'),
+    path('sucursales/editar/<int:pk>', SucursalActualizar.as_view(template_name = "sucursales/actualizar.html"), name='actualizarsuc'),
+    path('sucursales/eliminar/<int:pk>', SucursalEliminar.as_view(), name='eliminarsuc'),
     
 ]   
 

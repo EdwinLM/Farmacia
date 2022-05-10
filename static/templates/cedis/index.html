@@ -11,8 +11,8 @@
           </div>
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a href="#">Catálogos</a></li>
-              <li class="breadcrumb-item"><a href="#">Productos</a></li>
+              <li class="breadcrumb-item"><a href="#">Configuración</a></li>
+              <li class="breadcrumb-item"><a href="#">Centros de Distribución</a></li>
               <li class="breadcrumb-item active">Listado</li>
             </ol>
           </div>
@@ -33,14 +33,11 @@
 
 {% block columns %}
 <tr>
-  <th width="30%">Nombre de Compra</th>
-  <th>Categoría</th>
-  <th>Fabricante</th>
-  <th>Conversión</th>
-  <th>Imagen</th>
-  <th>Tipo de Prescripción</th>
-  <th>Precio Costo</th>
-  <th>Precio Venta</th>
+  <th width="25%">Descripción</th>
+  <th width="25%">Dirección</th>
+  <th width="15%">Teléfono</th>
+  <th width="10%">Abreviatura</th>
+  <th width="15%">Encargado</th>
   <th>Acciones</th>
 </tr>
 {% endblock %}
@@ -48,19 +45,13 @@
 {% block rows %}
   {% for obj in object_list %}
     <tr>
-      <td>{{ obj.nombre_compra }}</td>
-      <td>{{ obj.id_categoria.descripcion }}</td>
-      <td>{{ obj.id_fabricante.nombre }}</td>
-      <td>{{ obj.conversion }}</td>
+      <td>{{ obj.descripcion }}</td>
+      <td>{{ obj.direccion }}</td>
+      <td>{{ obj.telefono }}</td>
+      <td>{{ obj.abreviatura }}</td>
+      <td>{{ obj.encargado }}</td>
       <td class="text-center">
-          <img src="{{ obj.get_image }}" class="img-fluid d-block mx-auto" style="width: 20px; height: 20px;">
-      </td>
-      <td>{{ obj.id_tipo_prescripcion.descripcion }}</td>
-      <td>{{ obj.precio_costo }}</td>
-      <td>{{ obj.precio_venta }}</td>
-      <td class="text-center">
-          <a href="detalle/{{obj.id_producto}}" class="btn btn-success btn-sm btn-flat" title="Ver"><i class="fas fa-info-circle"></i></a>
-          <a href="editar/{{obj.id_producto}}" class="btn btn-warning btn-sm btn-flat" title="Editar"><i class="fas fa-edit"></i></a>
+          <a href="editar/{{obj.id_sucursal}}" class="btn btn-warning btn-sm btn-flat" title="Editar"><i class="fas fa-edit"></i></a>
           <button class="btn btn-danger btn-sm btn-flat" title="Eliminar" onclick="return eliminar();" type="submit"><i class="fas fa-trash-alt"></i></button>
       </td>
     </tr>
@@ -71,7 +62,7 @@
 
     <script type="text/javascript">
       function eliminar() {
-        var x = confirm("Eliminar Producto?");
+        var x = confirm("Eliminar Centro de Distribución?");
         if (x)
           return true;
         else
