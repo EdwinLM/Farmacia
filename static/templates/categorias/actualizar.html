@@ -33,38 +33,38 @@
 
 {% block content %}
 
-<main role="main">
-  <div class="card card-primary">
+
+  <div class="card card-default card-primary">
     <div class="card-header">
       <h3 class="card-title">
-               <i class="fas fa-edit"></i>
-               Actualización de Categorías
-             </h3>
+       <i class="fas fa-edit"></i>
+       Actualización de Categorías
+      </h3>
     </div>
 
-    <div class="formulario" align="left">
+    <div class="card-body" align="left">
 
-        <form method="post" enctype="multipart/form-data">
-                  {% csrf_token %}
-                    <!-- {{ form.as_p }} -->
-                    <div class="form-group">
-                        <label for="descripcion" class="txt_negrita">Descripción</label>
-                        {{ form.descripcion|add_class:"form-control" }}
+      <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+          <!-- {{ form.as_p }} -->
+          <div class="form-group">
+            <label for="descripcion" class="txt_negrita">Descripción</label>
+            {{ form.descripcion|add_class:"form-control" }}
 
-                        <input type="hidden" name="estado" value="A" class="form-control">
-                        <input type="hidden" name="id_empresa" value="1" class="form-control">
-                        <input type="hidden" name="abreviatura" value="1" class="form-control">
-                    </div>
+            <input type="hidden" name="estado" value="A" class="form-control">
+            <input type="hidden" name="id_empresa" value="1" class="form-control">
+            <input type="hidden" name="abreviatura" value="1" class="form-control">
+          </div>
 
-                    <div class="card-footer">
-                        <button type="submit" class="btn btn-success"><i class="fas fa-save"></i> Aceptar</button>
-                        <a href="../" class="btn btn-danger"><i class="fas fa-ban"></i> Cancelar</a>
-                    </div>
-        </form>
+          <div class="card-footer">
+            <button type="submit" class="btn btn-success"><i class="fas fa-save"></i> Aceptar</button>
+            <a href="../" class="btn btn-danger"><i class="fas fa-ban"></i> Cancelar</a>
+        </div>
+      </form>
 
     </div>
+  </div>
 
-</main>
 
 <script type="text/javascript">
     $('.form-group').html(function (i, t) {

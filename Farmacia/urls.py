@@ -32,6 +32,8 @@ from Modulos.Productos.views import PaisesListado, PaisDetalle, PaisCrear, PaisA
 from Modulos.Productos.views import ProductosListado, ProductoDetalle, ProductoCrear, ProductoActualizar, ProductoEliminar
 from Modulos.Productos.views import CedisListado, CedisDetalle, CedisCrear, CedisActualizar, CedisEliminar
 from Modulos.Productos.views import SucursalListado, SucursalDetalle, SucursalCrear, SucursalActualizar, SucursalEliminar
+from Modulos.Productos.views import FormasPagoListado, FormasPagoDetalle, FormasPagoCrear, FormasPagoActualizar, FormasPagoEliminar
+from Modulos.Productos.views import TiposClientesListado, TiposClientesDetalle, TiposClientesCrear, TiposClientesActualizar, TiposClientesEliminar
 from Modulos.Login.views import *
 
 urlpatterns = [
@@ -117,6 +119,18 @@ urlpatterns = [
     path('sucursales/crear', SucursalCrear.as_view(template_name = "sucursales/crear.html"), name='crearsuc'),
     path('sucursales/editar/<int:pk>', SucursalActualizar.as_view(template_name = "sucursales/actualizar.html"), name='actualizarsuc'),
     path('sucursales/eliminar/<int:pk>', SucursalEliminar.as_view(), name='eliminarsuc'),
+
+    path('formaspago/', FormasPagoListado.as_view(template_name = "formaspago/index.html"), name='leerfp'),
+    path('formaspago/detalle/<int:pk>', FormasPagoDetalle.as_view(template_name = "formaspago/detalles.html"), name='detallesfp'),
+    path('formaspago/crear', FormasPagoCrear.as_view(template_name = "formaspago/crear.html"), name='crearfp'),
+    path('formaspago/editar/<int:pk>', FormasPagoActualizar.as_view(template_name = "formaspago/actualizar.html"), name='actualizarfp'),
+    path('formaspago/eliminar/<int:pk>', FormasPagoEliminar.as_view(), name='eliminarfp'),
+
+    path('tipoclientes/', TiposClientesListado.as_view(template_name = "tipoclientes/index.html"), name='leertc'),
+    path('tipoclientes/detalle/<int:pk>', TiposClientesDetalle.as_view(template_name = "tipoclientes/detalles.html"), name='detallestc'),
+    path('tipoclientes/crear', TiposClientesCrear.as_view(template_name = "tipoclientes/crear.html"), name='creartc'),
+    path('tipoclientes/editar/<int:pk>', TiposClientesActualizar.as_view(template_name = "tipoclientes/actualizar.html"), name='actualizartc'),
+    path('tipoclientes/eliminar/<int:pk>', TiposClientesEliminar.as_view(), name='eliminartc'),
     
 ]   
 

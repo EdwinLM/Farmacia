@@ -1,4 +1,10 @@
-		$('#myTable').DataTable({
+$(function () {
+	$('.btnAdd').on('click', function() {
+		$('#myModalCategoria').modal('show');
+	});
+
+
+		$('#myTable222').DataTable({
 			responsive: true,
 			autoWidth: false,
 			destroy: true,
@@ -54,3 +60,5 @@
 			
 			}
 		});
+
+});

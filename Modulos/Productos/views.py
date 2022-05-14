@@ -7,7 +7,9 @@ from django.views.decorators.csrf import csrf_exempt
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView 
 from django.views.generic import CreateView, UpdateView, DeleteView
-from Modulos.Productos.models import Categoria, Fabricante, Presentacion, Unidad_Medida, Via_Administracion, Tipo_Prescripcion, Componente, Indicacion, Impuesto, Pais, Producto, Sucursal, Inventario
+from Modulos.Productos.mixins import IsSuperuserMixin, ValidatePermissionRequiredMixin
+from Modulos.Productos.models import Categoria, Fabricante, Presentacion, Unidad_Medida, Via_Administracion, Tipo_Prescripcion, Componente, Indicacion, Impuesto, Pais
+from Modulos.Productos.models import Producto, Sucursal, Inventario, Forma_Pago, Tipo_Cliente
 
 from Modulos.Productos.forms import ProductoForm
 
@@ -27,7 +29,9 @@ from django import forms
 # ** CATEGORIAS **
 # ****************
 
-class CategoriasListado(ListView):
+#class CategoriasListado(IsSuperuserMixin, ListView):
+class CategoriasListado(ValidatePermissionRequiredMixin, ListView):
+    permission_required = 's'
     model = Categoria
 
     @method_decorator(csrf_exempt)
@@ -1132,5 +1136,156 @@ class SucursalEliminar(SuccessMessageMixin, DeleteView):
         success_message = 'Sucursal Eliminada Correctamente !'
         messages.success (self.request, (success_message))
         return reverse('leersuc')
+
+
+# ********************
+# ** FORMAS DE PAGO **
+# ********************
+
+class FormasPagoListado(ListView):
+    model = Forma_Pago
+
+    @method_decorator(csrf_exempt)
+    #@method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        data = {}
+        try:
+            action = request.POST['action']
+            if action == 'searchdata':
+                data = []
+                for i in Pais.objects.all():
+                    data.append(i.toJSON())
+            else:
+                data['error'] = 'Ha ocurrido un error'
+        except Exception as e:
+            data['error'] = str(e)
+        return JsonResponse(data, safe=False)
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Listado de Formas de Pago'
+        context['create_url'] = reverse_lazy('crearfp')
+        return context
+
+class FormasPagoCrear(SuccessMessageMixin, CreateView):
+    model = Forma_Pago
+    form = Forma_Pago
+    fields = "__all__"
+    success_message = 'Forma de Pago Creada Correctamente !'
+
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Creación de Formas de Pago'
+        return context
+ 
+    # Redireccionamos a la página principal luego de crear un registro o categoria
+    def get_success_url(self):
+        return reverse('leerfp')
+
+class FormasPagoDetalle(DetailView):
+    model = Forma_Pago
+
+class FormasPagoActualizar(SuccessMessageMixin, UpdateView):
+    model = Forma_Pago
+    form = Forma_Pago
+    fields = "__all__"
+    success_message = 'Forma de Pago Actualizada Correctamente !'
+ 
+    # Redireccionamos a la página principal luego de actualizar un registro o Categoria
+    def get_success_url(self):
+        return reverse('leerfp')
+ 
+class FormasPagoEliminar(SuccessMessageMixin, DeleteView):
+    model = Forma_Pago
+    form = Forma_Pago
+    fields = "__all__"     
+ 
+    # Redireccionamos a la página principal luego de eliminar un registro o Categoria
+    def get_success_url(self):
+        success_message = 'Forma de Pago Eliminada Correctamente !'
+        messages.success (self.request, (success_message))
+        return reverse('leerfp')
+
+
+# ***********************
+# ** TIPOS DE CLIENTES **
+# ***********************
+
+class TiposClientesListado(ListView):
+    model = Tipo_Cliente
+
+    @method_decorator(csrf_exempt)
+    #@method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        data = {}
+        try:
+            action = request.POST['action']
+            if action == 'searchdata':
+                data = []
+                for i in Pais.objects.all():
+                    data.append(i.toJSON())
+            else:
+                data['error'] = 'Ha ocurrido un error'
+        except Exception as e:
+            data['error'] = str(e)
+        return JsonResponse(data, safe=False)
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Listado de Tipos de Clientes'
+        context['create_url'] = reverse_lazy('creartc')
+        return context
+
+class TiposClientesCrear(SuccessMessageMixin, CreateView):
+    model = Tipo_Cliente
+    form = Tipo_Cliente
+    fields = "__all__"
+    success_message = 'Tipo de Clientes Creado Correctamente !'
+
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Creación de Tipos de Clientes'
+        return context
+ 
+    # Redireccionamos a la página principal luego de crear un registro o categoria
+    def get_success_url(self):
+        return reverse('leertc')
+
+class TiposClientesDetalle(DetailView):
+    model = Tipo_Cliente
+
+class TiposClientesActualizar(SuccessMessageMixin, UpdateView):
+    model = Tipo_Cliente
+    form = Tipo_Cliente
+    fields = "__all__"
+    success_message = 'Tipo de Clientes Actualizado Correctamente !'
+ 
+    # Redireccionamos a la página principal luego de actualizar un registro o Categoria
+    def get_success_url(self):
+        return reverse('leertc')
+ 
+class TiposClientesEliminar(SuccessMessageMixin, DeleteView):
+    model = Tipo_Cliente
+    form = Tipo_Cliente
+    fields = "__all__"     
+ 
+    # Redireccionamos a la página principal luego de eliminar un registro o Categoria
+    def get_success_url(self):
+        success_message = 'Tipo de Clientes Eliminado Correctamente !'
+        messages.success (self.request, (success_message))
+        return reverse('leertc')
+
 
 

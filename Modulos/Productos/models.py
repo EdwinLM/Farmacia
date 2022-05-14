@@ -1,6 +1,18 @@
 from django.db import models
+from django.conf import settings
 from django.forms import model_to_dict
+from crum import get_current_user
+from datetime import datetime
 from Farmacia.settings import MEDIA_URL, STATIC_URL
+
+#class BaseModel(models.Model):
+#	user_creation = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='user_creation', null=True, blank=True)
+#	date_creation = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+#	user_updated = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='user_updated', null=True, blank=True)
+#	date_updated = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+#
+#	class Meta:
+#		abstract = True
 
 # *******************************************************
 # ** CLASES PARA MANEJO DE LOS PRODUCTOS EN EL SISTEMA **
@@ -263,6 +275,15 @@ class Sucursal(models.Model):
 	def __str__(self):
 		return self.descripcion
 
+	def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+		user = get_current_user()
+		if user is not None:
+			if not self.id_sucursal:
+				self.user:creation = user
+			else:
+				self.user_updated = user
+		super(Sucursal, self).save()
+
 	class Meta:
 		ordering = [ "descripcion" ]
 
@@ -272,6 +293,72 @@ class Inventario(models.Model):
 	id_producto = models.ForeignKey(Producto, null=False, blank=False, on_delete=models.CASCADE, help_text="Seleccione el producto al que pertenece")
 	existencia = models.IntegerField(default=0, null=False, blank=False)
 	ubicacion = models.CharField(max_length=100, null=False, blank=False, help_text="Ingrese la ubicación del producto en la sucursal")
+	created_at = models.DateTimeField(auto_now_add=True)
+	updated_at = models.DateTimeField(auto_now=True)
+	id_empresa = models.PositiveIntegerField(default=1)
+
+
+class Tipo_Cliente(models.Model):
+	id_tipo_cliente = models.BigAutoField(primary_key=True)
+	descripcion = models.CharField(max_length=25, verbose_name='Descripción')
+	abreviatura = models.CharField(max_length=5, null=True, blank=True, help_text="Ingrese la abreviatura a utilizar")
+	estado = models.CharField(max_length=1, default='A', help_text="Ingrese el estado")
+	created_at = models.DateTimeField(auto_now_add=True)
+	updated_at = models.DateTimeField(auto_now=True)
+	id_empresa = models.PositiveIntegerField(default=1)
+
+class Genero(models.Model):
+	id_genero = models.AutoField(primary_key=True)
+	descripcion = models.CharField(max_length=50, verbose_name='Descripción')
+	estado = models.CharField(max_length=1, default='A', help_text="Ingrese el estado")
+	created_at = models.DateTimeField(auto_now_add=True)
+	updated_at = models.DateTimeField(auto_now=True)
+	id_empresa = models.PositiveIntegerField(default=1)
+
+class Cliente(models.Model):
+	id_cliente = models.BigAutoField(primary_key=True)
+	nombre = models.CharField(max_length=150, verbose_name='Nombres')
+	nit = models.CharField(max_length=10, verbose_name='Nit')
+	telefono = models.CharField(max_length=10, verbose_name='Nit')
+	direccion = models.CharField(max_length=150, verbose_name='Dirección')
+	genero = models.ForeignKey(Genero, null=False, blank=False, related_name='cliente_genero', on_delete=models.CASCADE, help_text="Seleccione el género del cliente")
+	nacimiento = models.DateField(default=datetime.now, verbose_name='Fecha de nacimiento')
+	id_tipo_prescripcion = models.ForeignKey(Tipo_Cliente, null=False, blank=False, related_name='cliente_tipo', on_delete=models.CASCADE, help_text="Seleccione el tipo de cliente")
+	estado = models.CharField(max_length=1, default='A', help_text="Ingrese el estado")
+	created_at = models.DateTimeField(auto_now_add=True)
+	updated_at = models.DateTimeField(auto_now=True)
+	id_empresa = models.PositiveIntegerField(default=1)
+
+	def __str__(self):
+		return self.apellidos + ', ' + self.nombres
+
+	def toJSON(self):
+		item = model_to_dict(self)
+		item['nacimiento'] = self.nacimiento.strftime('%Y-%m-%d')
+		return item
+
+
+class Forma_Pago(models.Model):
+	id_forma_pago = models.AutoField(primary_key=True)
+	descripcion = models.CharField(max_length=30, null=False, blank=False, unique=True, help_text="Ingrese la descripción de la forma de pago")
+	abreviatura = models.CharField(max_length=5, null=True, blank=True, help_text="Ingrese la abreviatura a utilizar")
+	estado = models.CharField(max_length=1, default='A', help_text="Ingrese el estado")
+	created_at = models.DateTimeField(auto_now_add=True)
+	updated_at = models.DateTimeField(auto_now=True)
+	id_empresa = models.PositiveIntegerField(default=1)
+
+
+class Proveedor(models.Model):
+	id_proveedor = models.BigAutoField(primary_key=True)
+	nombre = models.CharField(max_length=150, null=False, blank=False, verbose_name='Nombre')
+	nit = models.CharField(max_length=150, null=False, blank=False, verbose_name='Nit')
+	direccion = models.CharField(max_length=150, null=False, blank=False, verbose_name='Dirección')
+	telefono = models.CharField(max_length=150, null=False, blank=False, verbose_name='Teléfono')
+	contacto = models.CharField(max_length=150, null=False, blank=False, verbose_name='Contacto')
+	correo = models.CharField(max_length=150, null=False, blank=False, verbose_name='Correo')
+	limite_credito = models.DecimalField(null=False, blank=False, max_digits=11, decimal_places=2, verbose_name="Límite de Crédito")
+	periodo_credito = models.PositiveIntegerField(default=0, null=False, blank=False, verbose_name="Período de Crédito")
+	estado = models.CharField(max_length=1, default='A')
 	created_at = models.DateTimeField(auto_now_add=True)
 	updated_at = models.DateTimeField(auto_now=True)
 	id_empresa = models.PositiveIntegerField(default=1)

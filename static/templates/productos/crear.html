@@ -3,6 +3,10 @@
 {% load widget_tweaks %}
 {% block title %}ERP Farmacias Bienestar{% endblock %}
 
+{% block head_list %}
+  <script src="{% static 'vias/js/listprod.js' %}"></script>
+{% endblock %}
+
 {% block miheader %}
 
     <section class="content-header">
@@ -71,6 +75,8 @@
     <div class="card-footer">
       <button type="submit" class="btn btn-success"><i class="fas fa-save"></i> Aceptar</button>
       <a href="./" type="submit" class="btn btn-danger"><i class="fas fa-ban"></i> Cancelar</a>
+
+      <a class="btn btn-primary btnAdd"><i class="fas fa-ban"></i> Prueba</a>
     </div>
   </div>
 
@@ -78,6 +84,28 @@
 
 
   {% block javascript %}
+
+    <!-- Modal -->
+      <div class="modal fade" id="myModalCategoria" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Creación de Categorías</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        ...
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 
     <script src="{% static 'libs/sweetalert2.js' %}"></script>
 
