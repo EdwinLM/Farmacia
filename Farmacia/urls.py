@@ -34,6 +34,7 @@ from Modulos.Productos.views import CedisListado, CedisDetalle, CedisCrear, Cedi
 from Modulos.Productos.views import SucursalListado, SucursalDetalle, SucursalCrear, SucursalActualizar, SucursalEliminar
 from Modulos.Productos.views import FormasPagoListado, FormasPagoDetalle, FormasPagoCrear, FormasPagoActualizar, FormasPagoEliminar
 from Modulos.Productos.views import TiposClientesListado, TiposClientesDetalle, TiposClientesCrear, TiposClientesActualizar, TiposClientesEliminar
+from Modulos.Productos.views import VentaCrear
 from Modulos.Login.views import *
 
 urlpatterns = [
@@ -131,6 +132,8 @@ urlpatterns = [
     path('tipoclientes/crear', TiposClientesCrear.as_view(template_name = "tipoclientes/crear.html"), name='creartc'),
     path('tipoclientes/editar/<int:pk>', TiposClientesActualizar.as_view(template_name = "tipoclientes/actualizar.html"), name='actualizartc'),
     path('tipoclientes/eliminar/<int:pk>', TiposClientesEliminar.as_view(), name='eliminartc'),
+
+    path('ventas/crear', VentaCrear.as_view(template_name = "ventas/crear.html"), name='crearvta'),
     
 ]   
 

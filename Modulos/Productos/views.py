@@ -9,9 +9,9 @@ from django.views.generic import ListView, DetailView
 from django.views.generic import CreateView, UpdateView, DeleteView
 from Modulos.Productos.mixins import IsSuperuserMixin, ValidatePermissionRequiredMixin
 from Modulos.Productos.models import Categoria, Fabricante, Presentacion, Unidad_Medida, Via_Administracion, Tipo_Prescripcion, Componente, Indicacion, Impuesto, Pais
-from Modulos.Productos.models import Producto, Sucursal, Inventario, Forma_Pago, Tipo_Cliente
+from Modulos.Productos.models import Producto, Sucursal, Inventario, Forma_Pago, Tipo_Cliente, Venta
 
-from Modulos.Productos.forms import ProductoForm
+from Modulos.Productos.forms import ProductoForm, VentaForm
 
 # Nos sirve para redireccionar despues de una acción revertiendo patrones de expresiones regulares 
 from django.urls import reverse
@@ -1288,4 +1288,37 @@ class TiposClientesEliminar(SuccessMessageMixin, DeleteView):
         return reverse('leertc')
 
 
+# ************
+# ** VENTAS **
+# ************
 
+class VentaCrear(CreateView):
+    model = Venta
+    form_class = VentaForm
+    template_name = 'ventas/crear.html'
+    success_url = reverse_lazy('xxxxx')
+    url_redirect = success_url
+
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        data = {}
+        try:
+            action = request.POST['action']
+            if action == 'add':
+                form = self.get_Form()
+                data = form.save()
+            else:
+                data['error'] = 'No se ha ingresado a ninguna opción'
+        except Exception as e:
+            data['error'] = str(e)
+        return JsonResponse(data)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Creación de una Venta'
+        context['entity'] = 'Venta'
+        context['list_url'] = self.success_url
+        context['action'] = 'add'
+        return context

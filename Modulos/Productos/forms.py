@@ -1,5 +1,6 @@
+from datetime import datetime
 from django.forms import *
-from Modulos.Productos.models import Categoria, Fabricante, Presentacion, Pais, Unidad_Medida, Via_Administracion, Tipo_Prescripcion, Producto
+from Modulos.Productos.models import Categoria, Fabricante, Presentacion, Pais, Unidad_Medida, Via_Administracion, Tipo_Prescripcion, Producto, Venta
 
 class CategoriaForm(forms.Form):
     #descripcion = forms.CharField(max_length=30, help_text = "Enter a name")
@@ -61,3 +62,35 @@ class ProductoForm(ModelForm):
     #precio_venta = forms.DecimalField(max_digits=7, decimal_places=2, label="Precio Venta")
     #clasificacion_abc = forms.CharField(max_length=1, label="Clasificación ABC")
 
+
+class VentaForm(ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for form in self.visible_fields():
+            form.field.widget.attrs['class'] = 'form-control'
+            form.field.widget.attrs['autocomplete'] = 'off'
+        self.fields['id_cliente'].widget.attrs['autofocus'] = True
+        self.fields['id_cliente'].widget.attrs['class'] = 'form-control select2'
+        self.fields['id_cliente'].widget.attrs['style'] = 'width: 100%'
+
+        self.fields['fecha'].widget.attrs = {
+            'autocomplete': 'off',
+            'class': 'form-control datetimepicker-input',
+            'id': 'fecha',
+            'data-target': '#fecha',
+            'data-toggle': 'datetimepicker'
+        }
+
+    class Meta:
+        model = Venta
+        fields = '__all__'
+        widgets = {
+            'id_cliente': Select(attrs={
+                'class': 'form-control select2',
+                'style': 'width: 100%'
+            }),
+            'fecha': DateInput(format='%Y-%m-%d',
+                attrs={
+                    'value': datetime.now().strftime('%Y-%m-%d'),
+            }),
+        }
