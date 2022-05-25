@@ -9,7 +9,7 @@ from django.views.generic import ListView, DetailView
 from django.views.generic import CreateView, UpdateView, DeleteView
 from Modulos.Productos.mixins import IsSuperuserMixin, ValidatePermissionRequiredMixin
 from Modulos.Productos.models import Categoria, Fabricante, Presentacion, Unidad_Medida, Via_Administracion, Tipo_Prescripcion, Componente, Indicacion, Impuesto, Pais
-from Modulos.Productos.models import Producto, Sucursal, Inventario, Forma_Pago, Tipo_Cliente, Venta
+from Modulos.Productos.models import Producto, Sucursal, Inventario, Forma_Pago, Tipo_Cliente, Genero, Cliente, Venta
 
 from Modulos.Productos.forms import ProductoForm, VentaForm
 
@@ -1213,6 +1213,81 @@ class FormasPagoEliminar(SuccessMessageMixin, DeleteView):
         return reverse('leerfp')
 
 
+# *************
+# ** GÉNEROS **
+# *************
+
+class GenerosListado(ListView):
+    model = Genero
+
+    @method_decorator(csrf_exempt)
+    #@method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        data = {}
+        try:
+            action = request.POST['action']
+            if action == 'searchdata':
+                data = []
+                for i in Genero.objects.all():
+                    data.append(i.toJSON())
+            else:
+                data['error'] = 'Ha ocurrido un error'
+        except Exception as e:
+            data['error'] = str(e)
+        return JsonResponse(data, safe=False)
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Listado de Géneros'
+        context['create_url'] = reverse_lazy('creargen')
+        return context
+
+class GenerosCrear(SuccessMessageMixin, CreateView):
+    model = Genero
+    form = Genero
+    fields = "__all__"
+    success_message = 'Género Creado Correctamente !'
+
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Creación de Géneros'
+        return context
+ 
+    # Redireccionamos a la página principal luego de crear un registro o categoria
+    def get_success_url(self):
+        return reverse('leergen')
+
+class GenerosDetalle(DetailView):
+    model = Genero
+
+class GenerosActualizar(SuccessMessageMixin, UpdateView):
+    model = Genero
+    form = Genero
+    fields = "__all__"
+    success_message = 'Género Actualizado Correctamente !'
+ 
+    # Redireccionamos a la página principal luego de actualizar un registro o Categoria
+    def get_success_url(self):
+        return reverse('leergen')
+ 
+class GenerosEliminar(SuccessMessageMixin, DeleteView):
+    model = Genero
+    form = Genero
+    fields = "__all__"     
+ 
+    # Redireccionamos a la página principal luego de eliminar un registro o Categoria
+    def get_success_url(self):
+        success_message = 'Género Eliminado Correctamente !'
+        messages.success (self.request, (success_message))
+        return reverse('leergen')
+
+
 # ***********************
 # ** TIPOS DE CLIENTES **
 # ***********************
@@ -1231,7 +1306,7 @@ class TiposClientesListado(ListView):
             action = request.POST['action']
             if action == 'searchdata':
                 data = []
-                for i in Pais.objects.all():
+                for i in Tipo_Cliente.objects.all():
                     data.append(i.toJSON())
             else:
                 data['error'] = 'Ha ocurrido un error'
@@ -1288,6 +1363,81 @@ class TiposClientesEliminar(SuccessMessageMixin, DeleteView):
         return reverse('leertc')
 
 
+# **************
+# ** CLIENTES **
+# **************
+
+class ClientesListado(ListView):
+    model = Cliente
+
+    @method_decorator(csrf_exempt)
+    #@method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        data = {}
+        try:
+            action = request.POST['action']
+            if action == 'searchdata':
+                data = []
+                for i in Cliente.objects.all():
+                    data.append(i.toJSON())
+            else:
+                data['error'] = 'Ha ocurrido un error'
+        except Exception as e:
+            data['error'] = str(e)
+        return JsonResponse(data, safe=False)
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Listado de Clientes'
+        context['create_url'] = reverse_lazy('crearcli')
+        return context
+
+class ClientesCrear(SuccessMessageMixin, CreateView):
+    model = Cliente
+    form = Cliente
+    fields = ('nombre', 'nit', 'telefono', 'direccion', 'genero', 'nacimiento', 'id_tipo_cliente')
+    success_message = 'Cliente Creado Correctamente !'
+
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Creación de Clientes'
+        return context
+ 
+    # Redireccionamos a la página principal luego de crear un registro o categoria
+    def get_success_url(self):
+        return reverse('leercli')
+
+class ClientesDetalle(DetailView):
+    model = Cliente
+
+class ClientesActualizar(SuccessMessageMixin, UpdateView):
+    model = Cliente
+    form = Cliente
+    fields = ('nombre', 'nit', 'telefono', 'direccion', 'genero', 'nacimiento', 'id_tipo_cliente')
+    success_message = 'Cliente Actualizado Correctamente !'
+ 
+    # Redireccionamos a la página principal luego de actualizar un registro o Categoria
+    def get_success_url(self):
+        return reverse('leercli')
+ 
+class ClientesEliminar(SuccessMessageMixin, DeleteView):
+    model = Cliente
+    form = Cliente
+    fields = "__all__"     
+ 
+    # Redireccionamos a la página principal luego de eliminar un registro o Categoria
+    def get_success_url(self):
+        success_message = 'Cliente Eliminado Correctamente !'
+        messages.success (self.request, (success_message))
+        return reverse('leercli')
+
+
 # ************
 # ** VENTAS **
 # ************
@@ -1296,9 +1446,10 @@ class VentaCrear(CreateView):
     model = Venta
     form_class = VentaForm
     template_name = 'ventas/crear.html'
-    success_url = reverse_lazy('xxxxx')
+    success_url = reverse_lazy('dashboard')
     url_redirect = success_url
 
+    @method_decorator(csrf_exempt)
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
 
@@ -1306,14 +1457,40 @@ class VentaCrear(CreateView):
         data = {}
         try:
             action = request.POST['action']
-            if action == 'add':
-                form = self.get_Form()
-                data = form.save()
+            if action == 'buscar_productos':
+                data = []
+                prods = Producto.objects.filter(nombre_venta__icontains=request.POST['term'])
+                for i in prods:
+                    item = i.toJSON()
+                    item['value'] = i.nombre_venta
+                    data.append(item)
+            elif action == 'add':
+                with transaction.atomic():
+                    vents = json.loads(request.POST['vents'])
+                    venta = Venta()
+                    venta.id_sucursal = 1
+                    venta.fecha = vents['fecha']
+                    venta.id_cliente = vents['id_cliente']
+                    venta.nombre = 'Consumidor Final'
+                    venta.nit = 'CF'
+                    venta.telefono = ''
+                    venta.direccion = ''
+                    venta.subtotal = vents['subtotal']
+                    venta.iva = vents['iva']
+                    venta.total = vents['total']
+                    venta.id_empresa = 1
+                    venta.save()
+                    for i in vents['products']:
+                        detalle = Detalle_Venta()
+                        detalle.id_venta = venta.id_venta
+                        detalle.id_producto = i['id_producto']
+                        detalle.cantidad = i['cant']
+                        detalle.save()
             else:
                 data['error'] = 'No se ha ingresado a ninguna opción'
         except Exception as e:
             data['error'] = str(e)
-        return JsonResponse(data)
+        return JsonResponse(data, safe=False)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

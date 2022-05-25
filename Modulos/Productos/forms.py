@@ -69,28 +69,35 @@ class VentaForm(ModelForm):
         for form in self.visible_fields():
             form.field.widget.attrs['class'] = 'form-control'
             form.field.widget.attrs['autocomplete'] = 'off'
-        self.fields['id_cliente'].widget.attrs['autofocus'] = True
-        self.fields['id_cliente'].widget.attrs['class'] = 'form-control select2'
-        self.fields['id_cliente'].widget.attrs['style'] = 'width: 100%'
-
-        self.fields['fecha'].widget.attrs = {
-            'autocomplete': 'off',
-            'class': 'form-control datetimepicker-input',
-            'id': 'fecha',
-            'data-target': '#fecha',
-            'data-toggle': 'datetimepicker'
-        }
 
     class Meta:
         model = Venta
         fields = '__all__'
         widgets = {
             'id_cliente': Select(attrs={
+                'autofocus': True,
                 'class': 'form-control select2',
                 'style': 'width: 100%'
             }),
             'fecha': DateInput(format='%Y-%m-%d',
                 attrs={
                     'value': datetime.now().strftime('%Y-%m-%d'),
+                    'autocomplete': 'off',
+                    'class': 'form-control datetimepicker-input',
+                    'id': 'fecha',
+                    'data-target': '#fecha',
+                    'data-toggle': 'datetimepicker'
+            }),
+            'subtotal': TextInput(attrs={
+                'readonly': True,
+                'class': 'form-control',
+            }),
+            'iva': TextInput(attrs={
+                'readonly': True,
+                'class': 'form-control',
+            }),
+            'total': TextInput(attrs={
+                'readonly': True,
+                'class': 'form-control',
             }),
         }

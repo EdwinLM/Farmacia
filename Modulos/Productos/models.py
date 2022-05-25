@@ -37,6 +37,10 @@ class Categoria(models.Model):
 	def __str__(self):
 		return self.descripcion
 
+	def toJSON(self):
+		item = model_to_dict(self)
+		return item
+
 	class Meta:
 		ordering = [ "descripcion" ]
 
@@ -227,6 +231,9 @@ class Producto(models.Model):
 
 	def toJSON(self):
 		item = model_to_dict(self)
+		item['cat'] = self.id_categoria.toJSON()
+		item['imagen'] = self.get_image()
+		item['pvp'] = format(self.precio_venta, '.2f')
 		return item
 
 	class Meta:
@@ -314,6 +321,12 @@ class Tipo_Cliente(models.Model):
 	updated_at = models.DateTimeField(auto_now=True)
 	id_empresa = models.PositiveIntegerField(default=1)
 
+	def __str__(self):
+		return self.descripcion
+
+	class Meta:
+		ordering = [ "descripcion" ]
+
 class Genero(models.Model):
 	id_genero = models.AutoField(primary_key=True)
 	descripcion = UpperField(max_length=50, unique=True, null=False, blank=False, verbose_name='Descripción')
@@ -323,11 +336,17 @@ class Genero(models.Model):
 	updated_at = models.DateTimeField(auto_now=True)
 	id_empresa = models.PositiveIntegerField(default=1)
 
+	def __str__(self):
+		return self.descripcion
+
+	class Meta:
+		ordering = [ "descripcion" ]
+
 class Cliente(models.Model):
 	id_cliente = models.BigAutoField(primary_key=True)
-	nombre = UpperField(max_length=150, null=False, blank=False, verbose_name='Nombres')
+	nombre = UpperField(max_length=150, null=False, blank=False, verbose_name='Nombre')
 	nit = UpperField(max_length=10, null=False, blank=False, verbose_name='Nit')
-	telefono = UpperField(max_length=10, null=False, blank=False, verbose_name='Nit')
+	telefono = UpperField(max_length=10, null=False, blank=False, verbose_name='Teléfono')
 	direccion = UpperField(max_length=150, null=False, blank=False, verbose_name='Dirección')
 	genero = models.ForeignKey(Genero, null=False, blank=False, on_delete=models.CASCADE, help_text="Seleccione el género del cliente")
 	nacimiento = models.DateField(default=datetime.now, verbose_name='Fecha de nacimiento')
@@ -338,7 +357,7 @@ class Cliente(models.Model):
 	id_empresa = models.PositiveIntegerField(default=1)
 
 	def __str__(self):
-		return self.apellidos + ', ' + self.nombres
+		return self.nombre
 
 	def toJSON(self):
 		item = model_to_dict(self)
@@ -400,3 +419,8 @@ class Detalle_Venta(models.Model):
 	id_producto = models.ForeignKey(Producto, on_delete=models.CASCADE)
 	cantidad = models.PositiveIntegerField(default=1)
 	id_empresa = models.PositiveIntegerField(default=1)
+
+class aaaaa(models.Model):
+	id = models.BigAutoField(primary_key=True)
+	nombre = UpperField(max_length=150, null=False, blank=False)
+	

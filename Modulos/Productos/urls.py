@@ -15,5 +15,6 @@ urlpatterns = [
     url(r'^$', views.productos, name='productos'),
     url(r'^$', views.cedis, name='cedis'),
     url(r'^$', views.sucursales, name='sucursales'),
+    url(r'^$', views.clientes, name='clientes'),
     url(r'^$', views.ventas, name='ventas'),
 ]

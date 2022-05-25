@@ -34,6 +34,8 @@ from Modulos.Productos.views import CedisListado, CedisDetalle, CedisCrear, Cedi
 from Modulos.Productos.views import SucursalListado, SucursalDetalle, SucursalCrear, SucursalActualizar, SucursalEliminar
 from Modulos.Productos.views import FormasPagoListado, FormasPagoDetalle, FormasPagoCrear, FormasPagoActualizar, FormasPagoEliminar
 from Modulos.Productos.views import TiposClientesListado, TiposClientesDetalle, TiposClientesCrear, TiposClientesActualizar, TiposClientesEliminar
+from Modulos.Productos.views import ClientesListado, ClientesDetalle, ClientesCrear, ClientesActualizar, ClientesEliminar
+from Modulos.Productos.views import GenerosListado, GenerosDetalle, GenerosCrear, GenerosActualizar, GenerosEliminar
 from Modulos.Productos.views import VentaCrear
 from Modulos.Login.views import *
 
@@ -127,11 +129,23 @@ urlpatterns = [
     path('formaspago/editar/<int:pk>', FormasPagoActualizar.as_view(template_name = "formaspago/actualizar.html"), name='actualizarfp'),
     path('formaspago/eliminar/<int:pk>', FormasPagoEliminar.as_view(), name='eliminarfp'),
 
+    path('generos/', GenerosListado.as_view(template_name = "generos/index.html"), name='leergen'),
+    path('generos/detalle/<int:pk>', GenerosDetalle.as_view(template_name = "generos/detalles.html"), name='detallesgen'),
+    path('generos/crear', GenerosCrear.as_view(template_name = "generos/crear.html"), name='creargen'),
+    path('generos/editar/<int:pk>', GenerosActualizar.as_view(template_name = "generos/actualizar.html"), name='actualizargen'),
+    path('generos/eliminar/<int:pk>', GenerosEliminar.as_view(), name='eliminargen'),
+
     path('tipoclientes/', TiposClientesListado.as_view(template_name = "tipoclientes/index.html"), name='leertc'),
     path('tipoclientes/detalle/<int:pk>', TiposClientesDetalle.as_view(template_name = "tipoclientes/detalles.html"), name='detallestc'),
     path('tipoclientes/crear', TiposClientesCrear.as_view(template_name = "tipoclientes/crear.html"), name='creartc'),
     path('tipoclientes/editar/<int:pk>', TiposClientesActualizar.as_view(template_name = "tipoclientes/actualizar.html"), name='actualizartc'),
     path('tipoclientes/eliminar/<int:pk>', TiposClientesEliminar.as_view(), name='eliminartc'),
+
+    path('clientes/', ClientesListado.as_view(template_name = "clientes/index.html"), name='leercli'),
+    path('clientes/detalle/<int:pk>', ClientesDetalle.as_view(template_name = "clientes/detalles.html"), name='detallescli'),
+    path('clientes/crear', ClientesCrear.as_view(template_name = "clientes/crear.html"), name='crearcli'),
+    path('clientes/editar/<int:pk>', ClientesActualizar.as_view(template_name = "clientes/actualizar.html"), name='actualizarcli'),
+    path('clientes/eliminar/<int:pk>', ClientesEliminar.as_view(), name='eliminarcli'),
 
     path('ventas/crear', VentaCrear.as_view(template_name = "ventas/crear.html"), name='crearvta'),
     
