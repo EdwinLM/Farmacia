@@ -400,10 +400,15 @@ class Venta(models.Model):
 	nit = UpperField(max_length=10, null=False, blank=False)
 	telefono = UpperField(max_length=10, null=False, blank=False)
 	direccion = UpperField(max_length=150, null=False, blank=False)
-	subtotal = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
+	subtotal_afecto = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
+	subtotal_noafecto = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
 	iva = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
 	total = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
 	id_empresa = models.PositiveIntegerField(default=1)
+	vendedor = models.PositiveIntegerField(default=1)
+	cajero = models.PositiveIntegerField(default=1)
+	correlativo_diario = models.PositiveIntegerField(default=1)
+
 
 	def __str__(self):
 		return nombre
@@ -413,14 +418,13 @@ class Venta(models.Model):
 		verbose_name_plural = 'Ventas'
 		ordering = ['id_venta']
 
+
 class Detalle_Venta(models.Model):
 	id_detalle_venta = models.BigAutoField(primary_key=True)
 	id_venta = models.ForeignKey(Venta, on_delete=models.CASCADE)
 	id_producto = models.ForeignKey(Producto, on_delete=models.CASCADE)
 	cantidad = models.PositiveIntegerField(default=1)
 	id_empresa = models.PositiveIntegerField(default=1)
+	precio_costo = models.DecimalField(null=False, blank=False, max_digits=10, decimal_places=5)
+	precio_venta = models.DecimalField(null=False, blank=False, max_digits=7, decimal_places=2)
 
-class aaaaa(models.Model):
-	id = models.BigAutoField(primary_key=True)
-	nombre = UpperField(max_length=150, null=False, blank=False)
-	
