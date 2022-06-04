@@ -5,6 +5,7 @@ from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from django.urls import reverse_lazy
+import json
 from django.views.generic import ListView, DetailView 
 from django.views.generic import CreateView, UpdateView, DeleteView
 from Modulos.Productos.mixins import IsSuperuserMixin, ValidatePermissionRequiredMixin
@@ -1467,10 +1468,12 @@ class VentaCrear(CreateView):
             elif action == 'add':
                 with transaction.atomic():
                     vents = json.loads(request.POST['vents'])
+                    sucur = Sucursal.objects.filter(id_sucursal=vents['id_sucursal'])[0]
+                    clien = Cliente.objects.filter(id_cliente=vents['id_cliente'])[0]
                     venta = Venta()
-                    venta.id_sucursal = 1
+                    venta.id_sucursal = sucur
                     venta.fecha = vents['fecha']
-                    venta.id_cliente = vents['id_cliente']
+                    venta.id_cliente = clien
                     venta.nombre = 'Consumidor Final'
                     venta.nit = 'CF'
                     venta.telefono = ''

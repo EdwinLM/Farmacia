@@ -2,6 +2,7 @@ var tblProducts;
 var vents = {
     items: {
         id_cliente: '',
+        id_sucursal: 36,
         fecha: '',
         subtotal: 0.00,
         iva: 0.00,
@@ -116,7 +117,7 @@ $(function () {
             }).fail(function (jqXHR, textStatus, errorThrown) {
                 //alert(textStatus + ': ' + errorThrown);
             }).always(function (data) {
-            	console.log('aaaaaa');
+            	
             });
         },
         delay: 500,
@@ -164,19 +165,22 @@ $(function () {
 	});
 
 	//Evento submit (guardar)
-	S('form').on('submit', function (e) {
+	$('form').on('submit', function (e) {
 		e.preventDefault();
 
 		if (vents.items.products.length === 0) {
-			message_error('Debe al menos tener un item en su detalle de venta.');
+			//message_error('Debe al menos tener un item en su detalle de venta.');
+			alert("aaaa")
 			return false;
-		}
+		};
 
 		vents.items.fecha = $('input[name="fecha"]').val();
-		vents.items.id_cliente = $('input[name="id_cliente"]').val();
+		//vents.items.id_cliente = $('input[name="id_id_cliente"]').val();
+        vents.items.id_cliente = $('select[name="id_cliente"]').val();
 		var parameters = new FormData();
 		parameters.append('action', $('input[name="action"]').val());
 		parameters.append('vents', JSON.stringify(vents.items));
+		console.log(vents);
 		submit_with_ajax(window.location.pathname, 'Notificación', '¿Está seguro de realizar la siguiente acción?', parameters, function (response) {
 			location.href = '/dashboard/';
 		});
