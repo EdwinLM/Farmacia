@@ -12,7 +12,8 @@ from Modulos.Productos.mixins import IsSuperuserMixin, ValidatePermissionRequire
 from Modulos.Productos.models import Categoria, Fabricante, Presentacion, Unidad_Medida, Via_Administracion, Tipo_Prescripcion, Componente, Indicacion, Impuesto, Pais
 from Modulos.Productos.models import Producto, Sucursal, Inventario, Forma_Pago, Tipo_Cliente, Genero, Cliente, Venta
 
-from Modulos.Productos.forms import ProductoForm, VentaForm
+from Modulos.Productos.forms import ProductoForm, VentaForm, ClienteForm, CategoriaForm, FabricanteForm, PresentacionForm, PaisForm
+from Modulos.Productos.forms import UnidadMedidaForm, ViaAdministracionForm, TipoPrescripcionForm
 
 # Nos sirve para redireccionar despues de una acción revertiendo patrones de expresiones regulares 
 from django.urls import reverse
@@ -813,21 +814,51 @@ class ProductoCrear(CreateView):
     success_message = 'Producto Creado Correctamente!'
     success_url = reverse_lazy('leerpro')
 
+    @method_decorator(csrf_exempt)
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
-
-    #def post(self, request, *args, **kwargs):
-    #    data = {}
-    #    try:
-    #        action = request.POST['action']
-    #        if action == 'add':
-    #            form = self.get_form()
-    #            data = form.save()
-    #        else:
-    #            data['error'] = 'No ha ingresado a ninguna acción'
-    #    except Exception as e:
-    #        data['error'] = str(e)
-    #    return JsonResponse(data)
+    
+    def post(self, request, *args, **kwargs):
+        data = {}
+        try:
+            action = request.POST['action']
+            if action == 'add':
+                with transaction.atomic():
+                    form = self.get_form()
+                    data = form.save()
+            elif action == 'create_categoria':
+                with transaction.atomic():
+                    frmCategoria = CategoriaForm(request.POST)
+                    data = frmCategoria.save()
+            elif action == 'create_fabricante':
+                with transaction.atomic():
+                    frmFabricante = FabricanteForm(request.POST)
+                    data = frmFabricante.save()
+            elif action == 'create_presentacion':
+                with transaction.atomic():
+                    frmPresentacion = PresentacionForm(request.POST)
+                    data = frmPresentacion.save()
+            elif action == 'create_pais':
+                with transaction.atomic():
+                    frmPais = PaisForm(request.POST)
+                    data = frmPais.save()
+            elif action == 'create_unidad':
+                with transaction.atomic():
+                    frmMedida = UnidadMedidaForm(request.POST)
+                    data = frmMedida.save()
+            elif action == 'create_via':
+                with transaction.atomic():
+                    frmVia = ViaAdministracionForm(request.POST)
+                    data = frmVia.save()
+            elif action == 'create_prescripcion':
+                with transaction.atomic():
+                    frmPrescripcion = TipoPrescripcionForm(request.POST)
+                    data = frmPrescripcion.save()
+            else:
+                data['error'] = 'No se ha ingresado a ninguna opción'
+        except Exception as e:
+            data['error'] = str(e)
+        return JsonResponse(data, safe=False)
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -835,7 +866,15 @@ class ProductoCrear(CreateView):
         context['entity'] = 'Producto'
         context['list_url'] = reverse_lazy('leerpro')
         context['action'] = 'add'
+        context['frmCategoria'] = CategoriaForm()
+        context['frmFabricante'] = FabricanteForm()
+        context['frmPresentacion'] = PresentacionForm()
+        context['frmPais'] = PaisForm()
+        context['frmMedida'] = UnidadMedidaForm()
+        context['frmVia'] = ViaAdministracionForm()
+        context['frmPrescripcion'] = TipoPrescripcionForm()
         return context
+
 
     # Redireccionamos a la página principal luego de crear un registro o categoria
     #def get_success_url(self):
@@ -1399,8 +1438,14 @@ class ClientesListado(ListView):
 class ClientesCrear(SuccessMessageMixin, CreateView):
     model = Cliente
     form = Cliente
-    fields = ('nombre', 'nit', 'telefono', 'direccion', 'genero', 'nacimiento', 'id_tipo_cliente')
+    #fields = ('nombre', 'nit', 'telefono', 'direccion', 'genero', 'nacimiento', 'id_tipo_cliente')
     success_message = 'Cliente Creado Correctamente !'
+
+    form_class = ClienteForm
+    template_name = 'clientes/crear.html'
+    success_url = reverse_lazy('leercli')
+    #permission_required = 'add_client'
+    url_redirect = success_url
 
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
@@ -1413,6 +1458,27 @@ class ClientesCrear(SuccessMessageMixin, CreateView):
     # Redireccionamos a la página principal luego de crear un registro o categoria
     def get_success_url(self):
         return reverse('leercli')
+
+    def post(self, request, *args, **kwargs):
+        data = {}
+        try:
+            action = request.POST['action']
+            if action == 'add':
+                form = self.get_form()
+                data = form.save()
+            else:
+                data['error'] = 'No ha ingresado a ninguna opción'
+        except Exception as e:
+            data['error'] = str(e)
+        return JsonResponse(data)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Creación un Cliente'
+        context['entity'] = 'Cliente'
+        context['list_url'] = self.success_url
+        context['action'] = 'add'
+        return context
 
 class ClientesDetalle(DetailView):
     model = Cliente
@@ -1458,12 +1524,29 @@ class VentaCrear(CreateView):
         data = {}
         try:
             action = request.POST['action']
-            if action == 'buscar_productos':
+            if action == 'search_products':
                 data = []
-                prods = Producto.objects.filter(nombre_venta__icontains=request.POST['term'])
-                for i in prods:
+                ids_exclude = json.loads(request.POST['ids'])
+                term = request.POST['term'].strip()
+                #products = Product.objects.filter(stock__gt=0)
+                products = Producto.objects.all()
+                if len(term):
+                    products = products.filter(nombre_venta__icontains=term)
+                for i in products.exclude(id_producto__in=ids_exclude)[0:10]:
                     item = i.toJSON()
                     item['value'] = i.nombre_venta
+                    # item['text'] = i.name
+                    data.append(item)
+            elif action == 'search_autocomplete':
+                data = []
+                ids_exclude = json.loads(request.POST['ids'])
+                term = request.POST['term'].strip()
+                data.append({'id': term, 'text': term})
+                #products = Product.objects.filter(name__icontains=term, stock__gt=0)
+                products = Producto.objects.filter(nombre_venta__icontains=term)
+                for i in products.exclude(id_producto__in=ids_exclude)[0:10]:
+                    item = i.toJSON()
+                    item['text'] = i.nombre_venta
                     data.append(item)
             elif action == 'add':
                 with transaction.atomic():
@@ -1478,7 +1561,8 @@ class VentaCrear(CreateView):
                     venta.nit = 'CF'
                     venta.telefono = ''
                     venta.direccion = ''
-                    venta.subtotal = vents['subtotal']
+                    venta.subtotal_afecto = vents['subtotal_afecto']
+                    venta.subtotal_noafecto = vents['subtotal_noafecto']
                     venta.iva = vents['iva']
                     venta.total = vents['total']
                     venta.id_empresa = 1
@@ -1489,6 +1573,22 @@ class VentaCrear(CreateView):
                         detalle.id_producto = i['id_producto']
                         detalle.cantidad = i['cant']
                         detalle.save()
+                    data = {'id': venta.id}
+            elif action == 'buscar_clientes':
+                data = []
+                term = request.POST['term']
+                clients = Cliente.objects.filter(nombre__icontains=term)
+                    #Q(names__icontains=term) | Q(surnames__icontains=term) | Q(dni__icontains=term))[0:10]
+                    #Q(nombre__icontains=term))[0:10]
+
+                for i in clients:
+                    item = i.toJSON()
+                    item['text'] = i.get_full_name()
+                    data.append(item)
+            elif action == 'create_client':
+                with transaction.atomic():
+                    frmClient = ClienteForm(request.POST)
+                    data = frmClient.save()
             else:
                 data['error'] = 'No se ha ingresado a ninguna opción'
         except Exception as e:
@@ -1501,4 +1601,6 @@ class VentaCrear(CreateView):
         context['entity'] = 'Venta'
         context['list_url'] = self.success_url
         context['action'] = 'add'
+        context['det'] = []
+        context['frmClient'] = ClienteForm()
         return context

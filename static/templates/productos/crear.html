@@ -5,6 +5,7 @@
 
 {% block head_list %}
   <script src="{% static 'vias/js/listprod.js' %}"></script>
+  <script src="{% static 'js/productos.js' %}"></script>
 {% endblock %}
 
 {% block miheader %}
@@ -66,21 +67,341 @@
       
       {% for field in form.visible_fields %}
         <div class="form-group">
-          <label for="email">{{ field.label }}:</label>
-          {{ field|add_class:"form-control"|attr:"autocomplete:off" }}
+          {% if field.label == "Categoría" %}
+            <label for="email">{{ field.label }}:</label>
+            <div class="input-group">
+              <div class="input-group-append">
+                <button class="btn btn-success btn-flat btnAddCategoria" type="button">
+                  <i class="fas fa-cubes"></i>
+                </button>
+              </div>
+              {{ field|add_class:"form-control"|attr:"autocomplete:off" }}
+            </div>
+          {% elif field.label == "Fabricante" %}
+            <label for="email">{{ field.label }}:</label>
+            <div class="input-group">
+              <div class="input-group-append">
+                <button class="btn btn-success btn-flat btnAddFabricante" type="button">
+                  <i class="fab fa-phabricator"></i>
+                </button>
+              </div>
+              {{ field|add_class:"form-control"|attr:"autocomplete:off" }}
+            </div>
+          {% elif field.label == "Presentación" %}
+            <label for="email">{{ field.label }}:</label>
+            <div class="input-group">
+              <div class="input-group-append">
+                <button class="btn btn-success btn-flat btnAddPresentacion" type="button">
+                  <i class="fas fa-image"></i>
+                </button>
+              </div>
+              {{ field|add_class:"form-control"|attr:"autocomplete:off" }}
+            </div>
+          {% elif field.label == "País" %}
+            <label for="email">{{ field.label }}:</label>
+            <div class="input-group">
+              <div class="input-group-append">
+                <button class="btn btn-success btn-flat btnAddPais" type="button">
+                  <i class="fas fa-map"></i>
+                </button>
+              </div>
+              {{ field|add_class:"form-control"|attr:"autocomplete:off" }}
+            </div>
+          {% elif field.label == "Unidad de Medida" %}
+            <label for="email">{{ field.label }}:</label>
+            <div class="input-group">
+              <div class="input-group-append">
+                <button class="btn btn-success btn-flat btnAddMedida" type="button">
+                  <i class="fas fa-weight"></i>
+                </button>
+              </div>
+              {{ field|add_class:"form-control"|attr:"autocomplete:off" }}
+            </div>
+          {% elif field.label == "Vía de Administración" %}
+            <label for="email">{{ field.label }}:</label>
+            <div class="input-group">
+              <div class="input-group-append">
+                <button class="btn btn-success btn-flat btnAddVia" type="button">
+                  <i class="fas fa-vial"></i>
+                </button>
+              </div>
+              {{ field|add_class:"form-control"|attr:"autocomplete:off" }}
+            </div>
+          {% elif field.label == "Tipo de Prescripción" %}
+            <label for="email">{{ field.label }}:</label>
+            <div class="input-group">
+              <div class="input-group-append">
+                <button class="btn btn-success btn-flat btnAddPrescripcion" type="button">
+                  <i class="fas fa-file-prescription"></i>
+                </button>
+              </div>
+              {{ field|add_class:"form-control"|attr:"autocomplete:off" }}
+            </div>
+          {% elif field.label != "x" %}
+            <label for="email">{{ field.label }}:</label>
+            {{ field|add_class:"form-control"|attr:"autocomplete:off" }}
+          {% endif %}
+
         </div>
       {% endfor %}
+
+      <div class="form-group">
+        <input type="hidden" name="clasificacion_abc" value="A" class="form-control">
+        <input type="hidden" name="estado" value="A" class="form-control">
+        <input type="hidden" name="id_empresa" value="1" class="form-control">
+      </div>
+
+
+
+
+
       
     </div>
     <div class="card-footer">
       <button type="submit" class="btn btn-success"><i class="fas fa-save"></i> Aceptar</button>
       <a href="./" type="submit" class="btn btn-danger"><i class="fas fa-ban"></i> Cancelar</a>
 
-      <a class="btn btn-primary btnAdd"><i class="fas fa-ban"></i> Prueba</a>
     </div>
   </div>
 
 </form>
+
+
+
+
+<!-- Modal Categoría -->
+    <div class="modal fade" id="myModalCategoria" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <form id="frmCategoria" enctype="multipart/form-data" method="post">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">
+                            <b><i class="fas fa-cubes"></i> Nuevo registro de Categoría</b>
+                        </h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        {% for field in frmCategoria.visible_fields %}
+                            <div class="form-group">
+                                <label for="email">{{ field.label }}:</label>
+                                {{ field|add_class:'form-control'|attr:'autocomplete:off' }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary btn-block btn-flat">
+                            <i class="fas fa-save"></i> Guardar Categoría
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+
+  <!-- Modal Fabricante -->
+    <div class="modal fade" id="myModalFabricante" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <form id="frmFabricante" enctype="multipart/form-data" method="post">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">
+                            <b><i class="fab fa-phabricator"></i> Nuevo registro de Laboratorio</b>
+                        </h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        {% for field in frmFabricante.visible_fields %}
+                            <div class="form-group">
+                                <label for="email">{{ field.label }}:</label>
+                                {{ field|add_class:'form-control'|attr:'autocomplete:off' }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary btn-block btn-flat">
+                            <i class="fas fa-save"></i> Guardar Laboratorio
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+
+  <!-- Modal Presentacion -->
+    <div class="modal fade" id="myModalPresentacion" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <form id="frmPresentacion" enctype="multipart/form-data" method="post">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">
+                            <b><i class="fas fa-image"></i> Nuevo registro de Presentación</b>
+                        </h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        {% for field in frmPresentacion.visible_fields %}
+                            <div class="form-group">
+                                <label for="email">{{ field.label }}:</label>
+                                {{ field|add_class:'form-control'|attr:'autocomplete:off' }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary btn-block btn-flat">
+                            <i class="fas fa-save"></i> Guardar Presentación
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+
+  <!-- Modal Pais -->
+    <div class="modal fade" id="myModalPais" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <form id="frmPais" enctype="multipart/form-data" method="post">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">
+                            <b><i class="fas fa-map"></i> Nuevo registro de País</b>
+                        </h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        {% for field in frmPais.visible_fields %}
+                            <div class="form-group">
+                                <label for="email">{{ field.label }}:</label>
+                                {{ field|add_class:'form-control'|attr:'autocomplete:off' }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary btn-block btn-flat">
+                            <i class="fas fa-save"></i> Guardar País
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+
+  <!-- Modal Unidad de Medida -->
+    <div class="modal fade" id="myModalMedida" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <form id="frmMedida" enctype="multipart/form-data" method="post">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">
+                            <b><i class="fas fa-weight"></i> Nuevo registro de Unidad de Medida</b>
+                        </h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        {% for field in frmMedida.visible_fields %}
+                            <div class="form-group">
+                                <label for="email">{{ field.label }}:</label>
+                                {{ field|add_class:'form-control'|attr:'autocomplete:off' }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary btn-block btn-flat">
+                            <i class="fas fa-save"></i> Guardar Unidad de Medida
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+
+  <!-- Modal Via de Administración -->
+    <div class="modal fade" id="myModalVia" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <form id="frmVia" enctype="multipart/form-data" method="post">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">
+                            <b><i class="fas fa-vial"></i> Nuevo registro de Vía de Administración</b>
+                        </h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        {% for field in frmVia.visible_fields %}
+                            <div class="form-group">
+                                <label for="email">{{ field.label }}:</label>
+                                {{ field|add_class:'form-control'|attr:'autocomplete:off' }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary btn-block btn-flat">
+                            <i class="fas fa-save"></i> Guardar Vía de Administración
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+
+  <!-- Modal Tipo de Prescripción -->
+    <div class="modal fade" id="myModalPrescripcion" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <form id="frmPrescripcion" enctype="multipart/form-data" method="post">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">
+                            <b><i class="fas fa-file-prescription"></i> Nuevo registro de Tipo de Prescripción</b>
+                        </h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        {% for field in frmPrescripcion.visible_fields %}
+                            <div class="form-group">
+                                <label for="email">{{ field.label }}:</label>
+                                {{ field|add_class:'form-control'|attr:'autocomplete:off' }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary btn-block btn-flat">
+                            <i class="fas fa-save"></i> Guardar Tipo de Prescripción
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+
+
+
 
 
   {% block javascript %}

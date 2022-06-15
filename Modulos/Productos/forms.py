@@ -1,13 +1,265 @@
 from datetime import datetime
 from django.forms import *
-from Modulos.Productos.models import Categoria, Fabricante, Presentacion, Pais, Unidad_Medida, Via_Administracion, Tipo_Prescripcion, Producto, Venta
+from Modulos.Productos.models import Categoria, Fabricante, Presentacion, Pais, Unidad_Medida, Via_Administracion, Tipo_Prescripcion, Producto, Cliente, Venta
 
-class CategoriaForm(forms.Form):
-    #descripcion = forms.CharField(max_length=30, help_text = "Enter a name")
+class CategoriaForm(ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
     class Meta:
         model = Categoria
-        fields = ('descripcion','abreviatura',)
+        fields = ('descripcion',)
+        widgets = {
+            'descripcion': TextInput(
+                attrs={
+                    'placeholder': 'Ingrese una descripción',
+                    'autofocus': True,
+                    'class': 'form-control',
+                }
+            ),
+            'abreviatura': TextInput(
+                attrs={
+                    'placeholder': 'Ingrese una abreviatura',
+                    'class': 'form-control',
+                }
+            )
+        }
+
+    def save(self, commit=True):
+        data = {}
+        form = super()
+        try:
+            if form.is_valid():
+                instance = form.save()
+                data = instance.toJSON()
+            else:
+                data['error'] = form.errors
+        except Exception as e:
+            data['error'] = str(e)
+        return data
+
+
+class FabricanteForm(ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    class Meta:
+        model = Fabricante
+        fields = ('nombre',)
+        widgets = {
+            'nombre': TextInput(
+                attrs={
+                    'placeholder': 'Ingrese un nombre',
+                    'autofocus': True,
+                    'class': 'form-control',
+                }
+            ),
+            'abreviatura': TextInput(
+                attrs={
+                    'placeholder': 'Ingrese una abreviatura',
+                    'class': 'form-control',
+                }
+            )
+        }
+
+    def save(self, commit=True):
+        data = {}
+        form = super()
+        try:
+            if form.is_valid():
+                instance = form.save()
+                data = instance.toJSON()
+            else:
+                data['error'] = form.errors
+        except Exception as e:
+            data['error'] = str(e)
+        return data
+
+
+class PresentacionForm(ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    class Meta:
+        model = Presentacion
+        fields = ('descripcion',)
+        widgets = {
+            'descripcion': TextInput(
+                attrs={
+                    'placeholder': 'Ingrese una descripción',
+                    'autofocus': True,
+                    'class': 'form-control',
+                }
+            ),
+            'abreviatura': TextInput(
+                attrs={
+                    'placeholder': 'Ingrese una abreviatura',
+                    'class': 'form-control',
+                }
+            )
+        }
+
+    def save(self, commit=True):
+        data = {}
+        form = super()
+        try:
+            if form.is_valid():
+                instance = form.save()
+                data = instance.toJSON()
+            else:
+                data['error'] = form.errors
+        except Exception as e:
+            data['error'] = str(e)
+        return data
+
+
+class PaisForm(ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    class Meta:
+        model = Pais
+        fields = ('nombre',)
+        widgets = {
+            'nombre': TextInput(
+                attrs={
+                    'placeholder': 'Ingrese un nombre',
+                    'autofocus': True,
+                    'class': 'form-control',
+                }
+            ),
+            'abreviatura': TextInput(
+                attrs={
+                    'placeholder': 'Ingrese una abreviatura',
+                    'class': 'form-control',
+                }
+            )
+        }
+
+    def save(self, commit=True):
+        data = {}
+        form = super()
+        try:
+            if form.is_valid():
+                instance = form.save()
+                data = instance.toJSON()
+            else:
+                data['error'] = form.errors
+        except Exception as e:
+            data['error'] = str(e)
+        return data
+
+
+class UnidadMedidaForm(ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    class Meta:
+        model = Unidad_Medida
+        fields = ('descripcion',)
+        widgets = {
+            'descripcion': TextInput(
+                attrs={
+                    'placeholder': 'Ingrese una descripción',
+                    'autofocus': True,
+                    'class': 'form-control',
+                }
+            ),
+            'abreviatura': TextInput(
+                attrs={
+                    'placeholder': 'Ingrese una abreviatura',
+                    'class': 'form-control',
+                }
+            )
+        }
+
+    def save(self, commit=True):
+        data = {}
+        form = super()
+        try:
+            if form.is_valid():
+                instance = form.save()
+                data = instance.toJSON()
+            else:
+                data['error'] = form.errors
+        except Exception as e:
+            data['error'] = str(e)
+        return data
+
+
+class ViaAdministracionForm(ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    class Meta:
+        model = Via_Administracion
+        fields = ('descripcion',)
+        widgets = {
+            'descripcion': TextInput(
+                attrs={
+                    'placeholder': 'Ingrese una descripción',
+                    'autofocus': True,
+                    'class': 'form-control',
+                }
+            ),
+            'abreviatura': TextInput(
+                attrs={
+                    'placeholder': 'Ingrese una abreviatura',
+                    'class': 'form-control',
+                }
+            )
+        }
+
+    def save(self, commit=True):
+        data = {}
+        form = super()
+        try:
+            if form.is_valid():
+                instance = form.save()
+                data = instance.toJSON()
+            else:
+                data['error'] = form.errors
+        except Exception as e:
+            data['error'] = str(e)
+        return data
+
+
+class TipoPrescripcionForm(ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    class Meta:
+        model = Tipo_Prescripcion
+        fields = ('descripcion',)
+        widgets = {
+            'descripcion': TextInput(
+                attrs={
+                    'placeholder': 'Ingrese una descripción',
+                    'autofocus': True,
+                    'class': 'form-control',
+                }
+            ),
+            'abreviatura': TextInput(
+                attrs={
+                    'placeholder': 'Ingrese una abreviatura',
+                    'class': 'form-control',
+                }
+            )
+        }
+
+    def save(self, commit=True):
+        data = {}
+        form = super()
+        try:
+            if form.is_valid():
+                instance = form.save()
+                data = instance.toJSON()
+            else:
+                data['error'] = form.errors
+        except Exception as e:
+            data['error'] = str(e)
+        return data
+
 
 class ProductoForm(ModelForm):
     def __init__(self, *args, **kwargs):
@@ -23,12 +275,20 @@ class ProductoForm(ModelForm):
         self.fields['registro_sanitario'].widget.attrs['placeholder'] = 'Ingrese el registro sanitario'
         self.fields['precio_costo'].widget.attrs['placeholder'] = 'Ingrese el precio costo'
         self.fields['precio_venta'].widget.attrs['placeholder'] = 'Ingrese el precio venta'
-        self.fields['clasificacion_abc'].label = ''
+        self.fields['clasificacion_abc'].label = 'x'
         self.fields['clasificacion_abc'].widget.attrs['hidden'] = True
-        self.fields['estado'].label = ''
+        self.fields['estado'].label = 'x'
         self.fields['estado'].widget.attrs['hidden'] = True
-        self.fields['id_empresa'].label = ''
+        self.fields['id_empresa'].label = 'x'
         self.fields['id_empresa'].widget.attrs['hidden'] = True
+        self.fields['id_categoria'].label = 'Categoría'
+        self.fields['id_fabricante'].label = 'Fabricante'
+        self.fields['id_presentacion'].label = 'Presentación'
+        self.fields['id_pais'].label = 'País'
+        self.fields['id_unidad_medida'].label = 'Unidad de Medida'
+        self.fields['id_via_administracion'].label = 'Vía de Administración'
+        self.fields['id_tipo_prescripcion'].label = 'Tipo de Prescripción'
+
 
     class Meta:
         model = Producto
@@ -66,18 +326,15 @@ class ProductoForm(ModelForm):
 class VentaForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        for form in self.visible_fields():
-            form.field.widget.attrs['class'] = 'form-control'
-            form.field.widget.attrs['autocomplete'] = 'off'
+        self.fields['id_cliente'].queryset = Cliente.objects.none()
 
     class Meta:
         model = Venta
         fields = '__all__'
         widgets = {
             'id_cliente': Select(attrs={
-                'autofocus': True,
-                'class': 'form-control select2',
-                'style': 'width: 100%'
+                'class': 'custom-select select2',
+                # 'style': 'width: 100%'
             }),
             'fecha': DateInput(format='%Y-%m-%d',
                 attrs={
@@ -88,7 +345,27 @@ class VentaForm(ModelForm):
                     'data-target': '#fecha',
                     'data-toggle': 'datetimepicker'
             }),
-            'subtotal': TextInput(attrs={
+            'nit': TextInput(attrs={
+                'readonly': True,
+                'class': 'form-control',
+            }),
+            'nombre': TextInput(attrs={
+                'readonly': True,
+                'class': 'form-control',
+            }),
+            'telefono': TextInput(attrs={
+                'readonly': True,
+                'class': 'form-control',
+            }),
+            'direccion': TextInput(attrs={
+                'readonly': True,
+                'class': 'form-control',
+            }),
+            'subtotal_afecto': TextInput(attrs={
+                'readonly': True,
+                'class': 'form-control',
+            }),
+            'subtotal_noafecto': TextInput(attrs={
                 'readonly': True,
                 'class': 'form-control',
             }),
@@ -101,3 +378,69 @@ class VentaForm(ModelForm):
                 'class': 'form-control',
             }),
         }
+
+
+class ClienteForm(ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['nombre'].widget.attrs['autofocus'] = True
+
+    class Meta:
+        model = Cliente
+        fields = ('nombre', 'nit', 'telefono', 'direccion', 'genero', 'nacimiento', 'id_tipo_cliente')
+        widgets = {
+            'nombre': TextInput(
+                attrs={
+                    'placeholder': 'Ingrese su nombre completo',
+                    'autofocus': True,
+                    'class': 'form-control',
+                }
+            ),
+            'nit': TextInput(
+                attrs={
+                    'placeholder': 'Ingrese su NIT',
+                    'class': 'form-control',
+                }
+            ),
+            'telefono': TextInput(
+                attrs={
+                    'placeholder': 'Ingrese su telefono',
+                    'class': 'form-control',
+                }
+            ),
+            'nacimiento': DateInput(format='%Y-%m-%d',
+                                       attrs={
+                                           'value': datetime.now().strftime('%Y-%m-%d'),
+                                       }
+                                       ),
+                    'class': 'form-control',
+            'direccion': TextInput(
+                attrs={
+                    'placeholder': 'Ingrese su dirección',
+                    'class': 'form-control',
+                }
+            ),
+            'genero': Select(
+                attrs={
+                    'class': 'form-control',
+                }
+            ),
+            'id_tipo_cliente': Select(
+                attrs={
+                    'class': 'form-control',
+                }
+            )
+        }
+
+    def save(self, commit=True):
+        data = {}
+        form = super()
+        try:
+            if form.is_valid():
+                instance = form.save()
+                data = instance.toJSON()
+            else:
+                data['error'] = form.errors
+        except Exception as e:
+            data['error'] = str(e)
+        return data

@@ -57,6 +57,10 @@ class Fabricante(models.Model):
 	def __str__(self):
 		return self.nombre
 
+	def toJSON(self):
+		item = model_to_dict(self)
+		return item
+
 	class Meta:
 		ordering = [ "nombre" ]
 
@@ -359,9 +363,13 @@ class Cliente(models.Model):
 	def __str__(self):
 		return self.nombre
 
+	def get_full_name(self):
+		return '{} / {}'.format(self.nombre, self.nit)
+
 	def toJSON(self):
 		item = model_to_dict(self)
 		item['nacimiento'] = self.nacimiento.strftime('%Y-%m-%d')
+		item['full_name'] = self.get_full_name()
 		return item
 
 
@@ -425,6 +433,6 @@ class Detalle_Venta(models.Model):
 	id_producto = models.ForeignKey(Producto, on_delete=models.CASCADE)
 	cantidad = models.PositiveIntegerField(default=1)
 	id_empresa = models.PositiveIntegerField(default=1)
-	precio_costo = models.DecimalField(null=False, blank=False, max_digits=10, decimal_places=5)
-	precio_venta = models.DecimalField(null=False, blank=False, max_digits=7, decimal_places=2)
+	precio_costo = models.DecimalField(max_digits=9, decimal_places=5)
+	precio_venta = models.DecimalField(max_digits=7, decimal_places=2)
 
