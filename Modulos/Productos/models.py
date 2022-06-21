@@ -77,6 +77,10 @@ class Presentacion(models.Model): #Formas Farmaceuticas
 	def __str__(self):
 		return self.descripcion
 
+	def toJSON(self):
+		item = model_to_dict(self)
+		return item
+
 	class Meta:
 		ordering = [ "descripcion" ]
 
@@ -93,6 +97,10 @@ class Pais(models.Model): #Paises
 	def __str__(self):
 		return self.nombre
 
+	def toJSON(self):
+		item = model_to_dict(self)
+		return item
+
 	class Meta:
 		ordering = [ "nombre" ]
 
@@ -108,6 +116,10 @@ class Unidad_Medida(models.Model):
 
 	def __str__(self):
 		return self.descripcion
+
+	def toJSON(self):
+		item = model_to_dict(self)
+		return item
 
 	class Meta:
 		ordering = [ "descripcion" ]
@@ -145,6 +157,10 @@ class Tipo_Prescripcion(models.Model): #Tipo de Prescripción
 	def __str__(self):
 		return self.descripcion
 
+	def toJSON(self):
+		item = model_to_dict(self)
+		return item
+
 	class Meta:
 		ordering = [ "descripcion" ]
 
@@ -160,6 +176,10 @@ class Componente(models.Model): #Principios Activos
 
 	def __str__(self):
 		return self.descripcion
+
+	def toJSON(self):
+		item = model_to_dict(self)
+		return item
 
 	class Meta:
 		ordering = [ "descripcion" ]
@@ -178,6 +198,10 @@ class Impuesto(models.Model): #Impuestos
 	def __str__(self):
 		return self.descripcion
 
+	def toJSON(self):
+		item = model_to_dict(self)
+		return item
+
 	class Meta:
 		ordering = [ "descripcion" ]
 
@@ -193,6 +217,10 @@ class Indicacion(models.Model):
 
 	def __str__(self):
 		return self.descripcion
+
+	def toJSON(self):
+		item = model_to_dict(self)
+		return item
 
 	class Meta:
 		ordering = [ "descripcion" ]
@@ -293,6 +321,10 @@ class Sucursal(models.Model):
 	def __str__(self):
 		return self.descripcion
 
+	def toJSON(self):
+		item = model_to_dict(self)
+		return item
+
 	def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
 		user = get_current_user()
 		if user is not None:
@@ -328,6 +360,10 @@ class Tipo_Cliente(models.Model):
 	def __str__(self):
 		return self.descripcion
 
+	def toJSON(self):
+		item = model_to_dict(self)
+		return item
+
 	class Meta:
 		ordering = [ "descripcion" ]
 
@@ -342,6 +378,10 @@ class Genero(models.Model):
 
 	def __str__(self):
 		return self.descripcion
+
+	def toJSON(self):
+		item = model_to_dict(self)
+		return item
 
 	class Meta:
 		ordering = [ "descripcion" ]
@@ -382,6 +422,13 @@ class Forma_Pago(models.Model):
 	updated_at = models.DateTimeField(auto_now=True)
 	id_empresa = models.PositiveIntegerField(default=1)
 
+	def __str__(self):
+		return self.descripcion
+
+	def toJSON(self):
+		item = model_to_dict(self)
+		return item
+
 
 class Proveedor(models.Model):
 	id_proveedor = models.BigAutoField(primary_key=True)
@@ -397,6 +444,13 @@ class Proveedor(models.Model):
 	created_at = models.DateTimeField(auto_now_add=True)
 	updated_at = models.DateTimeField(auto_now=True)
 	id_empresa = models.PositiveIntegerField(default=1)
+
+	def __str__(self):
+		return self.nombre
+
+	def toJSON(self):
+		item = model_to_dict(self)
+		return item
 
 
 class Venta(models.Model):
@@ -420,6 +474,11 @@ class Venta(models.Model):
 
 	def __str__(self):
 		return nombre
+
+	def toJSON(self):
+		item = model_to_dict(self)
+		item['fecha'] = self.nacimiento.strftime('%Y-%m-%d')
+		return item
 
 	class Meta:
 		verbose_name = 'Venta'

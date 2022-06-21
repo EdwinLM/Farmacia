@@ -826,6 +826,34 @@ class ProductoCrear(CreateView):
                 with transaction.atomic():
                     form = self.get_form()
                     data = form.save()
+                    data = {}
+                    data['exito'] = 1
+                    #product = Producto()
+                    #product.codigo_barras_1 = form.cleaned_data['codigo_barras_1']
+                    #product.codigo_barras_2 = form.cleaned_data['codigo_barras_2']
+                    #product.nombre_compra = form.cleaned_data['nombre_compra']
+                    #product.nombre_venta = form.cleaned_data['nombre_venta']
+                    #product.nombre_corto = form.cleaned_data['nombre_corto']
+                    #product.id_categoria = form.cleaned_data['id_categoria']
+                    #product.id_fabricante = form.cleaned_data['id_fabricante']
+                    #product.id_presentacion = form.cleaned_data['id_presentacion']
+                    #product.id_pais = form.cleaned_data['id_pais']
+                    #product.id_unidad_medida = form.cleaned_data['id_unidad_medida']
+                    #product.conversion = form.cleaned_data['conversion']
+                    #product.id_via_administracion = form.cleaned_data['id_via_administracion']
+                    #product.prioridad = form.cleaned_data['prioridad']
+                    #product.imagen = form.cleaned_data['imagen']
+                    #product.id_tipo_prescripcion = form.cleaned_data['id_tipo_prescripcion']
+                    #product.afecto_impuesto = form.cleaned_data['afecto_impuesto']
+                    #product.registro_sanitario = form.cleaned_data['registro_sanitario']
+                    #product.precio_costo = form.cleaned_data['precio_costo']
+                    #product.precio_venta = form.cleaned_data['precio_venta']
+                    #product.clasificacion_abc = form.cleaned_data['clasificacion_abc']
+                    #product.estado = 'A'
+                    #product.id_empresa = 1
+                    #product.save()
+
+                #CREAR PRODUCTO EN TABLA DE INVENTARIO EN CEDIS Y SUCURSALES
             elif action == 'create_categoria':
                 with transaction.atomic():
                     frmCategoria = CategoriaForm(request.POST)

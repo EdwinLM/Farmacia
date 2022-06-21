@@ -1,5 +1,15 @@
 $(function () {
 
+    //Evento submit (guardar)
+    $('#frmProducto').on('submit', function (e) {
+        e.preventDefault();
+        var parameters = new FormData(this);
+        parameters.append('action', 'add');
+        submit_with_ajax(window.location.pathname, 'Notificación', '¿Estas seguro de realizar la siguiente acción?', parameters, function () {
+            location.href = '/productos/';
+        });
+    });
+
     //Crear Categoría
     $('.btnAddCategoria').on('click', function () {
         $('#myModalCategoria').modal('show');
