@@ -13,7 +13,7 @@ var vents = {
     get_ids: function () {
         var ids = [];
         $.each(this.items.products, function (key, value) {
-            ids.push(value.id);
+            ids.push(value.id_producto);
         });
         return ids;
     },
@@ -117,14 +117,14 @@ function formatRepo(repo) {
         '<div class="wrapper container">' +
         '<div class="row">' +
         '<div class="col-lg-1">' +
-        '<img src="' + repo.image + '" class="img-fluid img-thumbnail d-block mx-auto rounded">' +
+        '<img src="' + repo.imagen + '" class="img-fluid img-thumbnail d-block mx-auto rounded">' +
         '</div>' +
         '<div class="col-lg-11 text-left shadow-sm">' +
         //'<br>' +
         '<p style="margin-bottom: 0;">' +
         '<b>Nombre:</b> ' + repo.full_name + '<br>' +
         '<b>Stock:</b> ' + repo.stock + '<br>' +
-        '<b>PVP:</b> <span class="badge badge-warning">$' + repo.pvp + '</span>' +
+        '<b>Precio Venta:</b> <span class="badge badge-warning">Q' + repo.pvp + '</span>' +
         '</p>' +
         '</div>' +
         '</div>' +
@@ -202,8 +202,9 @@ $(function () {
                 url: window.location.pathname,
                 type: 'POST',
                 data: {
-                    'action': 'buscar_productos',
-                    'term': request.term
+                    'action': 'search_autocomplete',
+                    'ids': JSON.stringify(vents.get_ids()),
+                    'term': $('input[name="search"]').val()
                 },
                 dataType: 'json',
             }).done(function (data) {
@@ -282,10 +283,10 @@ $(function () {
             },
             columns: [
                 {"data": "full_name"},
-                {"data": "image"},
-                {"data": "stock"},
+                {"data": "imagen"},
+                {"data": "id_producto"},
                 {"data": "pvp"},
-                {"data": "id"},
+                {"data": "id_producto"},
             ],
             columnDefs: [
                 {
@@ -308,7 +309,7 @@ $(function () {
                     class: 'text-center',
                     orderable: false,
                     render: function (data, type, row) {
-                        return '$' + parseFloat(data).toFixed(2);
+                        return 'X' + parseFloat(data).toFixed(2);
                     }
                 },
                 {
@@ -387,11 +388,14 @@ $(function () {
         templateResult: formatRepo,
     }).on('select2:select', function (e) {
         var data = e.params.data;
-        if (!Number.isInteger(data.id)) {
+        if (!Number.isInteger(data.id_producto)) {
             return false;
         }
         data.cant = 1;
-        data.subtotal = 0.00;
+        data.subtotal_afecto = 0.00;
+        data.subtotal_no_afecto = 0.00;
+        data.iva = 0.00;
+        data.total = 0.00;
         vents.add(data);
         $(this).val('').trigger('change.select2');
     });

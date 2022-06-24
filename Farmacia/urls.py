@@ -37,13 +37,16 @@ from Modulos.Productos.views import TiposClientesListado, TiposClientesDetalle, 
 from Modulos.Productos.views import ClientesListado, ClientesDetalle, ClientesCrear, ClientesActualizar, ClientesEliminar
 from Modulos.Productos.views import GenerosListado, GenerosDetalle, GenerosCrear, GenerosActualizar, GenerosEliminar
 from Modulos.Productos.views import VentaCrear
-from Modulos.Login.views import *
+from Modulos.Login.views import UserListado, LoginFormView, LogoutView, DashboardView
+    
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('login/', LoginFormView.as_view(), name='login'),
     path('logout/', LogoutView.as_view(next_page='login'), name='logout'),
     path('dashboard/', DashboardView.as_view(), name='dashboard'),
+
+    path('usuarios/', UserListado.as_view(template_name = "usuarios/index.html"), name='leerusr'),
 
     path('categorias/', CategoriasListado.as_view(template_name = "categorias/index.html"), name='leercat'),
     path('categorias/detalle/<int:pk>', CategoriaDetalle.as_view(template_name = "categorias/detalles.html"), name='detallescat'),

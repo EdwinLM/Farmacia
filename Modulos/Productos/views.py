@@ -1569,11 +1569,13 @@ class VentaCrear(CreateView):
                 data = []
                 ids_exclude = json.loads(request.POST['ids'])
                 term = request.POST['term'].strip()
+                #term = request.POST['term']
                 data.append({'id': term, 'text': term})
                 #products = Product.objects.filter(name__icontains=term, stock__gt=0)
                 products = Producto.objects.filter(nombre_venta__icontains=term)
                 for i in products.exclude(id_producto__in=ids_exclude)[0:10]:
                     item = i.toJSON()
+                    item['id'] = i.id_producto
                     item['text'] = i.nombre_venta
                     data.append(item)
             elif action == 'add':
@@ -1611,6 +1613,7 @@ class VentaCrear(CreateView):
 
                 for i in clients:
                     item = i.toJSON()
+                    item['id'] = i.id_cliente
                     item['text'] = i.get_full_name()
                     data.append(item)
             elif action == 'create_client':

@@ -76,7 +76,6 @@ $(function () {
     });
 
 
-
     //Crear País
     $('.btnAddPais').on('click', function () {
         $('#myModalPais').modal('show');

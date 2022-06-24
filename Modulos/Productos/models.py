@@ -232,7 +232,7 @@ class Producto(models.Model):
 	codigo_barras_2 = models.CharField(max_length=13, help_text="Ingrese el código de barras secundario")
 	nombre_compra = UpperField(max_length=60, null=False, blank=False, unique=True, help_text="Ingrese el nombre para efectos de compras")
 	nombre_venta = UpperField(max_length=60, null=False, blank=False, unique=True, help_text="Ingrese el nombre para efectos de ventas")
-	nombre_corto = UpperField(max_length=15, unique=True, help_text="Ingrese el nombre corto para facturación")
+	nombre_corto = UpperField(max_length=24, unique=True, help_text="Ingrese el nombre corto para facturación")
 	id_categoria = models.ForeignKey(Categoria, null=False, blank=False, on_delete=models.CASCADE, help_text="Seleccione la categoría a la que pertenece")
 	id_fabricante = models.ForeignKey(Fabricante, null=False, blank=False, on_delete=models.CASCADE, help_text="Seleccione el fabricante del producto")
 	id_presentacion = models.ForeignKey(Presentacion, null=False, blank=False, on_delete=models.CASCADE, help_text="Seleccione la presentación del producto")
@@ -263,6 +263,7 @@ class Producto(models.Model):
 
 	def toJSON(self):
 		item = model_to_dict(self)
+		item['full_name'] = '{} / {}'.format(self.nombre_venta, self.id_categoria.descripcion)
 		item['cat'] = self.id_categoria.toJSON()
 		item['imagen'] = self.get_image()
 		item['pvp'] = format(self.precio_venta, '.2f')
@@ -470,6 +471,7 @@ class Venta(models.Model):
 	vendedor = models.PositiveIntegerField(default=1)
 	cajero = models.PositiveIntegerField(default=1)
 	correlativo_diario = models.PositiveIntegerField(default=1)
+	id_forma_pago = models.ForeignKey(Forma_Pago, default=1, on_delete=models.CASCADE)
 
 
 	def __str__(self):
