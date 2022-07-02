@@ -37,7 +37,7 @@ from Modulos.Productos.views import TiposClientesListado, TiposClientesDetalle, 
 from Modulos.Productos.views import ClientesListado, ClientesDetalle, ClientesCrear, ClientesActualizar, ClientesEliminar
 from Modulos.Productos.views import GenerosListado, GenerosDetalle, GenerosCrear, GenerosActualizar, GenerosEliminar
 from Modulos.Productos.views import VentaCrear
-from Modulos.Login.views import UserListado, LoginFormView, LogoutView, DashboardView
+from Modulos.Login.views import UserListado, UsuarioCrear, LoginFormView, LogoutView, DashboardView
     
 
 urlpatterns = [
@@ -47,6 +47,7 @@ urlpatterns = [
     path('dashboard/', DashboardView.as_view(), name='dashboard'),
 
     path('usuarios/', UserListado.as_view(template_name = "usuarios/index.html"), name='leerusr'),
+    path('usuarios/crear', UsuarioCrear.as_view(template_name = "usuarios/crear.html"), name='crearusr'),
 
     path('categorias/', CategoriasListado.as_view(template_name = "categorias/index.html"), name='leercat'),
     path('categorias/detalle/<int:pk>', CategoriaDetalle.as_view(template_name = "categorias/detalles.html"), name='detallescat'),

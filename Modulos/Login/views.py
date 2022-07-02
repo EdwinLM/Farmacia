@@ -8,6 +8,7 @@ from django.views.generic import ListView, DetailView
 from django.views.generic import CreateView, UpdateView, DeleteView
 from Modulos.Productos.mixins import ValidatePermissionRequiredMixin
 from Modulos.Login.models import User
+from Modulos.Productos.forms import UserForm
 
 #class UserListado(LoginRequiredMixin, ValidatePermissionRequiredMixin, ListView):
 class UserListado(ListView):
@@ -37,9 +38,52 @@ class UserListado(ListView):
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)
 		context['title'] = 'Listado de Usuarios'
-		#context['create_url'] = reverse_lazy('crearusr')
+		context['create_url'] = reverse_lazy('crearusr')
 		return context
 
+class UsuarioCrear(CreateView):
+    model = User
+    #form = User
+    form_class = UserForm
+    #fields = "__all__"
+    success_message = 'Usuario Creado Correctamente !'
+    template_name = 'usuarios/crear.html'
+    success_url = reverse_lazy('leerusr')
+    #permission_required = 'add_user'
+    url_redirect = success_url
+
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Creación de Usuarios'
+        return context
+ 
+    # Redireccionamos a la página principal luego de crear un registro o categoria
+    def get_success_url(self):
+        return reverse('leerusr')
+
+    def post(self, request, *args, **kwargs):
+        data = {}
+        try:
+            action = request.POST['action']
+            if action == 'add':
+                form = self.get_form()
+                data = form.save()
+            else:
+                data['error'] = 'No ha ingresado a ninguna opción'
+        except Exception as e:
+            data['error'] = str(e)
+        return JsonResponse(data)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Creación de Usuarios'
+        context['entity'] = 'User'
+        context['list_url'] = self.success_url
+        context['action'] = 'add'
+        return context
 
 
 

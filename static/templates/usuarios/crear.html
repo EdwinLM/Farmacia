@@ -1,0 +1,109 @@
+{% extends "bases.html" %}
+{% load static %}
+{% load widget_tweaks %}
+{% block title %}ERP Farmacias Bienestar{% endblock %}
+
+{% block miheader %}
+
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1>Farmacias Bienestar</h1>
+          </div>
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="#">Usuarios</a></li>
+              <li class="breadcrumb-item"><a href="#">Usuarios</a></li>
+              <li class="breadcrumb-item active">Crear</li>
+            </ol>
+          </div>
+        </div>
+          {% if messages %}
+            <ul class="messages list-group mb-3">
+            {% for message in messages %}
+            <li{% if message.tags %} class="{{ message.tags }} list-group-item list-group-item-primary"{% endif %}>{{ message }}</li>
+            {% endfor %}
+            </ul>
+          {% endif %}
+      </div><!-- /.container-fluid -->
+    </section>
+{% endblock %}
+
+{% block content %}
+<form method="post">
+  {% csrf_token %}
+  <div class="card card-default card-primary">
+    <div class="card-header">
+      <h3 class="card-title" >
+        <i class="fas fa-search"></i>
+        {{title}}
+      </h3>
+    </div>
+    <div class="card-body">
+
+      {% if form.errors %}
+        <div class="alert alert-danger alert-dismissible">
+          <button type="button" class="close" data-dismiss="alert" aria-hidden="true">x</button>
+          <h5><i class="icon fas fa-ban"></i> Ha ocurrido un error al querer guardar el registro</h5>
+          <ul>
+            {% for field in form %}
+              {% for error in field.errors %}
+                <li>{{ error }}</li>
+              {% endfor %}
+              {% for error in form.non_field_errors %}
+                <li>{{ error }}</li>
+              {% endfor %}
+            {% endfor %}
+          </ul>
+        </div>
+      {% endif %}
+
+      {% for field in form.visible_fields %}
+        <div class="form-group">
+          <label for="email">{{ field.label }}:</label>
+          {{ field|add_class:"form-control"|attr:"autocomplete:off" }}
+        </div>
+      {% endfor %}
+      
+    </div>
+    <div class="card-footer">
+      <input type="hidden" name="action" value="{{ action }}">
+      <button type="submit" class="btn btn-success"><i class="fas fa-save"></i> Aceptar</button>
+      <a href="./" type="submit" class="btn btn-danger"><i class="fas fa-ban"></i> Cancelar</a>
+    </div>
+  </div>
+</form>
+
+
+  {% block javascript %}
+
+    <script src="{% static 'libs/sweetalert2.js' %}"></script>
+
+    {% block addjavascript %}
+
+    <script>
+      {% if form.errors %}
+        var errores = '';
+        {% for field in form %}
+          {% for error in field.errors %}
+            errores += '{{ error }}\n';
+          {% endfor%}
+        {% endfor%}
+        Swal.fire({
+          title: 'Error!',
+          text: errores,
+          icon: 'error'
+        });
+      {% endif %}
+    </script>
+
+    <script type="text/javascript">
+      alert_jqueryconfirm();
+    </script>
+
+    {% endblock %}
+
+  {% endblock %}
+
+{% endblock %}

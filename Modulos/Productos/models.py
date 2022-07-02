@@ -263,7 +263,7 @@ class Producto(models.Model):
 
 	def toJSON(self):
 		item = model_to_dict(self)
-		item['full_name'] = '{} / {}'.format(self.nombre_venta, self.id_categoria.descripcion)
+		item['full_name'] = '{} < {} >'.format(self.nombre_venta, self.id_fabricante.nombre)
 		item['cat'] = self.id_categoria.toJSON()
 		item['imagen'] = self.get_image()
 		item['pvp'] = format(self.precio_venta, '.2f')

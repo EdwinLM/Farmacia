@@ -46,9 +46,16 @@
 {% block rows %}
   {% for obj in object_list %}
     <tr>
-      <td>{{ obj.descripcion }}</td>
+      <td>{{ obj.id }}</td>
+      <td>{{ obj.first_name }}</td>
+      <td>{{ obj.last_name }}</td>
+      <td>{{ obj.username }}</td>
+      <td>{{ obj.date_joined }}</td>
       <td class="text-center">
-          <a href="editar/{{obj.id_categoria}}" class="btn btn-warning btn-sm btn-flat" title="Editar"><i class="fas fa-edit"></i></a>
+          <img src="{{ obj.image }}" class="img-fluid d-block mx-auto" style="width: 20px; height: 20px;">
+      </td>
+      <td class="text-center">
+          <a href="editar/{{obj.id}}" class="btn btn-warning btn-sm btn-flat" title="Editar"><i class="fas fa-edit"></i></a>
           <button class="btn btn-danger btn-sm btn-flat" title="Eliminar" onclick="return eliminar();" type="submit"><i class="fas fa-trash-alt"></i></button>
       </td>
     </tr>
@@ -59,7 +66,7 @@
 
     <script type="text/javascript">
       function eliminar() {
-        var x = confirm("Eliminar Categoría?");
+        var x = confirm("Eliminar Usuario?");
         if (x)
           return true;
         else

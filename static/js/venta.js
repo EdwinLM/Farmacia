@@ -123,8 +123,8 @@ function formatRepo(repo) {
         //'<br>' +
         '<p style="margin-bottom: 0;">' +
         '<b>Nombre:</b> ' + repo.full_name + '<br>' +
-        '<b>Stock:</b> ' + repo.stock + '<br>' +
-        '<b>Precio Venta:</b> <span class="badge badge-warning">Q' + repo.pvp + '</span>' +
+        '<b>Componentes:</b> ' + repo.componentes + '<br>' +
+        '<b>Stock:</b> ' + repo.stock + '<b>   Precio Venta:</b> <span class="badge badge-warning">Q' + repo.pvp + '</span>' +
         '</p>' +
         '</div>' +
         '</div>' +

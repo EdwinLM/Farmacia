@@ -1,6 +1,7 @@
 from datetime import datetime
 from django.forms import *
 from Modulos.Productos.models import Categoria, Fabricante, Presentacion, Pais, Unidad_Medida, Via_Administracion, Tipo_Prescripcion, Producto, Cliente, Venta
+from Modulos.Login.models import User
 
 class CategoriaForm(ModelForm):
     def __init__(self, *args, **kwargs):
@@ -444,3 +445,60 @@ class ClienteForm(ModelForm):
         except Exception as e:
             data['error'] = str(e)
         return data
+
+
+class UserForm(ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    class Meta:
+        model = User
+        fields = 'first_name', 'last_name', 'email', 'username', 'password', 'image'
+        widgets = {
+            'first_name': TextInput(
+                attrs={
+                    'placeholder': 'Ingrese sus nombres',
+                    'autofocus': True,
+                    'class': 'form-control',
+                }
+            ),
+            'last_name': TextInput(
+                attrs={
+                    'placeholder': 'Ingrese sus apellidos',
+                    'class': 'form-control',
+                }
+            ),
+            'username': TextInput(
+                attrs={
+                    'placeholder': 'Ingrese su username',
+                    'class': 'form-control',
+                }
+            ),
+            'password': PasswordInput(
+                attrs={
+                    'placeholder': 'Ingrese su password',
+                    'class': 'form-control',
+                }
+            ),
+            'email': TextInput(
+                attrs={
+                    'placeholder': 'Ingrese su correo electrónico',
+                    'class': 'form-control',
+                }
+            )
+        }
+        exclude = ['groups', 'user_permissions', 'last_login', 'date_joined', 'is_superuser', 'is_active', 'is_staff']
+
+    def save(self, commit=True):
+        data = {}
+        form = super()
+        try:
+            if form.is_valid():
+                instance = form.save()
+                data = instance.toJSON()
+            else:
+                data['error'] = form.errors
+        except Exception as e:
+            data['error'] = str(e)
+        return data
+

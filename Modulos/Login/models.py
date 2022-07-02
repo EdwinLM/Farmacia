@@ -1,5 +1,6 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.forms import model_to_dict
 
 from Farmacia.settings import MEDIA_URL, STATIC_URL
 
@@ -13,7 +14,8 @@ class User(AbstractUser):
 
 	def toJSON(self):
 		item = model_to_dict(self, exclude['password', 'groups', 'user_permissions'])
-		item['last_login'] = self.last_login.strftime('%Y-%m-%d')
+		if self.last_login:
+			item['last_login'] = self.last_login.strftime('%Y-%m-%d')
 		item['date_joined'] = self.last_login.strftime('%Y-%m-%d')
-		item['imagen'] = self.get_image()
+		item['image'] = self.get_image()
 		return item
