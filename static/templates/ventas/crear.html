@@ -151,6 +151,10 @@
 							<label>Total a Pagar:</label>
 							{{ form.total }}
 						</div>
+						<div class="form-group">
+							<label>Forma de Pago:</label>
+							{{ form.id_forma_pago|add_class:"form-control"|attr:"autocomplete:off" }}
+						</div>
 					</div>
 				</div>
 			</div>
@@ -202,7 +206,7 @@
 {% block javascript %}
 
 <script>
-	// vents.items.products = {{ det|safe }};
+	vents.items.products = {{ det|safe }};
     // Se removio el vents.list(); para calcular bien el iva en el editar. Revisar al final del archivo form.js se lo puso.
 </script>
 

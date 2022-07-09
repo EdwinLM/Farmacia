@@ -1,0 +1,324 @@
+https://www.asefarma.com/blog-farmacia/5-tips-para-las-ventas-cruzadas-en-la-farmacia
+BUENO DE FARMACIAS
+https://www.inside-pharmacy.com/proyectos-diseno-farmacias/
+
+
+LIFEMILES YANI 13446269163
+https://www.youtube.com/watch?v=_6Rjhyz-FH8&list=PLxm9hnvxnn-j5ZDOgQS63UIBxQytPdCG7&index=18
+https://www.youtube.com/watch?v=EvS-H-Y8T0M
+
+
+
+
+ID EDWINMAZ
+
+Contraseña Edwinmaz.0310
+
+
+
+
+<a href="editar/{{c.id_via_administracion}}" class="btn btn-warning btn-xs btn-flat"><i class="fas fa-edit"></i></a>
+<button class="btn btn-danger btn-xs btn-flat" onclick="return eliminar();" type="submit"><i class="fas fa-trasn-alt"></i></button>
+
+Instalar pillow para las imagenes:
+
+
+"language": {
+				url : '{% static 'libs/datatables-1.11.5/plugins/datatables-es-MX.txt' %}'
+
+
+Static IP:
+52.87.51.238 
+
+Private IP:
+172.26.3.4
+
+Public IPv6:
+2600:1f18:1a8f:cb00:67b1:8b27:d993:e744
+
+
+
+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
+git push -u origin main
+
+git pull origin
+
+
+
+virtualenv init --python=python3
+
+cd init/bin
+source activate
+pip3 freeze  //ver dependencias
+
+pip3 install django==3.2.11
+
+pip3 install psycopg2 //Para trabajar con PostgreSQL
+pip install django-environ
+
+
+CREAR PROYECTO:
+django-admin startproject [nombre]
+
+CREAR APLICACIÓN: (dentro de la carpeta Modulos)
+django-admin startapp [nombre]
+
+
+
+python manage.py makemigrations
+python manage.py migrate
+
+python manage.py migrate
+
+
+
+CREAR SUPERUSUARIO:
+python manage.py createsuperuser
+edwin - edwinmlm@gmail.com - Matias1!
+
+
+
+EJECUTAR SERVIDOR:
+python manage.py runserver
+
+
+http://127.0.0.1/pgadmin4
+
+https://github.com/mictlanix/mbe
+
+
+
+
+
+INSTALAR EN AWS:
+
+sudo apt install nginx
+sudo adduser userfarm
+sudo su userfarm   (exit)
+ll
+git clone <direccion>
+python3 -m venv .venv
+source .venv/bin/activate
+cd myproyecto
+pip install -r requirements.txt
+./manage.py migrate
+./manage.py createsuperuser
+./manage.py runserver
+./manage.py runserver 0.0.0.0:8000
+
+pip install gunicorn
+gunicorn myproyecto.wsgi --bind=0.0.0.0:8000
+
+En la raiz: cd ..
+
+vim .deploy
+
+#!/bin/bash
+NAME="nombre"
+PATHHOME="/home/nombre"
+PATHVENV="$PATHHOME/.venv"
+PATHDJANGO="$PATHHOME/myproyecto"
+USER="nombre"
+GROUP="nombre"
+NWORKERS=3
+DJANGOWSGI="myproyecto.wsgi"
+IP=127.0.0.1
+PORT=8000
+LEVEL="debug"
+export DJANGO_SETTINGS_MODULE="mycms.settings.production"
+echo "Starting $NAME"
+source $PATHVENV/bin/activate
+cd $PATHDJANGO
+exec gunicorn $DJANGOWSGI --workers=$NWORKERS --user=$USER --group=$GROUP --log-level=$LEVEL --bind=$IP:$PORT
+
+
+chmod +x .deploy
+
+
+
+./.deploy
+
+Salimos de nuestro usuario con  exit
+
+sudo apt install supervisor
+
+cd /etc/supervisor
+ll
+
+cat supervisord.conf
+
+cd conf.d/
+
+sudo vim djangovzla.conf
+
+[program:djangovzla]
+command=/home/djangovzla/.deploy
+directory=/home/djangovzla/myproyecto
+autostart=true
+autorestart=true
+stderr_logfile=/var/log/djangovzla.err.log
+stdout_logfile=/var/log/djangovzla.out.log
+
+
+sudo service supervisor restart
+
+sudo supervisorctl status djangovzla
+
+cd ..
+
+sudo vim supervisord.conf
+
+Al final agregar la siguiente linea:
+
+[inet_http_server]
+port=0.0.0.0:9001
+
+sudo service supervisor restart
+
+cd
+
+cd /etc/nginx/sites-available/
+ll
+
+sudo vim djangovzla
+
+upstream mycms_app {
+	server 127.0.0.1:8000;
+}
+
+server {
+	listen 80;
+	listen [::]:80;
+	server_name demo.djangovzla.com;
+	
+	location / {
+		proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+		proxy_set_header Host $http_host;
+		proxy_redirect off;
+		proxy_pass http://mycms_app;
+	}
+}
+
+Para validar que todo este bien:
+sudo nginx -t
+
+sudo service nginx restart
+
+cd ../sites-enabled/
+ll
+
+sudo ln -s ../sites-available/djangovzla
+ll
+
+sudo service nginx restart
+
+
+
+Para entrar al proyecto:
+
+sudo su djangovzla
+cd
+
+cd mycms/
+ll
+
+cd mycms/
+ll
+
+cd settings/
+ll
+
+cat ../wsgi.py
+
+cat dev.py
+
+cp dev.py local.py
+
+vim loxL.PY
+
+Dejar solo: SECRET_KEY, ALLOWED_HOST
+Y Cambiar ALLOWED_HOST['farmaciasbienestar.com.gt']
+
+cd ..
+
+vim msgi.py
+
+Copiar la variable DJANGO_SETTINGS_MODULE
+
+cd
+
+vim .deploy
+
+Agregar:  export DJANGO_SETTINGS_MODULE="mycms.settings.production"
+
+REINICIARcd
+
+vim mycms/mycms/settings/base.py
+
+cd mycms/
+ll
+
+./manage.py collectstatic
+
+cd
+
+source .venv/bin/activate
+
+cd mycms/
+
+./manage.py collectstatic
+
+ll
+
+ls staticfiles
+
+cd staticfiles/
+
+pwd
+
+NOS DA UNA RUTA, HAY QUE COPIARLA
+
+cd
+
+cd /etc/nginx/sites-available/
+
+sudo vim djangovzla
+
+Entre servername...   y    location... colocar:
+
+location /static {
+	alias /home/djangovzla/mycms/staticfiles;  (ES LO QUE COPIAMOS ANTES)
+}
+
+location /media {
+	alias /home/djangovzla/mycms/media;
+}
+	
+sudo nginx -t
+
+sudo service nginx reload
+
+sudo reboot
+
+
+
+watch?v=bQjDNuYvUZo
+
+
+
+
+
+
+
+
+
+
+
+Les escribo por algo que se me habia olvidado decirles.
+
+Primeramente, les agradezco por haber tenido tanto tiempo el papel alli, fueron casi 6 años, del abuso de ocuparles la casa.
+
+Y a la vez, preguntarles cuánto les debo por haber tenido todos esos años el papel alli en su casa.
+
+
+

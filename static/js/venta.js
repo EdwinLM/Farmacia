@@ -2,12 +2,17 @@ var tblProducts;
 var vents = {
     items: {
         id_cliente: '',
-        id_sucursal: 36,
+        nit: '',
+        nombre: '',
+        direccion: '',
+        telefono: '',
+        id_sucursal: 3,
         fecha: '',
         subtotal_afecto: 0.00,
         subtotal_noafecto: 0.00,
         iva: 0.00,
         total: 0.00,
+        id_forma_pago: 1,
         products: []
     },
     get_ids: function () {
@@ -172,6 +177,12 @@ $(function () {
         },
         placeholder: 'Ingrese una descripción',
         minimumInputLength: 1,
+    }).on('select2:select', function (e) {
+        var data = e.params.data;
+        $('input[name="nit"]').val(data.nit);
+        $('input[name="nombre"]').val(data.nombre);
+        $('input[name="direccion"]').val(data.direccion);
+        $('input[name="telefono"]').val(data.telefono);
     });
 
     $('.btnAddClient').on('click', function () {
@@ -339,9 +350,8 @@ $(function () {
             tblSearchProducts.row($(this).parents('tr')).remove().draw();
         });
 
-
 	//Evento submit (guardar)
-	$('frmSale').on('submit', function (e) {
+	$('#frmSale').on('submit', function (e) {
 		e.preventDefault();
 
 		if (vents.items.products.length === 0) {
@@ -350,14 +360,19 @@ $(function () {
 		};
 
 		vents.items.fecha = $('input[name="fecha"]').val();
+        vents.items.nit = $('input[name="nit"]').val();
+        vents.items.nombre = $('input[name="nombre"]').val();
+        vents.items.telefono = $('input[name="telefono"]').val();
+        vents.items.direccion = $('input[name="direccion"]').val();
 		//vents.items.id_cliente = $('input[name="id_id_cliente"]').val();
         vents.items.id_cliente = $('select[name="id_cliente"]').val();
+        vents.items.id_forma_pago = $('select[name="id_forma_pago"]').val();
 		var parameters = new FormData();
 		parameters.append('action', $('input[name="action"]').val());
 		parameters.append('vents', JSON.stringify(vents.items));
 		console.log(vents);
 		submit_with_ajax(window.location.pathname, 'Notificación', '¿Está seguro de realizar la siguiente acción?', parameters, function (response) {
-			location.href = '/dashboard/';
+			location.href = '/ventas/crear';
 		});
 	});
 

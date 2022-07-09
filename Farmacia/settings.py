@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'Modulos.Productos',
     'Modulos.Login',
+    'reportes',
     'widget_tweaks',
 ]
 
@@ -167,3 +168,12 @@ LOGIN_REDIRECT_URL = '/dashboard/'
 LOGOUT_REDIRECT_URL = '/login/'
 
 LOGIN_URL = '/login/'
+
+SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'
+
+#EMAIL
+
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'edwinmlm@gmail.com'
+EMAIL_HOST_PASSWORD = 'osigonio'

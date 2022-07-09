@@ -1,0 +1,67 @@
+{% extends "list.html" %}
+{% load static %}
+{% block title %}ERP Farmacias Bienestar{% endblock %}
+
+{% block head_list %}
+  <script src="{% static 'lib/moment-2.25.3/moment.js' %}"></script>
+  <script src="{% static 'lib/daterangepicker-3.1/spanish.js' %}"></script>
+  <script src="{% static 'lib/daterangepicker-3.1/daterangepicker.js' %}"></script>
+  <link rel="stylesheet" href="{% static 'lib/daterangepicker-3.1/daterangepicker.css' %}">
+  <script src="{% static 'js/rptventa.js' %}"></script>
+{% endblock %}
+
+{% block miheader %}
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1>Farmacias Bienestar</h1>
+          </div>
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="#">Reportes</a></li>
+              <li class="breadcrumb-item"><a href="#">Reportes</a></li>
+              <li class="breadcrumb-item active">Ventas</li>
+            </ol>
+          </div>
+          {% if messages %}
+            <div class="alert alert-primary alert-dismissible">
+              <button type="button" class="close" data-dismiss="alert" aria-hidden="true">x</button>
+              <ul>
+                {% for message in messages %}
+                  <li>{{ message }}</li>
+                {% endfor %}
+              </ul>
+            </div>
+          {% endif %}
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+{% endblock %}
+
+{% block titulitos %}
+  <div class="card-body">
+    <div class="row">
+      <div class="col-lg-4">
+        <div class="form-group">
+          <label>Rango de Fechas:</label>
+          {{ form.date_range }}
+        </div>
+      </div>
+    </div>
+  </div>
+  <hr>
+{% endblock %}
+
+{% block columns %}
+  <tr>
+    <th scope="col">Nro</th>
+    <th scope="col">Cliente</th>
+    <th scope="col">Fecha</th>
+    <th scope="col">Total</th>
+  </tr>
+{% endblock %}
+
+{% block addjavascript %}
+    <script type="text/javascript">$('#myTable').DataTable();</script>
+{% endblock %}

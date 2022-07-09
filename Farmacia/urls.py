@@ -37,7 +37,8 @@ from Modulos.Productos.views import TiposClientesListado, TiposClientesDetalle, 
 from Modulos.Productos.views import ClientesListado, ClientesDetalle, ClientesCrear, ClientesActualizar, ClientesEliminar
 from Modulos.Productos.views import GenerosListado, GenerosDetalle, GenerosCrear, GenerosActualizar, GenerosEliminar
 from Modulos.Productos.views import VentaCrear
-from Modulos.Login.views import UserListado, UsuarioCrear, LoginFormView, LogoutView, DashboardView
+from Modulos.Login.views import UserListado, UsuarioCrear, UsuarioActualizar, UsuarioEliminar, UsuarioCambiarGrupo, UserProfileView, UserChangePasswordView, LoginFormView, LogoutView, DashboardView
+from reportes.views import ReporteVentaView
     
 
 urlpatterns = [
@@ -48,6 +49,11 @@ urlpatterns = [
 
     path('usuarios/', UserListado.as_view(template_name = "usuarios/index.html"), name='leerusr'),
     path('usuarios/crear', UsuarioCrear.as_view(template_name = "usuarios/crear.html"), name='crearusr'),
+    path('usuarios/editar/<int:pk>', UsuarioActualizar.as_view(template_name = "usuarios/crear.html"), name='actualizarusr'), 
+    path('usuarios/eliminar/<int:pk>', UsuarioEliminar.as_view(), name='eliminarusr'),
+    path('usuarios/cambiar/grupo/<int:pk>', UsuarioCambiarGrupo.as_view(), name='cambiargrupousr'),
+    path('usuarios/profile/', UserProfileView.as_view(), name='profileusr'),
+    path('usuarios/change_password/', UserChangePasswordView.as_view(), name='changepasswordusr'),
 
     path('categorias/', CategoriasListado.as_view(template_name = "categorias/index.html"), name='leercat'),
     path('categorias/detalle/<int:pk>', CategoriaDetalle.as_view(template_name = "categorias/detalles.html"), name='detallescat'),
@@ -152,6 +158,8 @@ urlpatterns = [
     path('clientes/eliminar/<int:pk>', ClientesEliminar.as_view(), name='eliminarcli'),
 
     path('ventas/crear', VentaCrear.as_view(template_name = "ventas/crear.html"), name='crearvta'),
+
+    path('rpt/rptventa', ReporteVentaView.as_view(template_name = "rpt/rptventa.html"), name='rptventa'),
     
 ]   
 

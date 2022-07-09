@@ -10,7 +10,7 @@ from django.views.generic import ListView, DetailView
 from django.views.generic import CreateView, UpdateView, DeleteView
 from Modulos.Productos.mixins import IsSuperuserMixin, ValidatePermissionRequiredMixin
 from Modulos.Productos.models import Categoria, Fabricante, Presentacion, Unidad_Medida, Via_Administracion, Tipo_Prescripcion, Componente, Indicacion, Impuesto, Pais
-from Modulos.Productos.models import Producto, Sucursal, Inventario, Forma_Pago, Tipo_Cliente, Genero, Cliente, Venta
+from Modulos.Productos.models import Producto, Sucursal, Inventario, Forma_Pago, Tipo_Cliente, Genero, Cliente, Venta, Detalle_Venta
 
 from Modulos.Productos.forms import ProductoForm, VentaForm, ClienteForm, CategoriaForm, FabricanteForm, PresentacionForm, PaisForm
 from Modulos.Productos.forms import UnidadMedidaForm, ViaAdministracionForm, TipoPrescripcionForm
@@ -1477,11 +1477,6 @@ class ClientesCrear(SuccessMessageMixin, CreateView):
 
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['title'] = 'Creación de Clientes'
-        return context
  
     # Redireccionamos a la página principal luego de crear un registro o categoria
     def get_success_url(self):
@@ -1541,7 +1536,7 @@ class VentaCrear(CreateView):
     model = Venta
     form_class = VentaForm
     template_name = 'ventas/crear.html'
-    success_url = reverse_lazy('dashboard')
+    success_url = reverse_lazy('crearvta')
     url_redirect = success_url
 
     @method_decorator(csrf_exempt)
@@ -1581,29 +1576,37 @@ class VentaCrear(CreateView):
             elif action == 'add':
                 with transaction.atomic():
                     vents = json.loads(request.POST['vents'])
-                    sucur = Sucursal.objects.filter(id_sucursal=vents['id_sucursal'])[0]
-                    clien = Cliente.objects.filter(id_cliente=vents['id_cliente'])[0]
+                    sucur = Sucursal.objects.filter(id_sucursal=vents['id_sucursal']).first()
+                    clien = Cliente.objects.filter(id_cliente=vents['id_cliente']).first()
                     venta = Venta()
                     venta.id_sucursal = sucur
                     venta.fecha = vents['fecha']
                     venta.id_cliente = clien
-                    venta.nombre = 'Consumidor Final'
-                    venta.nit = 'CF'
-                    venta.telefono = ''
-                    venta.direccion = ''
+                    venta.nombre = vents['nombre']
+                    venta.nit = vents['nit']
+                    venta.telefono = vents['telefono']
+                    venta.direccion = vents['direccion']
                     venta.subtotal_afecto = vents['subtotal_afecto']
                     venta.subtotal_noafecto = vents['subtotal_noafecto']
                     venta.iva = vents['iva']
                     venta.total = vents['total']
                     venta.id_empresa = 1
+                    venta.vendedor = 1
+                    venta.cajero = 1
+                    venta.correlativo_diario = 1
+                    venta.id_forma_pago = Forma_Pago.objects.filter(id_forma_pago=vents['id_forma_pago']).first()
                     venta.save()
                     for i in vents['products']:
+                        p = Producto.objects.filter(id_producto=i['id_producto']).first()
                         detalle = Detalle_Venta()
-                        detalle.id_venta = venta.id_venta
-                        detalle.id_producto = i['id_producto']
+                        detalle.id_venta = venta
+                        detalle.id_producto = p
                         detalle.cantidad = i['cant']
+                        detalle.id_empresa = 1
+                        detalle.precio_costo = p.precio_costo
+                        detalle.precio_venta = p.precio_venta
                         detalle.save()
-                    data = {'id': venta.id}
+                    data = {'id': venta.id_venta}
             elif action == 'buscar_clientes':
                 data = []
                 term = request.POST['term']

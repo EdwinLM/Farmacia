@@ -1,4 +1,5 @@
 from datetime import datetime
+from django.db import transaction
 from django.forms import *
 from Modulos.Productos.models import Categoria, Fabricante, Presentacion, Pais, Unidad_Medida, Via_Administracion, Tipo_Prescripcion, Producto, Cliente, Venta
 from Modulos.Login.models import User
@@ -453,7 +454,7 @@ class UserForm(ModelForm):
 
     class Meta:
         model = User
-        fields = 'first_name', 'last_name', 'email', 'username', 'password', 'image'
+        fields = 'first_name', 'last_name', 'email', 'username', 'password', 'image', 'groups', 'sucursales'
         widgets = {
             'first_name': TextInput(
                 attrs={
@@ -474,7 +475,7 @@ class UserForm(ModelForm):
                     'class': 'form-control',
                 }
             ),
-            'password': PasswordInput(
+            'password': PasswordInput(render_value=True,
                 attrs={
                     'placeholder': 'Ingrese su password',
                     'class': 'form-control',
@@ -485,20 +486,107 @@ class UserForm(ModelForm):
                     'placeholder': 'Ingrese su correo electrónico',
                     'class': 'form-control',
                 }
-            )
+            ),
+            'groups': SelectMultiple(attrs={
+                'class': 'form-control select2',
+                'style': 'width: 100%',
+                'multiple': 'multiple'
+            }),
+            'sucursales': SelectMultiple(attrs={
+                'class': 'form-control select2',
+                'style': 'width: 100%',
+                'multiple': 'multiple'
+            })
         }
-        exclude = ['groups', 'user_permissions', 'last_login', 'date_joined', 'is_superuser', 'is_active', 'is_staff']
+        exclude = ['user_permissions', 'last_login', 'date_joined', 'is_superuser', 'is_active', 'is_staff']
 
     def save(self, commit=True):
         data = {}
         form = super()
         try:
             if form.is_valid():
-                instance = form.save()
-                data = instance.toJSON()
+                with transaction.atomic():
+                    pwd = self.cleaned_data['password']
+                    u = form.save(commit=False)
+                    if u.pk is None:
+                        u.set_password(pwd)
+                    else:
+                        user = User.objects.get(pk=u.pk)
+                        if user.password != pwd:
+                            u.set_password(pwd)
+                    u.save()
+                    u.groups.clear()
+                    for g in self.cleaned_data['groups']:
+                        u.groups.add(g)
+                    u.sucursales.clear()
+                    for s in self.cleaned_data['sucursales']:
+                        u.sucursales.add(s)
             else:
                 data['error'] = form.errors
         except Exception as e:
             data['error'] = str(e)
         return data
 
+class UserProfileForm(ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['first_name'].widget.attrs['autofocus'] = True
+
+    class Meta:
+        model = User
+        fields = 'first_name', 'last_name', 'email', 'username', 'password', 'image'
+        widgets = {
+            'first_name': TextInput(
+                attrs={
+                    'placeholder': 'Ingrese sus nombres',
+                }
+            ),
+            'last_name': TextInput(
+                attrs={
+                    'placeholder': 'Ingrese sus apellidos',
+                }
+            ),
+            'email': TextInput(
+                attrs={
+                    'placeholder': 'Ingrese su email',
+                }
+            ),
+            'username': TextInput(
+                attrs={
+                    'placeholder': 'Ingrese su username',
+                }
+            ),
+            'password': PasswordInput(render_value=True,
+                                            attrs={
+                                                'placeholder': 'Ingrese su password',
+                                            }
+                                            ),
+        }
+        exclude = ['user_permissions', 'last_login', 'date_joined', 'is_superuser', 'is_active', 'is_staff', 'groups', 'sucursales']
+
+    def save(self, commit=True):
+        data = {}
+        form = super()
+        try:
+            if form.is_valid():
+                pwd = self.cleaned_data['password']
+                u = form.save(commit=False)
+                if u.pk is None:
+                    u.set_password(pwd)
+                else:
+                    user = User.objects.get(pk=u.pk)
+                    if user.password != pwd:
+                        u.set_password(pwd)
+                u.save()
+            else:
+                data['error'] = form.errors
+        except Exception as e:
+            data['error'] = str(e)
+        return data
+
+
+class ReporteVentaForm(Form):
+    date_range = CharField(widget=TextInput(attrs={
+        'class': 'form-control',
+        'autocomplete': 'off'
+    }))

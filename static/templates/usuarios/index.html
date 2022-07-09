@@ -2,6 +2,14 @@
 {% load static %}
 {% block title %}ERP Farmacias Bienestar{% endblock %}
 
+{% block head_list %}
+  <link href="{% static 'lib/select2-4.0.13/css/select2.min.css' %}" rel="stylesheet">
+  <link href="{% static 'lib/select2-4.0.13/css/select2-bootstrap4.min.css' %}" rel="stylesheet">
+  <script src="{% static 'lib/select2-4.0.13/js/select2.min.js' %}"></script>
+  <script src="{% static 'lib/select2-4.0.13/js/i18n/es.js' %}"></script>
+  <script src="{% static 'js/users.js' %}"></script>
+{% endblock %}
+
 {% block miheader %}
     <section class="content-header">
       <div class="container-fluid">
@@ -33,33 +41,17 @@
 
 {% block columns %}
 <tr>
-  <th width="5%">Nro</th>
-  <th width="15%">Nombres</th>
-  <th width="15%">Apellidos</th>
+  <th width="25%">Nombre</th>
   <th width="15%">Username</th>
-  <th width="20%">Fecha de Registro</th>
+  <th width="15%">Fecha de Registro</th>
   <th width="10%">Imagen</th>
+  <th width="15%">Grupos</th>
   <th width="20%">Acciones</th>
 </tr>
 {% endblock %}
                   
 {% block rows %}
-  {% for obj in object_list %}
-    <tr>
-      <td>{{ obj.id }}</td>
-      <td>{{ obj.first_name }}</td>
-      <td>{{ obj.last_name }}</td>
-      <td>{{ obj.username }}</td>
-      <td>{{ obj.date_joined }}</td>
-      <td class="text-center">
-          <img src="{{ obj.image }}" class="img-fluid d-block mx-auto" style="width: 20px; height: 20px;">
-      </td>
-      <td class="text-center">
-          <a href="editar/{{obj.id}}" class="btn btn-warning btn-sm btn-flat" title="Editar"><i class="fas fa-edit"></i></a>
-          <button class="btn btn-danger btn-sm btn-flat" title="Eliminar" onclick="return eliminar();" type="submit"><i class="fas fa-trash-alt"></i></button>
-      </td>
-    </tr>
-  {% endfor %}
+  
 {% endblock %}
 
   {% block addjavascript %}
@@ -74,6 +66,6 @@
       }
     </script>
 
-    <script type="text/javascript">$('#myTable').DataTable();</script>
+    
 
   {% endblock %}
