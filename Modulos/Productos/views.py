@@ -1,3 +1,4 @@
+import datetime
 from django.shortcuts import render
 from django.db import transaction
 from django.http import JsonResponse
@@ -1580,7 +1581,8 @@ class VentaCrear(CreateView):
                     clien = Cliente.objects.filter(id_cliente=vents['id_cliente']).first()
                     venta = Venta()
                     venta.id_sucursal = sucur
-                    venta.fecha = vents['fecha']
+                    #venta.fecha = vents['fecha']
+                    venta.fecha = datetime.datetime.now() 
                     venta.id_cliente = clien
                     venta.nombre = vents['nombre']
                     venta.nit = vents['nit']

@@ -457,7 +457,7 @@ class Proveedor(models.Model):
 class Venta(models.Model):
 	id_venta = models.BigAutoField(primary_key=True)
 	id_sucursal = models.ForeignKey(Sucursal, on_delete=models.CASCADE)
-	fecha = models.DateField(default=datetime.now)
+	fecha = models.DateTimeField(default=datetime.now)
 	id_cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE)
 	nombre = UpperField(max_length=150, null=False, blank=False)
 	nit = UpperField(max_length=10, null=False, blank=False)
