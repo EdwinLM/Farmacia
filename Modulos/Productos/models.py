@@ -252,6 +252,7 @@ class Producto(models.Model):
 	created_at = models.DateTimeField(auto_now_add=True)
 	updated_at = models.DateTimeField(auto_now=True)
 	id_empresa = models.PositiveIntegerField(default=1)
+	principios_activos = models.ManyToManyField(Componente)
 
 	def __str__(self):
 		return self.nombre_venta
@@ -472,14 +473,16 @@ class Venta(models.Model):
 	cajero = models.PositiveIntegerField(default=1)
 	correlativo_diario = models.PositiveIntegerField(default=1)
 	id_forma_pago = models.ForeignKey(Forma_Pago, default=1, on_delete=models.CASCADE)
-
+	email = models.EmailField(max_length=100, default='sc@gmail.com')
+	se_factura = models.BooleanField(default=False)
+	estado = models.CharField(max_length=1, default='N')
 
 	def __str__(self):
 		return nombre
 
 	def toJSON(self):
 		item = model_to_dict(self)
-		item['fecha'] = self.nacimiento.strftime('%Y-%m-%d')
+		item['fecha'] = self.fecha.strftime('%Y-%m-%d')
 		return item
 
 	class Meta:
@@ -496,4 +499,130 @@ class Detalle_Venta(models.Model):
 	id_empresa = models.PositiveIntegerField(default=1)
 	precio_costo = models.DecimalField(max_digits=9, decimal_places=5)
 	precio_venta = models.DecimalField(max_digits=7, decimal_places=2)
+
+
+class Compra(models.Model):
+	id_compra = models.BigAutoField(primary_key=True)
+	id_sucursal = models.ForeignKey(Sucursal, on_delete=models.CASCADE)
+	fecha = models.DateField(default=datetime.now)
+	id_proveedor = models.ForeignKey(Cliente, on_delete=models.CASCADE)
+	serie = UpperField(max_length=15, null=False, blank=False)
+	numero = UpperField(max_length=15, null=False, blank=False)
+	face = UpperField(max_length=50, null=False, blank=False, unique=True)
+	subtotal_afecto = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
+	subtotal_noafecto = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
+	iva = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
+	total = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
+	id_empresa = models.PositiveIntegerField(default=1)
+	usuario = models.PositiveIntegerField(default=1)
+	estado = models.CharField(max_length=1, default='A')
+	created_at = models.DateTimeField(auto_now_add=True)
+	updated_at = models.DateTimeField(auto_now=True)
+
+	def __str__(self):
+		return nombre
+
+	def toJSON(self):
+		item = model_to_dict(self)
+		item['fecha'] = self.fecha.strftime('%Y-%m-%d')
+		return item
+
+	class Meta:
+		verbose_name = 'Compra'
+		verbose_name_plural = 'Compras'
+		ordering = ['id_compra']
+
+
+class Detalle_Compra(models.Model):
+	id_detalle_compra = models.BigAutoField(primary_key=True)
+	id_compra = models.ForeignKey(Compra, on_delete=models.CASCADE)
+	id_producto = models.ForeignKey(Producto, on_delete=models.CASCADE)
+	cantidad = models.PositiveIntegerField(default=1)
+	id_empresa = models.PositiveIntegerField(default=1)
+	precio_costo = models.DecimalField(max_digits=9, decimal_places=5)
+
+
+class Tipo_Mov(models.Model):
+	id_tipo_mov = models.BigAutoField(primary_key=True)
+	descripcion = UpperField(max_length=30, null=False, blank=False, unique=True)
+	abreviatura = UpperField(max_length=5, null=True, blank=True)
+	signo = models.CharField(max_length=1, default='+')
+	estado = models.CharField(max_length=1, default='A')
+	created_at = models.DateTimeField(auto_now_add=True)
+	updated_at = models.DateTimeField(auto_now=True)
+	id_empresa = models.PositiveIntegerField(default=1)
+
+	def __str__(self):
+		return self.descripcion
+
+	def toJSON(self):
+		item = model_to_dict(self)
+		return item
+
+	class Meta:
+		ordering = [ "descripcion" ]
+
+
+class Mov_Inventario(models.Model):
+	id_mov_inventario = models.BigAutoField(primary_key=True)
+	id_tipo_mov = models.ForeignKey(Tipo_Mov, on_delete=models.CASCADE)
+	numero_mov = models.BigIntegerField()
+	signo = models.CharField(max_length=1)
+	id_sucursal = models.ForeignKey(Sucursal, on_delete=models.CASCADE)
+	id_producto = models.ForeignKey(Producto, on_delete=models.CASCADE)
+	cantidad = models.PositiveIntegerField(default=1)
+	estado = models.CharField(max_length=1, default='A')
+	id_empresa = models.PositiveIntegerField(default=1)
+
+
+class Envio_Salida(models.Model):
+	id_envio_salida = models.BigAutoField(primary_key=True)
+	origen = models.IntegerField()
+	destino = models.IntegerField()
+	fecha = models.DateTimeField(default=datetime.now)
+	notas = UpperField(max_length=100)
+	total = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
+	id_empresa = models.PositiveIntegerField(default=1)
+	usuario = models.PositiveIntegerField(default=1)
+	estado = models.CharField(max_length=1, default='A')
+	created_at = models.DateTimeField(auto_now_add=True)
+	updated_at = models.DateTimeField(auto_now=True)
+
+
+class Detalle_Envio_Salida(models.Model):
+	id_detalle_envio_salida = models.BigAutoField(primary_key=True)
+	id_envio_salida = models.ForeignKey(Compra, on_delete=models.CASCADE)
+	id_producto = models.ForeignKey(Producto, on_delete=models.CASCADE)
+	cantidad = models.PositiveIntegerField(default=1)
+	id_empresa = models.PositiveIntegerField(default=1)
+	precio_venta = models.DecimalField(max_digits=9, decimal_places=5)
+
+
+class Envio_Entrada(models.Model):
+	id_envio_entrada = models.BigAutoField(primary_key=True)
+	origen = models.IntegerField()
+	destino = models.IntegerField()
+	fecha = models.DateTimeField(default=datetime.now)
+	notas = UpperField(max_length=100)
+	total = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
+	id_empresa = models.PositiveIntegerField(default=1)
+	usuario = models.PositiveIntegerField(default=1)
+	estado = models.CharField(max_length=1, default='A')
+	created_at = models.DateTimeField(auto_now_add=True)
+	updated_at = models.DateTimeField(auto_now=True)
+
+
+class Detalle_Envio_Entrada(models.Model):
+	id_detalle_envio_entrada = models.BigAutoField(primary_key=True)
+	id_envio_entrada = models.ForeignKey(Compra, on_delete=models.CASCADE)
+	id_producto = models.ForeignKey(Producto, on_delete=models.CASCADE)
+	cantidad = models.PositiveIntegerField(default=1)
+	id_empresa = models.PositiveIntegerField(default=1)
+	precio_venta = models.DecimalField(max_digits=9, decimal_places=5)
+
+
+class Producto_Proveedor(models.Model):
+	id_producto = models.IntegerField()
+	id_proveedor = models.IntegerField()
+	cod_producto_proveedor = UpperField(max_length=20)
 

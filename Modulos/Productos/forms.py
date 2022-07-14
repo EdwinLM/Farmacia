@@ -290,18 +290,23 @@ class ProductoForm(ModelForm):
         self.fields['id_unidad_medida'].label = 'Unidad de Medida'
         self.fields['id_via_administracion'].label = 'Vía de Administración'
         self.fields['id_tipo_prescripcion'].label = 'Tipo de Prescripción'
+        self.fields['principios_activos'].widget.attrs['style'] = 'width: 100%'
+        self.fields['principios_activos'].widget.attrs['multiple'] = 'multiple'
+        self.fields['principios_activos'].widget.attrs['theme'] = 'bootstrap4'
+        self.fields['principios_activos'].label = 'Principios Activos'
 
 
     class Meta:
         model = Producto
         fields = '__all__'
-        #widgets = {
-        #    'nombre_compra': TextInput(
-        #        attrs={
-        #            'placeholder': 'Ingrese el nombre de compras',
-        #        }
-        #    ),
-        #}
+        widgets = {
+            'principios_activos': SelectMultiple(attrs={
+                'class': 'form-control select2',
+                'style': 'width: 100%',
+                'multiple': 'multiple'
+                }
+            ),
+        }
 
     #codigo_barras_1 = forms.CharField(max_length=13, label="Código de Barras Compras")
     #codigo_barras_2 = forms.CharField(max_length=13, label="Código de Barras Ventas")

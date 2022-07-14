@@ -1,4 +1,9 @@
 $(function () {
+    $('.select2').select2({
+        theme: "bootstrap4",
+        language: 'es',
+        placeholder: 'Buscar...'
+    });
 
     //Evento submit (guardar)
     $('#frmProducto').on('submit', function (e) {

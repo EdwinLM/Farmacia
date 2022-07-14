@@ -825,36 +825,53 @@ class ProductoCrear(CreateView):
             action = request.POST['action']
             if action == 'add':
                 with transaction.atomic():
-                    form = self.get_form()
-                    data = form.save()
-                    data = {}
-                    data['exito'] = 1
-                    #product = Producto()
-                    #product.codigo_barras_1 = form.cleaned_data['codigo_barras_1']
-                    #product.codigo_barras_2 = form.cleaned_data['codigo_barras_2']
-                    #product.nombre_compra = form.cleaned_data['nombre_compra']
-                    #product.nombre_venta = form.cleaned_data['nombre_venta']
-                    #product.nombre_corto = form.cleaned_data['nombre_corto']
-                    #product.id_categoria = form.cleaned_data['id_categoria']
-                    #product.id_fabricante = form.cleaned_data['id_fabricante']
-                    #product.id_presentacion = form.cleaned_data['id_presentacion']
-                    #product.id_pais = form.cleaned_data['id_pais']
-                    #product.id_unidad_medida = form.cleaned_data['id_unidad_medida']
-                    #product.conversion = form.cleaned_data['conversion']
-                    #product.id_via_administracion = form.cleaned_data['id_via_administracion']
-                    #product.prioridad = form.cleaned_data['prioridad']
-                    #product.imagen = form.cleaned_data['imagen']
-                    #product.id_tipo_prescripcion = form.cleaned_data['id_tipo_prescripcion']
-                    #product.afecto_impuesto = form.cleaned_data['afecto_impuesto']
-                    #product.registro_sanitario = form.cleaned_data['registro_sanitario']
-                    #product.precio_costo = form.cleaned_data['precio_costo']
-                    #product.precio_venta = form.cleaned_data['precio_venta']
-                    #product.clasificacion_abc = form.cleaned_data['clasificacion_abc']
-                    #product.estado = 'A'
-                    #product.id_empresa = 1
-                    #product.save()
+                    #form = self.get_form()
+                    #data = form.save()
+                    #data = {}
+                    #data['exito'] = 1
+                    categ = Categoria.objects.filter(id_categoria=request.POST['id_categoria']).first()
+                    fabri = Fabricante.objects.filter(id_fabricante=request.POST['id_fabricante']).first()
+                    prese = Presentacion.objects.filter(id_presentacion=request.POST['id_presentacion']).first()
+                    paise = Pais.objects.filter(id_pais=request.POST['id_pais']).first()
+                    unida = Unidad_Medida.objects.filter(id_unidad_medida=request.POST['id_unidad_medida']).first()
+                    viaad = Via_Administracion.objects.filter(id_via_administracion=request.POST['id_via_administracion']).first()
+                    tipop = Tipo_Prescripcion.objects.filter(id_tipo_prescripcion=request.POST['id_tipo_prescripcion']).first()
+                    product = Producto()
+                    product.codigo_barras_1 = request.POST['codigo_barras_1']
+                    product.codigo_barras_2 = request.POST['codigo_barras_2']
+                    product.nombre_compra = request.POST['nombre_compra']
+                    product.nombre_venta = request.POST['nombre_venta']
+                    product.nombre_corto = request.POST['nombre_corto']
+                    product.id_categoria = categ
+                    product.id_fabricante = fabri
+                    product.id_presentacion = prese
+                    product.id_pais = paise
+                    product.id_unidad_medida = unida
+                    product.conversion = request.POST['conversion']
+                    product.id_via_administracion = viaad
+                    product.prioridad = request.POST['prioridad']
+                    product.imagen = request.FILES['imagen']
+                    product.id_tipo_prescripcion = tipop
+                    isafect = True if request.POST.get("afecto_impuesto") == "true" else False
+                    product.afecto_impuesto = isafect
+                    product.registro_sanitario = request.POST['registro_sanitario']
+                    product.precio_costo = request.POST['precio_costo']
+                    product.precio_venta = request.POST['precio_venta']
+                    product.clasificacion_abc = request.POST['clasificacion_abc']
+                    product.estado = 'A'
+                    product.id_empresa = 1
+                    product.save()
 
-                #CREAR PRODUCTO EN TABLA DE INVENTARIO EN CEDIS Y SUCURSALES
+                    for s in Sucursal.objects.all():
+                        i = Inventario()
+                        i.id_sucursal = s
+                        i.id_producto = product
+                        i.existencia = 0
+                        i.ubicacion = ""
+                        i.id_empresa = 1
+                        i.save()
+                    data = {'id': product.id_producto}
+
             elif action == 'create_categoria':
                 with transaction.atomic():
                     frmCategoria = CategoriaForm(request.POST)

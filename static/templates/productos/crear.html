@@ -4,7 +4,10 @@
 {% block title %}ERP Farmacias Bienestar{% endblock %}
 
 {% block head_list %}
-  <script src="{% static 'vias/js/listprod.js' %}"></script>
+  <link href="{% static 'lib/select2-4.0.13/css/select2.min.css' %}" rel="stylesheet">
+  <link href="{% static 'lib/select2-4.0.13/css/select2-bootstrap4.min.css' %}" rel="stylesheet">
+  <script src="{% static 'lib/select2-4.0.13/js/select2.min.js' %}"></script>
+  <script src="{% static 'lib/select2-4.0.13/js/i18n/es.js' %}"></script>
   <script src="{% static 'js/productos.js' %}"></script>
 {% endblock %}
 
@@ -138,9 +141,13 @@
               </div>
               {{ field|add_class:"form-control"|attr:"autocomplete:off" }}
             </div>
+          {% elif field.label == "Principios Activos" %}
+            <label for="email">{{ field.label }}:</label>
+            {{ field|add_class:"form-control"|attr:"autocomplete:off" }}
           {% elif field.label != "x" %}
             <label for="email">{{ field.label }}:</label>
             {{ field|add_class:"form-control"|attr:"autocomplete:off" }}
+            
           {% endif %}
 
         </div>

@@ -91,7 +91,7 @@ class UsuarioActualizar(UpdateView):
     #form = User
     form_class = UserForm
     #fields = "__all__"
-    success_message = 'Usuario Creado Correctamente !'
+    success_message = 'Usuario Actualizado Correctamente !'
     template_name = 'usuarios/crear.html'
     success_url = reverse_lazy('leerusr')
     #permission_required = 'change_user'

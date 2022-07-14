@@ -11,7 +11,7 @@ $(function () {
         var parameters = new FormData(this);
         //parameters.append('action', 'add');
         submit_with_ajax(window.location.pathname, 'Notificación', '¿Estas seguro de realizar la siguiente acción?', parameters, function () {
-            location.href = '/usuarios/';
+            location.href = list_url;
         });
     });
     
