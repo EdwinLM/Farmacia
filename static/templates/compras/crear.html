@@ -30,8 +30,8 @@
           </div>
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a href="#">Ventas</a></li>
-              <li class="breadcrumb-item"><a href="#">Ventas</a></li>
+              <li class="breadcrumb-item"><a href="#">Compras</a></li>
+              <li class="breadcrumb-item"><a href="#">Compras</a></li>
               <li class="breadcrumb-item active">Crear</li>
             </ol>
           </div>
@@ -86,7 +86,7 @@
 									<th>Eliminar</th>
 									<th>Producto</th>
 									<th>Categoría</th>
-									<th>Precio Venta</th>
+									<th>Precio Compra</th>
 									<th>Cantidad</th>
 									<th>Subtotal</th>
 								</tr>
@@ -105,13 +105,13 @@
 					<div class="card-body">
 						<input type="hidden" name="action" value="{{ action }}">
 						<div class="form-group">
-							<label>Fecha de Venta:</label>
+							<label>Fecha de Compra:</label>
 							{{ form.fecha }}
 						</div>
                         <div class="form-group">
-                        	<label>Cliente:</label>
+                        	<label>Proveedor:</label>
                             <div class="input-group">
-                            	{{ form.id_cliente }}
+                            	{{ form.id_proveedor }}
                             	<div class="input-group-append">
                                 	<button class="btn btn-success btn-flat btnAddClient" type="button">
                                 		<i class="fas fa-user-plus"></i>
@@ -135,14 +135,6 @@
 							<label>Dirección:</label>
 							{{ form.direccion|remove_attr:'readonly' }}
 						</div>
-						<div class="form-group">
-							<label>Facturación:</label>
-							{{ form.se_factura|remove_attr:'readonly' }}
-						</div>
-						<div class="form-group">
-							<label>Email:</label>
-							{{ form.email|remove_attr:'readonly' }}
-						</div>
 						<div class="form-group" style="display:none">
 							<label>Subtotal Afecto:</label>
 							{{ form.subtotal_afecto }}
@@ -156,7 +148,7 @@
 							{{ form.iva }}
 						</div>
 						<div class="form-group">
-							<label>Total a Pagar:</label>
+							<label>Total de Factura:</label>
 							{{ form.total }}
 						</div>
 						<div class="form-group">
@@ -186,7 +178,7 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="exampleModalLabel">
-                            <b><i class="fas fa-user-plus"></i> Nuevo registro de un cliente</b>
+                            <b><i class="fas fa-user-plus"></i> Nuevo registro de un proveedor</b>
                         </h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
@@ -202,7 +194,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="submit" class="btn btn-primary btn-block btn-flat">
-                            <i class="fas fa-save"></i> Guardar Cliente
+                            <i class="fas fa-save"></i> Guardar Proveedor
                         </button>
                     </div>
                 </div>

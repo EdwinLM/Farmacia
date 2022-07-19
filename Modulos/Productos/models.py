@@ -394,6 +394,7 @@ class Cliente(models.Model):
 	nit = UpperField(max_length=10, null=False, blank=False, verbose_name='Nit')
 	telefono = UpperField(max_length=10, null=False, blank=False, verbose_name='Teléfono')
 	direccion = UpperField(max_length=150, null=False, blank=False, verbose_name='Dirección')
+	email = models.EmailField(max_length=100, default='sc@gmail.com')
 	genero = models.ForeignKey(Genero, null=False, blank=False, on_delete=models.CASCADE, help_text="Seleccione el género del cliente")
 	nacimiento = models.DateField(default=datetime.now, verbose_name='Fecha de nacimiento')
 	id_tipo_cliente = models.ForeignKey(Tipo_Cliente, default=1, null=False, blank=False, on_delete=models.CASCADE, help_text="Seleccione el tipo de cliente")

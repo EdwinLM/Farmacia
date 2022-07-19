@@ -1,7 +1,7 @@
 from datetime import datetime
 from django.db import transaction
 from django.forms import *
-from Modulos.Productos.models import Categoria, Fabricante, Presentacion, Pais, Unidad_Medida, Via_Administracion, Tipo_Prescripcion, Producto, Cliente, Venta
+from Modulos.Productos.models import Categoria, Fabricante, Presentacion, Pais, Unidad_Medida, Via_Administracion, Tipo_Prescripcion, Producto, Cliente, Venta, Proveedor
 from Modulos.Login.models import User
 
 class CategoriaForm(ModelForm):
@@ -368,6 +368,10 @@ class VentaForm(ModelForm):
                 'readonly': True,
                 'class': 'form-control',
             }),
+            'email': TextInput(attrs={
+                'readonly': True,
+                'class': 'form-control',
+            }),
             'subtotal_afecto': TextInput(attrs={
                 'readonly': True,
                 'class': 'form-control',
@@ -394,7 +398,7 @@ class ClienteForm(ModelForm):
 
     class Meta:
         model = Cliente
-        fields = ('nombre', 'nit', 'telefono', 'direccion', 'genero', 'nacimiento', 'id_tipo_cliente')
+        fields = ('nombre', 'nit', 'telefono', 'direccion', 'email', 'genero', 'nacimiento', 'id_tipo_cliente')
         widgets = {
             'nombre': TextInput(
                 attrs={
@@ -424,6 +428,12 @@ class ClienteForm(ModelForm):
             'direccion': TextInput(
                 attrs={
                     'placeholder': 'Ingrese su dirección',
+                    'class': 'form-control',
+                }
+            ),
+            'email': TextInput(
+                attrs={
+                    'placeholder': 'Ingrese su correo electrónico',
                     'class': 'form-control',
                 }
             ),
@@ -595,3 +605,64 @@ class ReporteVentaForm(Form):
         'class': 'form-control',
         'autocomplete': 'off'
     }))
+
+class ProveedorForm(ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['nombre'].widget.attrs['autofocus'] = True
+
+    class Meta:
+        model = Proveedor
+        fields = ('nombre', 'nit', 'telefono', 'direccion', 'contacto', 'correo', 'limite_credito', 'periodo_credito')
+        widgets = {
+            'nombre': TextInput(
+                attrs={
+                    'placeholder': 'Ingrese nombre completo',
+                    'autofocus': True,
+                    'class': 'form-control',
+                }
+            ),
+            'nit': TextInput(
+                attrs={
+                    'placeholder': 'Ingrese NIT',
+                    'class': 'form-control',
+                }
+            ),
+            'telefono': TextInput(
+                attrs={
+                    'placeholder': 'Ingrese telefono',
+                    'class': 'form-control',
+                }
+            ),
+            'direccion': TextInput(
+                attrs={
+                    'placeholder': 'Ingrese dirección',
+                    'class': 'form-control',
+                }
+            ),
+            'contacto': TextInput(
+                attrs={
+                    'placeholder': 'Ingrese nombre de contacto',
+                    'class': 'form-control',
+                }
+            ),
+            'correo': TextInput(
+                attrs={
+                    'placeholder': 'Ingrese correo electrónico',
+                    'class': 'form-control',
+                }
+            ),
+            'limite_credito': TextInput(
+                attrs={
+                    'placeholder': 'Ingrese límite de crédito',
+                    'class': 'form-control',
+                }
+            ),
+            'periodo_credito': TextInput(
+                attrs={
+                    'placeholder': 'Ingrese período de crédito en dias',
+                    'class': 'form-control',
+                }
+            )
+        }
+

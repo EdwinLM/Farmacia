@@ -11,9 +11,9 @@ from django.views.generic import ListView, DetailView
 from django.views.generic import CreateView, UpdateView, DeleteView
 from Modulos.Productos.mixins import IsSuperuserMixin, ValidatePermissionRequiredMixin
 from Modulos.Productos.models import Categoria, Fabricante, Presentacion, Unidad_Medida, Via_Administracion, Tipo_Prescripcion, Componente, Indicacion, Impuesto, Pais
-from Modulos.Productos.models import Producto, Sucursal, Inventario, Forma_Pago, Tipo_Cliente, Genero, Cliente, Venta, Detalle_Venta
+from Modulos.Productos.models import Producto, Sucursal, Inventario, Forma_Pago, Tipo_Cliente, Genero, Cliente, Venta, Detalle_Venta, Proveedor
 
-from Modulos.Productos.forms import ProductoForm, VentaForm, ClienteForm, CategoriaForm, FabricanteForm, PresentacionForm, PaisForm
+from Modulos.Productos.forms import ProductoForm, VentaForm, ClienteForm, CategoriaForm, FabricanteForm, PresentacionForm, PaisForm, ProveedorForm
 from Modulos.Productos.forms import UnidadMedidaForm, ViaAdministracionForm, TipoPrescripcionForm
 
 # Nos sirve para redireccionar despues de una acción revertiendo patrones de expresiones regulares 
@@ -1527,7 +1527,7 @@ class ClientesDetalle(DetailView):
 class ClientesActualizar(SuccessMessageMixin, UpdateView):
     model = Cliente
     form = Cliente
-    fields = ('nombre', 'nit', 'telefono', 'direccion', 'genero', 'nacimiento', 'id_tipo_cliente')
+    fields = ('nombre', 'nit', 'telefono', 'direccion', 'email', 'genero', 'nacimiento', 'id_tipo_cliente')
     success_message = 'Cliente Actualizado Correctamente !'
  
     # Redireccionamos a la página principal luego de actualizar un registro o Categoria
@@ -1605,6 +1605,11 @@ class VentaCrear(CreateView):
                     venta.nit = vents['nit']
                     venta.telefono = vents['telefono']
                     venta.direccion = vents['direccion']
+                    venta.email = vents['email']
+                    isfact = False
+                    if vents["se_factura"] == 'S':
+                        isfact = True
+                    venta.se_factura = isfact
                     venta.subtotal_afecto = vents['subtotal_afecto']
                     venta.subtotal_noafecto = vents['subtotal_noafecto']
                     venta.iva = vents['iva']
@@ -1657,3 +1662,78 @@ class VentaCrear(CreateView):
         context['det'] = []
         context['frmClient'] = ClienteForm()
         return context
+
+
+# *****************
+# ** PROVEEDORES **
+# *****************
+
+class ProveedoresListado(ListView):
+    model = Proveedor
+
+    @method_decorator(csrf_exempt)
+    #@method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        data = {}
+        try:
+            action = request.POST['action']
+            if action == 'searchdata':
+                data = []
+                for i in Fabricante.objects.all():
+                    data.append(i.toJSON())
+            else:
+                data['error'] = 'Ha ocurrido un error'
+        except Exception as e:
+            data['error'] = str(e)
+        return JsonResponse(data, safe=False)
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Listado de Proveedores'
+        context['create_url'] = reverse_lazy('crearprv')
+        return context
+
+class ProveedoresCrear(SuccessMessageMixin, CreateView):
+    model = Proveedor
+    form = Proveedor
+    fields = "__all__"
+    success_message = 'Proveedor Creado Correctamente !'
+
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Creación de Proveedores'
+        return context
+ 
+    # Redireccionamos a la página principal luego de crear un registro o categoria
+    def get_success_url(self):
+        return reverse('leerprv')
+
+class ProveedoresDetalle(DetailView):
+    model = Proveedor
+
+class ProveedoresActualizar(SuccessMessageMixin, UpdateView):
+    model = Proveedor
+    form = Proveedor
+    fields = "__all__"
+    success_message = 'Proveedor Actualizado Correctamente !'
+ 
+    # Redireccionamos a la página principal luego de actualizar un registro o Categoria
+    def get_success_url(self):
+        return reverse('leerprv')
+ 
+class ProveedoresEliminar(SuccessMessageMixin, DeleteView):
+    model = Proveedor 
+    form = Proveedor
+    fields = "__all__"     
+ 
+    # Redireccionamos a la página principal luego de eliminar un registro o Categoria
+    def get_success_url(self):
+        success_message = 'Proveedor Eliminado Correctamente !'
+        messages.success (self.request, (success_message))
+        return reverse('leerprv')

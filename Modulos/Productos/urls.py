@@ -18,4 +18,5 @@ urlpatterns = [
     url(r'^$', views.clientes, name='clientes'),
     url(r'^$', views.ventas, name='ventas'),
     url(r'^$', views.usuarios, name='usuarios'),
+    url(r'^$', views.proveedores, name='proveedores'),
 ]
