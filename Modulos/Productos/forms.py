@@ -1,7 +1,7 @@
 from datetime import datetime
 from django.db import transaction
 from django.forms import *
-from Modulos.Productos.models import Categoria, Fabricante, Presentacion, Pais, Unidad_Medida, Via_Administracion, Tipo_Prescripcion, Producto, Cliente, Venta, Proveedor
+from Modulos.Productos.models import Sucursal, Categoria, Fabricante, Presentacion, Pais, Unidad_Medida, Via_Administracion, Tipo_Prescripcion, Producto, Cliente, Venta, Proveedor, Compra
 from Modulos.Login.models import User
 
 class CategoriaForm(ModelForm):
@@ -665,4 +665,63 @@ class ProveedorForm(ModelForm):
                 }
             )
         }
+
+
+class CompraForm(ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['id_proveedor'].queryset = Proveedor.objects.none()
+        self.fields['id_sucursal'].queryset = Sucursal.objects.filter(tipo='C')
+
+    class Meta:
+        model = Compra
+        fields = '__all__'
+        widgets = {
+            'id_sucursal': Select(attrs={
+                    'class': 'form-control',
+                }
+            ),
+            'id_proveedor': Select(attrs={
+                'class': 'custom-select select2',
+                # 'style': 'width: 100%'
+            }),
+            'fecha': DateInput(format='%Y-%m-%d',
+                attrs={
+                    'value': datetime.now().strftime('%Y-%m-%d'),
+                    'autocomplete': 'off',
+                    'class': 'form-control datetimepicker-input',
+                    'id': 'fecha',
+                    'data-target': '#fecha',
+                    'data-toggle': 'datetimepicker'
+            }),
+            'serie': TextInput(attrs={
+                'readonly': True,
+                'class': 'form-control',
+            }),
+            'numero': TextInput(attrs={
+                'readonly': True,
+                'class': 'form-control',
+            }),
+            'face': TextInput(attrs={
+                'readonly': True,
+                'class': 'form-control',
+            }),
+            'subtotal_afecto': TextInput(attrs={
+                'readonly': True,
+                'class': 'form-control',
+            }),
+            'subtotal_noafecto': TextInput(attrs={
+                'readonly': True,
+                'class': 'form-control',
+            }),
+            'iva': TextInput(attrs={
+                'readonly': True,
+                'class': 'form-control',
+            }),
+            'total': TextInput(attrs={
+                'readonly': True,
+                'class': 'form-control',
+            }),
+        }
+
 

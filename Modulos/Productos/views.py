@@ -1,5 +1,7 @@
 import datetime
 from django.shortcuts import render
+from django.db.models import F
+from django.forms import model_to_dict
 from django.db import transaction
 from django.http import JsonResponse
 from django.utils.decorators import method_decorator
@@ -7,13 +9,15 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from django.urls import reverse_lazy
 import json
+import os
 from django.views.generic import ListView, DetailView 
 from django.views.generic import CreateView, UpdateView, DeleteView
 from Modulos.Productos.mixins import IsSuperuserMixin, ValidatePermissionRequiredMixin
 from Modulos.Productos.models import Categoria, Fabricante, Presentacion, Unidad_Medida, Via_Administracion, Tipo_Prescripcion, Componente, Indicacion, Impuesto, Pais
-from Modulos.Productos.models import Producto, Sucursal, Inventario, Forma_Pago, Tipo_Cliente, Genero, Cliente, Venta, Detalle_Venta, Proveedor
+from Modulos.Productos.models import Producto, Sucursal, Inventario, Forma_Pago, Tipo_Cliente, Genero, Cliente, Venta, Detalle_Venta, Proveedor, Compra, Detalle_Compra
+from Modulos.Productos.models import Tipo_Mov, Mov_Inventario
 
-from Modulos.Productos.forms import ProductoForm, VentaForm, ClienteForm, CategoriaForm, FabricanteForm, PresentacionForm, PaisForm, ProveedorForm
+from Modulos.Productos.forms import ProductoForm, VentaForm, CompraForm, ClienteForm, CategoriaForm, FabricanteForm, PresentacionForm, PaisForm, ProveedorForm
 from Modulos.Productos.forms import UnidadMedidaForm, ViaAdministracionForm, TipoPrescripcionForm
 
 # Nos sirve para redireccionar despues de una acción revertiendo patrones de expresiones regulares 
@@ -1620,16 +1624,34 @@ class VentaCrear(CreateView):
                     venta.correlativo_diario = 1
                     venta.id_forma_pago = Forma_Pago.objects.filter(id_forma_pago=vents['id_forma_pago']).first()
                     venta.save()
+                    tm = Tipo_Mov.objects.filter(descripcion='VENTA').first()
                     for i in vents['products']:
                         p = Producto.objects.filter(id_producto=i['id_producto']).first()
                         detalle = Detalle_Venta()
                         detalle.id_venta = venta
-                        detalle.id_producto = p
+                        ###detalle.id_producto = p
+                        detalle.id_producto_id = i['id_producto']
                         detalle.cantidad = i['cant']
                         detalle.id_empresa = 1
                         detalle.precio_costo = p.precio_costo
                         detalle.precio_venta = p.precio_venta
                         detalle.save()
+                        #Modificar Inventario
+                        resultado = Inventario.objects.filter(id_sucursal=vents['id_sucursal'], id_producto=i['id_producto'])
+                        #resultado.existencia -= i['cant']
+                        resultado.update(existencia=F('existencia') - i['cant'])
+                        #Movimiento de Inventario
+                        mi = Mov_Inventario()
+                        mi.id_tipo_mov = tm
+                        mi.numero_mov = detalle.id_detalle_venta
+                        mi.signo = '-'
+                        mi.id_sucursal = sucur
+                        mi.id_producto = p
+                        mi.cantidad = i['cant']
+                        mi.estado = 'A'
+                        mi.id_empresa = 1
+                        mi.save()
+
                     data = {'id': venta.id_venta}
             elif action == 'buscar_clientes':
                 data = []
@@ -1737,3 +1759,368 @@ class ProveedoresEliminar(SuccessMessageMixin, DeleteView):
         success_message = 'Proveedor Eliminado Correctamente !'
         messages.success (self.request, (success_message))
         return reverse('leerprv')
+
+
+# *************
+# ** COMPRAS **
+# *************
+
+class CompraCrear(CreateView):
+    model = Compra
+    form_class = CompraForm
+    template_name = 'compras/crear.html'
+    success_url = reverse_lazy('leercom')
+    url_redirect = success_url
+
+    @method_decorator(csrf_exempt)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        data = {}
+        try:
+            action = request.POST['action']
+            if action == 'search_products':
+                data = []
+                ids_exclude = json.loads(request.POST['ids'])
+                term = request.POST['term'].strip()
+                #products = Product.objects.filter(stock__gt=0)
+                products = Producto.objects.all()
+                if len(term):
+                    products = products.filter(nombre_venta__icontains=term)
+                for i in products.exclude(id_producto__in=ids_exclude)[0:10]:
+                    item = i.toJSON()
+                    item['value'] = i.nombre_venta
+                    # item['text'] = i.name
+                    data.append(item)
+            elif action == 'search_autocomplete':
+                data = []
+                ids_exclude = json.loads(request.POST['ids'])
+                term = request.POST['term'].strip()
+                #term = request.POST['term']
+                data.append({'id': term, 'text': term})
+                #products = Product.objects.filter(name__icontains=term, stock__gt=0)
+                products = Producto.objects.filter(nombre_venta__icontains=term)
+                for i in products.exclude(id_producto__in=ids_exclude)[0:10]:
+                    item = i.toJSON()
+                    item['id'] = i.id_producto
+                    item['text'] = i.nombre_venta
+                    data.append(item)
+            elif action == 'add':
+                with transaction.atomic():
+                    vents = json.loads(request.POST['vents'])
+                    sucur = Sucursal.objects.filter(id_sucursal=vents['id_sucursal']).first()
+                    prove = Proveedor.objects.filter(id_proveedor=vents['id_proveedor']).first()
+                    venta = Compra()
+                    venta.id_sucursal = sucur
+                    #venta.fecha = vents['fecha']
+                    venta.fecha = datetime.datetime.now() 
+                    venta.id_proveedor = prove
+                    ####venta.nombre = vents['nombre']
+                    venta.serie = vents['serie']
+                    venta.numero = vents['numero']
+                    venta.face = vents['face']
+                    ###venta.email = vents['email']
+                    isfact = False
+                    venta.subtotal_afecto = vents['subtotal_afecto']
+                    venta.subtotal_noafecto = vents['subtotal_noafecto']
+                    venta.iva = vents['iva']
+                    venta.total = vents['total']
+                    venta.id_empresa = 1
+                    venta.usuario = 1
+                    venta.id_forma_pago = vents['id_forma_pago']
+                    venta.save()
+                    tm = Tipo_Mov.objects.filter(descripcion='COMPRA').first()
+                    for i in vents['products']:
+                        p = Producto.objects.filter(id_producto=i['id_producto']).first()
+                        detalle = Detalle_Compra()
+                        detalle.id_compra = venta
+                        #detalle.id_producto = p
+                        detalle.id_producto_id = i['id_producto']
+                        detalle.cantidad = i['cant']
+                        detalle.id_empresa = 1
+                        detalle.precio_costo = i['pcp']
+                        detalle.save()
+                        #Modificar Inventario
+                        resultado = Inventario.objects.filter(id_sucursal=vents['id_sucursal'], id_producto=i['id_producto'])
+                        #resultado.existencia += i['cant']
+                        resultado.update(existencia=F('existencia') + i['cant'])
+                        #Movimiento de Inventario
+                        mi = Mov_Inventario()
+                        mi.id_tipo_mov = tm
+                        mi.numero_mov = detalle.id_detalle_compra
+                        mi.signo = '+'
+                        mi.id_sucursal = sucur
+                        mi.id_producto = p
+                        mi.cantidad = i['cant']
+                        mi.estado = 'A'
+                        mi.id_empresa = 1
+                        mi.save()
+                        mi = Mov_Inventario()
+
+                    data = {'id': venta.id_compra}
+            elif action == 'buscar_proveedores':
+                data = []
+                term = request.POST['term']
+                provs = Proveedor.objects.filter(nombre__icontains=term)
+                    #Q(names__icontains=term) | Q(surnames__icontains=term) | Q(dni__icontains=term))[0:10]
+                    #Q(nombre__icontains=term))[0:10]
+
+                for i in provs:
+                    item = i.toJSON()
+                    item['id'] = i.id_proveedor
+                    #item['text'] = i.get_full_name()
+                    item['text'] = i.nombre
+                    data.append(item)
+            elif action == 'create_prov':
+                with transaction.atomic():
+                    frmProveedor = ProveedorForm(request.POST)
+                    data = frmProveedor.save()
+            else:
+                data['error'] = 'No se ha ingresado a ninguna opción'
+        except Exception as e:
+            data['error'] = str(e)
+        return JsonResponse(data, safe=False)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Creación de una Compra'
+        context['entity'] = 'Compra'
+        context['list_url'] = self.success_url
+        context['action'] = 'add'
+        context['det'] = []
+        context['frmClient'] = ProveedorForm()
+        return context
+
+
+class CompraActualizar(UpdateView):
+    model = Compra
+    form_class = CompraForm
+    template_name = 'compras/crear.html'
+    success_url = reverse_lazy('leercom')
+    url_redirect = success_url
+
+    @method_decorator(csrf_exempt)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_form(self, form_class=None):
+        instance = self.get_object()
+        form = CompraForm(instance=instance)
+        form.fields['id_proveedor'].queryset = Proveedor.objects.filter(id_proveedor=instance.id_proveedor_id)
+        return form
+
+    def post(self, request, *args, **kwargs):
+        data = {}
+        try:
+            action = request.POST['action']
+            if action == 'search_products':
+                data = []
+                ids_exclude = json.loads(request.POST['ids'])
+                term = request.POST['term'].strip()
+                #products = Product.objects.filter(stock__gt=0)
+                products = Producto.objects.all()
+                if len(term):
+                    products = products.filter(nombre_venta__icontains=term)
+                for i in products.exclude(id_producto__in=ids_exclude)[0:10]:
+                    item = i.toJSON()
+                    item['value'] = i.nombre_venta
+                    # item['text'] = i.name
+                    data.append(item)
+            elif action == 'search_autocomplete':
+                data = []
+                ids_exclude = json.loads(request.POST['ids'])
+                term = request.POST['term'].strip()
+                #term = request.POST['term']
+                data.append({'id': term, 'text': term})
+                #products = Product.objects.filter(name__icontains=term, stock__gt=0)
+                products = Producto.objects.filter(nombre_venta__icontains=term)
+                for i in products.exclude(id_producto__in=ids_exclude)[0:10]:
+                    item = i.toJSON()
+                    item['id'] = i.id_producto
+                    item['text'] = i.nombre_venta
+                    data.append(item)
+            elif action == 'edit':
+                with transaction.atomic():
+                    vents = json.loads(request.POST['vents'])
+                    venta = self.get_object()
+                    sucur = Sucursal.objects.filter(id_sucursal=vents['id_sucursal']).first()
+                    prove = Proveedor.objects.filter(id_proveedor=vents['id_proveedor']).first()
+                    #venta = Compra()
+                    venta.id_sucursal = sucur
+                    #venta.fecha = vents['fecha']
+                    venta.fecha = datetime.datetime.now() 
+                    venta.id_proveedor = prove
+                    ####venta.nombre = vents['nombre']
+                    venta.serie = vents['serie']
+                    venta.numero = vents['numero']
+                    venta.face = vents['face']
+                    ###venta.email = vents['email']
+                    isfact = False
+                    venta.subtotal_afecto = vents['subtotal_afecto']
+                    venta.subtotal_noafecto = vents['subtotal_noafecto']
+                    venta.iva = vents['iva']
+                    venta.total = vents['total']
+                    venta.id_empresa = 1
+                    venta.usuario = 1
+                    venta.id_forma_pago = vents['id_forma_pago']
+                    venta.save()
+                    tm = Tipo_Mov.objects.filter(descripcion='COMPRA').first()
+                    #Actualizar Existencias
+                    resul_det_comp = Detalle_Compra.objects.filter(id_compra=venta.id_compra)
+                    for x in resul_det_comp:
+                        resul_mov_inve = Mov_Inventario.objects.filter(id_tipo_mov=tm, numero_mov=x.id_detalle_compra)
+                        resul_mov_inve.delete()
+                        resultado = Inventario.objects.filter(id_sucursal=vents['id_sucursal'], id_producto=x.id_producto)
+                        resultado.update(existencia=F('existencia') - x.cantidad)
+                    resul_det_comp.delete()
+                    for i in vents['products']:
+                        p = Producto.objects.filter(id_producto=i['id_producto']).first()
+                        detalle = Detalle_Compra()
+                        detalle.id_compra = venta
+                        #detalle.id_producto = p
+                        detalle.id_producto_id = i['id_producto']
+                        detalle.cantidad = i['cant']
+                        detalle.id_empresa = 1
+                        detalle.precio_costo = i['pcp']
+                        detalle.save()
+                        #Modificar Inventario
+                        resultado = Inventario.objects.filter(id_sucursal=vents['id_sucursal'], id_producto=i['id_producto'])
+                        #resultado.existencia += i['cant']
+                        resultado.update(existencia=F('existencia') + i['cant'])
+                        #Movimiento de Inventario
+                        mi = Mov_Inventario()
+                        mi.id_tipo_mov = tm
+                        mi.numero_mov = detalle.id_detalle_compra
+                        mi.signo = '+'
+                        mi.id_sucursal = sucur
+                        mi.id_producto = p
+                        mi.cantidad = i['cant']
+                        mi.estado = 'A'
+                        mi.id_empresa = 1
+                        mi.save()
+                        mi = Mov_Inventario()
+
+                    data = {'id': venta.id_compra}
+            elif action == 'buscar_proveedores':
+                data = []
+                term = request.POST['term']
+                provs = Proveedor.objects.filter(nombre__icontains=term)
+                    #Q(names__icontains=term) | Q(surnames__icontains=term) | Q(dni__icontains=term))[0:10]
+                    #Q(nombre__icontains=term))[0:10]
+
+                for i in provs:
+                    item = i.toJSON()
+                    item['id'] = i.id_proveedor
+                    #item['text'] = i.get_full_name()
+                    item['text'] = i.nombre
+                    data.append(item)
+            elif action == 'create_prov':
+                with transaction.atomic():
+                    frmProveedor = ProveedorForm(request.POST)
+                    data = frmProveedor.save()
+            else:
+                data['error'] = 'No se ha ingresado a ninguna opción'
+        except Exception as e:
+            data['error'] = str(e)
+        return JsonResponse(data, safe=False)
+
+    def get_details_product(self):
+        data = []
+        try:
+            for i in Detalle_Compra.objects.filter(id_compra=self.get_object().id_compra):
+                print(i.id_producto.toJSON())
+                item = i.id_producto.toJSON()
+                #item = model_to_dict(i)
+                item['cant'] = i.cantidad
+                item['pcp'] = format(i.precio_costo, '.5f')
+                data.append(item)
+        except:
+            pass
+        return data
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Edición de una Compra'
+        context['entity'] = 'Compra'
+        context['list_url'] = self.success_url
+        context['action'] = 'edit'
+        context['det'] = json.dumps(self.get_details_product())
+        context['frmClient'] = ProveedorForm()
+        return context
+
+
+class CompraEliminar(DeleteView):
+    model = Compra
+    template_name = 'ventas/eliminar.html'
+    success_url = reverse_lazy('leercom')
+    #permission_required = 'delete_sale'
+    url_redirect = success_url
+
+    def dispatch(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        data = {}
+        try:
+            with transaction.atomic():
+                venta = self.get_object()
+                tm = Tipo_Mov.objects.filter(descripcion='COMPRA').first()
+                #Actualizar Existencias
+                resul_det_comp = Detalle_Compra.objects.filter(id_compra=venta.id_compra)
+                for x in resul_det_comp:
+                    resul_mov_inve = Mov_Inventario.objects.filter(id_tipo_mov=tm, numero_mov=x.id_detalle_compra)
+                    resul_mov_inve.delete()
+                    resultado = Inventario.objects.filter(id_sucursal=vents['id_sucursal'], id_producto=x.id_producto)
+                    resultado.update(existencia=F('existencia') - x.cantidad)
+                resul_det_comp.delete()
+
+                self.object.delete()
+        except Exception as e:
+            data['error'] = str(e)
+        return JsonResponse(data)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Eliminación de una Compra'
+        context['entity'] = 'Compra'
+        context['list_url'] = self.success_url
+        return context
+
+
+class CompraListado(ListView):
+    model = Compra
+    #template_name = 'compras/list.html'
+    #permission_required = 'view_sale'
+
+    @method_decorator(csrf_exempt)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        data = {}
+        try:
+            action = request.POST['action']
+            if action == 'searchdata':
+                data = []
+                for i in Compra.objects.all():
+                    data.append(i.toJSON())
+            elif action == 'search_details_prod':
+                data = []
+                for i in Detalle_Compra.objects.filter(id_compra_id=request.POST['id']):
+                    data.append(i.toJSON())
+            else:
+                data['error'] = 'Ha ocurrido un error'
+        except Exception as e:
+            data['error'] = str(e)
+        return JsonResponse(data, safe=False)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Listado de Compras'
+        context['create_url'] = reverse_lazy('crearcom')
+        context['list_url'] = reverse_lazy('leercom')
+        context['entity'] = 'Compra'
+        return context
+

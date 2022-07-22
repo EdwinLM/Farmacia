@@ -268,6 +268,9 @@ class Producto(models.Model):
 		item['cat'] = self.id_categoria.toJSON()
 		item['imagen'] = self.get_image()
 		item['pvp'] = format(self.precio_venta, '.2f')
+		item['pcp'] = format(self.precio_costo, '.5f')
+		item['precio_venta'] = format(self.precio_venta, '.5f')
+		item['precio_costo'] = format(self.precio_costo, '.5f')
 		return item
 
 	class Meta:
@@ -503,10 +506,16 @@ class Detalle_Venta(models.Model):
 
 
 class Compra(models.Model):
+	CONTADO_STATUS = 1
+	CREDITO_STATUS = 2
+	COMPRA_STATUS = (
+		(CONTADO_STATUS, 'CONTADO'),
+		(CREDITO_STATUS, 'CREDITO')
+	)
 	id_compra = models.BigAutoField(primary_key=True)
 	id_sucursal = models.ForeignKey(Sucursal, on_delete=models.CASCADE)
 	fecha = models.DateField(default=datetime.now)
-	id_proveedor = models.ForeignKey(Cliente, on_delete=models.CASCADE)
+	id_proveedor = models.ForeignKey(Proveedor, on_delete=models.CASCADE)
 	serie = UpperField(max_length=15, null=False, blank=False)
 	numero = UpperField(max_length=15, null=False, blank=False)
 	face = UpperField(max_length=50, null=False, blank=False, unique=True)
@@ -519,13 +528,22 @@ class Compra(models.Model):
 	estado = models.CharField(max_length=1, default='A')
 	created_at = models.DateTimeField(auto_now_add=True)
 	updated_at = models.DateTimeField(auto_now=True)
+	id_forma_pago = models.IntegerField(choices=COMPRA_STATUS, default=CONTADO_STATUS)
 
 	def __str__(self):
-		return nombre
+		return face
 
 	def toJSON(self):
 		item = model_to_dict(self)
+		item['id_sucursal'] = self.id_sucursal.toJSON()
 		item['fecha'] = self.fecha.strftime('%Y-%m-%d')
+		item['id_proveedor'] = self.id_proveedor.toJSON()
+		item['subtotal_afecto'] = format(self.subtotal_afecto, '.5f')
+		item['subtotal_moafecto'] = format(self.subtotal_noafecto, '.5f')
+		item['iva'] = format(self.iva, '.5f')
+		item['total'] = format(self.total, '.5f')
+		item['nombre'] = self.id_proveedor.nombre
+		item['det'] = [i.toJSON() for i in self.detalle_compra_set.all()]
 		return item
 
 	class Meta:
@@ -541,6 +559,19 @@ class Detalle_Compra(models.Model):
 	cantidad = models.PositiveIntegerField(default=1)
 	id_empresa = models.PositiveIntegerField(default=1)
 	precio_costo = models.DecimalField(max_digits=9, decimal_places=5)
+
+	def __str__(self):
+		return self.id_producto.nombre_compra
+
+	def toJSON(self):
+		item = model_to_dict(self, exclude=['id_compra'])
+		#item['id_compra'] = self.id_compra.toJSON()
+		item['id_producto'] = self.id_producto.toJSON()
+		item['precio_costo'] = format(self.precio_costo, '.5f')
+		#item['pcp'] = format(self.precio_costo, '.5f')
+		item['nombre'] = self.id_producto.nombre_compra
+		item['subtotal'] = format(self.cantidad * self.precio_costo, '.5f')
+		return item
 
 
 class Tipo_Mov(models.Model):

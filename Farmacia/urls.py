@@ -37,9 +37,10 @@ from Modulos.Productos.views import TiposClientesListado, TiposClientesDetalle, 
 from Modulos.Productos.views import ClientesListado, ClientesDetalle, ClientesCrear, ClientesActualizar, ClientesEliminar
 from Modulos.Productos.views import GenerosListado, GenerosDetalle, GenerosCrear, GenerosActualizar, GenerosEliminar
 from Modulos.Productos.views import VentaCrear, ProveedoresListado, ProveedoresDetalle, ProveedoresCrear, ProveedoresActualizar, ProveedoresEliminar
+from Modulos.Productos.views import CompraListado, CompraCrear, CompraActualizar
 from Modulos.Login.views import UserListado, UsuarioCrear, UsuarioActualizar, UsuarioEliminar, UsuarioCambiarGrupo, UserProfileView, UserChangePasswordView, LoginFormView, LogoutView, DashboardView
 from reportes.views import ReporteVentaView
-    
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -162,6 +163,10 @@ urlpatterns = [
     path('proveedores/crear', ProveedoresCrear.as_view(template_name = "proveedores/crear.html"), name='crearprv'),
     path('proveedores/editar/<int:pk>', ProveedoresActualizar.as_view(template_name = "proveedores/actualizar.html"), name='actualizarprv'),
     path('proveedores/eliminar/<int:pk>', ProveedoresEliminar.as_view(), name='eliminarprv'),
+
+    path('compras/', CompraListado.as_view(template_name = "compras/index.html"), name='leercom'),
+    path('compras/crear', CompraCrear.as_view(template_name = "compras/crear.html"), name='crearcom'),
+    path('compras/editar/<int:pk>', CompraActualizar.as_view(template_name = "compras/crear.html"), name='actualizarcom'),
 
     path('ventas/crear', VentaCrear.as_view(template_name = "ventas/crear.html"), name='crearvta'),
 

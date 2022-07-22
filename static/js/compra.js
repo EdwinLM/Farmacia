@@ -1,14 +1,11 @@
 var tblProducts;
 var vents = {
     items: {
-        id_cliente: '',
-        nit: '',
-        nombre: '',
-        direccion: '',
-        telefono: '',
-        email: '',
-        se_factura: 'N',
-        id_sucursal: 3,
+        id_proveedor: '',
+        serie: '',
+        numero: '',
+        face: '',
+        id_sucursal: '',
         fecha: '',
         subtotal_afecto: 0.00,
         subtotal_noafecto: 0.00,
@@ -28,7 +25,7 @@ var vents = {
     	var subtotal_afecto = 0.00;
         var subtotal_noafecto = 0.00;
     	$.each(this.items.products, function (pos, dict) {
-            dict.subtotal = dict.cant * parseFloat(dict.pvp);
+            dict.subtotal = dict.cant * parseFloat(dict.pcp).toFixed(5);
             if (dict.afecto_impuesto)
         		subtotal_afecto += dict.subtotal;
             else
@@ -57,9 +54,9 @@ var vents = {
             data: this.items.products,
             columns: [
                 {"data": "id_producto"},
-                {"data": "nombre_venta"},
+                {"data": "nombre_compra"},
                 {"data": "cat.descripcion"},
-                {"data": "pvp"},
+                {"data": "pcp"},
                 {"data": "cant"},
                 {"data": "subtotal"},
             ],
@@ -77,7 +74,8 @@ var vents = {
                     class: 'text-center',
                     orderable: false,
                     render: function (data, type, row) {
-                        return 'Q' + parseFloat(data).toFixed(2);
+                        //return 'Q' + parseFloat(data).toFixed(5);
+                        return '<input type="text" name="pcp" class="form-control form-control-sm input-sm" autocomplete="off" value="'+row.pcp+'">';
                     }
                 },
                 {
@@ -98,11 +96,18 @@ var vents = {
                 },
             ],
             rowCallback(row, data, displayNum, displayIndex, dataIndex ) {
-            	$(row).find('input[name="cant"]').TouchSpin( {
-            		min: 1,
-            		max: 100000000,
-            		step: 1
-            	});
+                $(row).find('input[name="pcp"]').TouchSpin( {
+                    min: 0.00001,
+                    max: 10000000.00000,
+                    step: 0.00001,
+                    decimals: 5,
+                    prefix: 'Q'
+                });
+                $(row).find('input[name="cant"]').TouchSpin( {
+                    min: 1,
+                    max: 100000000,
+                    step: 1
+                });
             },
             initComplete: function (settings, json) {
 
@@ -131,7 +136,7 @@ function formatRepo(repo) {
         '<p style="margin-bottom: 0;">' +
         '<b>Nombre:</b> ' + repo.full_name + '<br>' +
         '<b>Componentes:</b> ' + repo.componentes + '<br>' +
-        '<b>Stock:</b> ' + repo.stock + '<b>   Precio Venta:</b> <span class="badge badge-warning">Q' + repo.pvp + '</span>' +
+        '<b>Stock:</b> ' + repo.stock + '<b>   Precio Costo:</b> <span class="badge badge-warning">Q' + repo.pcp + '</span>' +
         '</p>' +
         '</div>' +
         '</div>' +
@@ -156,7 +161,7 @@ $(function () {
 	});
 
     //Búsqueda de Clientes
-    $('select[name="id_cliente"]').select2({
+    $('select[name="id_proveedor"]').select2({
         theme: "bootstrap4",
         language: 'es',
         allowClear: true,
@@ -167,7 +172,7 @@ $(function () {
             data: function (params) {
                 var queryParameters = {
                     term: params.term,
-                    action: 'buscar_clientes'
+                    action: 'buscar_proveedores'
                 }
                 return queryParameters;
             },
@@ -181,11 +186,11 @@ $(function () {
         minimumInputLength: 1,
     }).on('select2:select', function (e) {
         var data = e.params.data;
-        $('input[name="nit"]').val(data.nit);
-        $('input[name="nombre"]').val(data.nombre);
-        $('input[name="direccion"]').val(data.direccion);
-        $('input[name="telefono"]').val(data.telefono);
-        $('input[name="email"]').val(data.email);
+        //$('input[name="nit"]').val(data.nit);
+        //$('input[name="nombre"]').val(data.nombre);
+        //$('input[name="direccion"]').val(data.direccion);
+        //$('input[name="telefono"]').val(data.telefono);
+        //$('input[name="email"]').val(data.email);
     });
 
     $('.btnAddClient').on('click', function () {
@@ -203,8 +208,8 @@ $(function () {
         submit_with_ajax(window.location.pathname, 'Notificación',
             '¿Estas seguro de crear al siguiente cliente?', parameters, function (response) {
                 //console.log(response);
-                var newOption = new Option(response.full_name, response.id_cliente, false, true);
-                $('select[name="id_cliente"]').append(newOption).trigger('change');
+                var newOption = new Option(response.full_name, response.id_proveedor, false, true);
+                $('select[name="id_proveedor"]').append(newOption).trigger('change');
                 $('#myModalClient').modal('hide');
             });
     });
@@ -271,6 +276,13 @@ $(function () {
 			vents.items.products[tr.row].cant = cant;
 			vents.calculate_invoice();
 			$('td:eq(5)', tblProducts.row(tr.row).node()).html('Q'+vents.items.products[tr.row].subtotal.toFixed(2));
+        })
+        .on('change keyup', 'input[name="pcp"]', function () {
+            var pcp = parseFloat($(this).val());
+            var tr = tblProducts.cell($(this).closest('td, li')).index();
+            vents.items.products[tr.row].pcp = pcp;
+            vents.calculate_invoice();
+            $('td:eq(5)', tblProducts.row(tr.row).node()).html('Q'+vents.items.products[tr.row].subtotal.toFixed(2));
 		});
 
 	//Evento CleanSearch
@@ -299,7 +311,7 @@ $(function () {
                 {"data": "full_name"},
                 {"data": "imagen"},
                 {"data": "id_producto"},
-                {"data": "pvp"},
+                {"data": "pcp"},
                 {"data": "id_producto"},
             ],
             columnDefs: [
@@ -323,7 +335,7 @@ $(function () {
                     class: 'text-center',
                     orderable: false,
                     render: function (data, type, row) {
-                        return 'X' + parseFloat(data).toFixed(2);
+                        return 'X' + parseFloat(data).toFixed(5);
                     }
                 },
                 {
@@ -363,23 +375,20 @@ $(function () {
 		};
 
 		vents.items.fecha = $('input[name="fecha"]').val();
-        vents.items.nit = $('input[name="nit"]').val();
-        vents.items.nombre = $('input[name="nombre"]').val();
-        vents.items.telefono = $('input[name="telefono"]').val();
-        vents.items.direccion = $('input[name="direccion"]').val();
-        vents.items.email = $('input[name="email"]').val();
-        if (document.querySelector('input[name="se_factura"]').checked) {
-            vents.items.se_factura = 'S';
-        }
-		//vents.items.id_cliente = $('input[name="id_id_cliente"]').val();
-        vents.items.id_cliente = $('select[name="id_cliente"]').val();
+        vents.items.serie = $('input[name="serie"]').val();
+        vents.items.numero = $('input[name="numero"]').val();
+        vents.items.face = $('input[name="face"]').val();
+        //vents.items.direccion = $('input[name="direccion"]').val();
+        //vents.items.email = $('input[name="email"]').val();
+		vents.items.id_sucursal = $('select[name="id_sucursal"]').val();
+        vents.items.id_proveedor = $('select[name="id_proveedor"]').val();
         vents.items.id_forma_pago = $('select[name="id_forma_pago"]').val();
 		var parameters = new FormData();
 		parameters.append('action', $('input[name="action"]').val());
 		parameters.append('vents', JSON.stringify(vents.items));
 		console.log(vents);
 		submit_with_ajax(window.location.pathname, 'Notificación', '¿Está seguro de realizar la siguiente acción?', parameters, function (response) {
-			location.href = '/ventas/crear';
+			location.href = '/compras/';
 		});
 	});
 
