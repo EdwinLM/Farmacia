@@ -3,19 +3,23 @@ from django.shortcuts import render
 from django.db.models import F
 from django.forms import model_to_dict
 from django.db import transaction
-from django.http import JsonResponse
+from django.conf import settings
+from django.http import HttpResponse
+from django.http import JsonResponse, HttpResponseRedirect
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from django.urls import reverse_lazy
+from django.template.loader import get_template
+from weasyprint import HTML, CSS
 import json
 import os
 from django.views.generic import ListView, DetailView 
-from django.views.generic import CreateView, UpdateView, DeleteView
+from django.views.generic import CreateView, UpdateView, DeleteView, View
 from Modulos.Productos.mixins import IsSuperuserMixin, ValidatePermissionRequiredMixin
 from Modulos.Productos.models import Categoria, Fabricante, Presentacion, Unidad_Medida, Via_Administracion, Tipo_Prescripcion, Componente, Indicacion, Impuesto, Pais
 from Modulos.Productos.models import Producto, Sucursal, Inventario, Forma_Pago, Tipo_Cliente, Genero, Cliente, Venta, Detalle_Venta, Proveedor, Compra, Detalle_Compra
-from Modulos.Productos.models import Tipo_Mov, Mov_Inventario
+from Modulos.Productos.models import Tipo_Mov, Mov_Inventario, Empresa
 
 from Modulos.Productos.forms import ProductoForm, VentaForm, CompraForm, ClienteForm, CategoriaForm, FabricanteForm, PresentacionForm, PaisForm, ProveedorForm
 from Modulos.Productos.forms import UnidadMedidaForm, ViaAdministracionForm, TipoPrescripcionForm
@@ -812,6 +816,25 @@ class ProductosListado(ListView):
         context['entity'] = 'Producto'
         return context
 
+
+class ProductoCrear2(CreateView):
+    model = Producto
+    form = ProductoForm
+    fields = "__all__"
+    success_message = 'Producto Creado Correctamente !'
+
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Creación de Productos'
+        return context
+ 
+    # Redireccionamos a la página principal luego de crear un registro o categoria
+    def get_success_url(self):
+        return reverse('leerpro')
+
 class ProductoCrear(CreateView):
     model = Producto
     form_class = ProductoForm
@@ -829,6 +852,10 @@ class ProductoCrear(CreateView):
             action = request.POST['action']
             if action == 'add':
                 with transaction.atomic():
+                    pa = request.POST.getlist('principios_activos')
+                    print(request.POST.getlist('principios_activos'))
+                    for x in request.POST.getlist('principios_activos'):
+                        print(x)
                     #form = self.get_form()
                     #data = form.save()
                     #data = {}
@@ -865,6 +892,7 @@ class ProductoCrear(CreateView):
                     product.estado = 'A'
                     product.id_empresa = 1
                     product.save()
+                    product.principios_activos.set(pa)
 
                     for s in Sucursal.objects.all():
                         i = Inventario()
@@ -1558,7 +1586,7 @@ class VentaCrear(CreateView):
     model = Venta
     form_class = VentaForm
     template_name = 'ventas/crear.html'
-    success_url = reverse_lazy('crearvta')
+    success_url = reverse_lazy('leervta')
     url_redirect = success_url
 
     @method_decorator(csrf_exempt)
@@ -1600,6 +1628,7 @@ class VentaCrear(CreateView):
                     vents = json.loads(request.POST['vents'])
                     sucur = Sucursal.objects.filter(id_sucursal=vents['id_sucursal']).first()
                     clien = Cliente.objects.filter(id_cliente=vents['id_cliente']).first()
+                    empre = Empresa.objects.filter(id_empresa=vents['id_empresa']).first()
                     venta = Venta()
                     venta.id_sucursal = sucur
                     #venta.fecha = vents['fecha']
@@ -1618,7 +1647,7 @@ class VentaCrear(CreateView):
                     venta.subtotal_noafecto = vents['subtotal_noafecto']
                     venta.iva = vents['iva']
                     venta.total = vents['total']
-                    venta.id_empresa = 1
+                    venta.id_empresa = empre
                     venta.vendedor = 1
                     venta.cajero = 1
                     venta.correlativo_diario = 1
@@ -1684,6 +1713,64 @@ class VentaCrear(CreateView):
         context['det'] = []
         context['frmClient'] = ClienteForm()
         return context
+
+class VentaListado(ListView):
+    model = Venta
+    #template_name = 'compras/list.html'
+    #permission_required = 'view_sale'
+
+    @method_decorator(csrf_exempt)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        data = {}
+        try:
+            action = request.POST['action']
+            if action == 'searchdata':
+                data = []
+                for i in Venta.objects.all():
+                    data.append(i.toJSON())
+            elif action == 'search_details_prod':
+                data = []
+                for i in Detalle_Venta.objects.filter(id_venta_id=request.POST['id']):
+                    data.append(i.toJSON())
+            else:
+                data['error'] = 'Ha ocurrido un error'
+        except Exception as e:
+            data['error'] = str(e)
+        return JsonResponse(data, safe=False)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Listado de Ventas'
+        context['create_url'] = reverse_lazy('crearvta')
+        context['list_url'] = reverse_lazy('leervta')
+        context['entity'] = 'Venta'
+        return context
+
+
+class VentaPdfView(View):
+
+    def get(self, request, *args, **kwargs):
+        try:
+            template = get_template('ventas/venta.html')
+            context = {
+                'sale': Venta.objects.get(pk=self.kwargs['pk']),
+                'company': {'name': 'FARMACIAS BIENESTAR', 'ruc': '9999999999999', 'address': 'Río Dulce, Izabal, Guatemala', 'telefono': '54545454', 'web': 'www.farmaciasbienestar.com.gt'},
+                'icon': '{}{}'.format(settings.MEDIA_URL, 'logo.png')
+            }
+            html = template.render(context)
+            css_url = os.path.join(settings.BASE_DIR, 'static/lib/bootstrap-4.4.1-dist/css/bootstrap.min.css')
+            pdf = HTML(string=html, base_url=request.build_absolute_uri()).write_pdf(stylesheets=[CSS(css_url)])
+            return HttpResponse(pdf, content_type='application/pdf')
+        except Exception as e:
+            print(str(e))
+            pass
+        return HttpResponseRedirect(reverse_lazy('leervta'))
+
+
+
 
 
 # *****************
@@ -1811,6 +1898,7 @@ class CompraCrear(CreateView):
                     vents = json.loads(request.POST['vents'])
                     sucur = Sucursal.objects.filter(id_sucursal=vents['id_sucursal']).first()
                     prove = Proveedor.objects.filter(id_proveedor=vents['id_proveedor']).first()
+                    empre = Empresa.objects.filter(id_empresa=vents['id_empresa']).first()
                     venta = Compra()
                     venta.id_sucursal = sucur
                     #venta.fecha = vents['fecha']
@@ -1826,7 +1914,7 @@ class CompraCrear(CreateView):
                     venta.subtotal_noafecto = vents['subtotal_noafecto']
                     venta.iva = vents['iva']
                     venta.total = vents['total']
-                    venta.id_empresa = 1
+                    venta.id_empresa = empre
                     venta.usuario = 1
                     venta.id_forma_pago = vents['id_forma_pago']
                     venta.save()
@@ -1946,6 +2034,7 @@ class CompraActualizar(UpdateView):
                     venta = self.get_object()
                     sucur = Sucursal.objects.filter(id_sucursal=vents['id_sucursal']).first()
                     prove = Proveedor.objects.filter(id_proveedor=vents['id_proveedor']).first()
+                    empre = Empresa.objects.filter(id_empresa=vents['id_empresa']).first()
                     #venta = Compra()
                     venta.id_sucursal = sucur
                     #venta.fecha = vents['fecha']
@@ -1961,7 +2050,7 @@ class CompraActualizar(UpdateView):
                     venta.subtotal_noafecto = vents['subtotal_noafecto']
                     venta.iva = vents['iva']
                     venta.total = vents['total']
-                    venta.id_empresa = 1
+                    venta.id_empresa = empre
                     venta.usuario = 1
                     venta.id_forma_pago = vents['id_forma_pago']
                     venta.save()
@@ -2052,7 +2141,7 @@ class CompraActualizar(UpdateView):
 
 class CompraEliminar(DeleteView):
     model = Compra
-    template_name = 'ventas/eliminar.html'
+    template_name = 'ventas/delete.html'
     success_url = reverse_lazy('leercom')
     #permission_required = 'delete_sale'
     url_redirect = success_url
@@ -2065,14 +2154,15 @@ class CompraEliminar(DeleteView):
         data = {}
         try:
             with transaction.atomic():
-                venta = self.get_object()
+                #venta = self.get_object()
                 tm = Tipo_Mov.objects.filter(descripcion='COMPRA').first()
                 #Actualizar Existencias
-                resul_det_comp = Detalle_Compra.objects.filter(id_compra=venta.id_compra)
-                for x in resul_det_comp:
+                resul_det_comp = Detalle_Compra.objects.filter(id_compra=self.object.id_compra)
+                for x in Detalle_Compra.objects.filter(id_compra=self.object.id_compra):
+                #for x in resul_det_comp:
                     resul_mov_inve = Mov_Inventario.objects.filter(id_tipo_mov=tm, numero_mov=x.id_detalle_compra)
                     resul_mov_inve.delete()
-                    resultado = Inventario.objects.filter(id_sucursal=vents['id_sucursal'], id_producto=x.id_producto)
+                    resultado = Inventario.objects.filter(id_sucursal=self.object.id_sucursal, id_producto=x.id_producto)
                     resultado.update(existencia=F('existencia') - x.cantidad)
                 resul_det_comp.delete()
 
@@ -2123,4 +2213,24 @@ class CompraListado(ListView):
         context['list_url'] = reverse_lazy('leercom')
         context['entity'] = 'Compra'
         return context
+
+
+class CompraPdfView(View):
+
+    def get(self, request, *args, **kwargs):
+        try:
+            template = get_template('compras/compra.html')
+            context = {
+                'sale': Compra.objects.get(pk=self.kwargs['pk']),
+                'company': {'name': 'FARMACIAS BIENESTAR', 'ruc': '9999999999999', 'address': 'Río Dulce, Izabal, Guatemala', 'telefono': '54545454', 'web': 'www.farmaciasbienestar.com.gt'},
+                'icon': '{}{}'.format(settings.MEDIA_URL, 'logo.png')
+            }
+            html = template.render(context)
+            css_url = os.path.join(settings.BASE_DIR, 'static/lib/bootstrap-4.4.1-dist/css/bootstrap.min.css')
+            pdf = HTML(string=html, base_url=request.build_absolute_uri()).write_pdf(stylesheets=[CSS(css_url)])
+            return HttpResponse(pdf, content_type='application/pdf')
+        except Exception as e:
+            print(str(e))
+            pass
+        return HttpResponseRedirect(reverse_lazy('leercom'))
 

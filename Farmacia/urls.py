@@ -36,8 +36,9 @@ from Modulos.Productos.views import FormasPagoListado, FormasPagoDetalle, Formas
 from Modulos.Productos.views import TiposClientesListado, TiposClientesDetalle, TiposClientesCrear, TiposClientesActualizar, TiposClientesEliminar
 from Modulos.Productos.views import ClientesListado, ClientesDetalle, ClientesCrear, ClientesActualizar, ClientesEliminar
 from Modulos.Productos.views import GenerosListado, GenerosDetalle, GenerosCrear, GenerosActualizar, GenerosEliminar
-from Modulos.Productos.views import VentaCrear, ProveedoresListado, ProveedoresDetalle, ProveedoresCrear, ProveedoresActualizar, ProveedoresEliminar
-from Modulos.Productos.views import CompraListado, CompraCrear, CompraActualizar
+from Modulos.Productos.views import ProveedoresListado, ProveedoresDetalle, ProveedoresCrear, ProveedoresActualizar, ProveedoresEliminar
+from Modulos.Productos.views import CompraListado, CompraCrear, CompraActualizar, CompraEliminar, CompraPdfView
+from Modulos.Productos.views import VentaListado, VentaCrear, VentaPdfView
 from Modulos.Login.views import UserListado, UsuarioCrear, UsuarioActualizar, UsuarioEliminar, UsuarioCambiarGrupo, UserProfileView, UserChangePasswordView, LoginFormView, LogoutView, DashboardView
 from reportes.views import ReporteVentaView
 
@@ -167,8 +168,13 @@ urlpatterns = [
     path('compras/', CompraListado.as_view(template_name = "compras/index.html"), name='leercom'),
     path('compras/crear', CompraCrear.as_view(template_name = "compras/crear.html"), name='crearcom'),
     path('compras/editar/<int:pk>', CompraActualizar.as_view(template_name = "compras/crear.html"), name='actualizarcom'),
+    path('compras/eliminar/<int:pk>', CompraEliminar.as_view(template_name = "compras/delete.html"), name='eliminarcom'),
+    #path('compras/pdf/<int:pk>', CompraPdfView.as_view(template_name = "compras/compra.html"), name='pdfcom'),
+    path('compras/pdf/<int:pk>/', CompraPdfView.as_view(), name='pdfcom'),
 
+    path('ventas/', VentaListado.as_view(template_name = "ventas/index.html"), name='leervta'),
     path('ventas/crear', VentaCrear.as_view(template_name = "ventas/crear.html"), name='crearvta'),
+    path('ventas/pdf/<int:pk>/', VentaPdfView.as_view(), name='pdfvta'),
 
     path('rpt/rptventa', ReporteVentaView.as_view(template_name = "rpt/rptventa.html"), name='rptventa'),
     

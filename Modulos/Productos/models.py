@@ -21,6 +21,18 @@ class UpperField(models.CharField):
     def get_prep_value(self, value):
         return str(value).upper()
 
+class Empresa(models.Model):
+	id_empresa = models.AutoField(primary_key=True)
+	nit = UpperField(max_length=30, null=False, blank=False, unique=True)
+	nombre = UpperField(max_length=100, null=False, blank=False, unique=True)
+	razon = UpperField(max_length=100, null=False, blank=False, unique=True)
+	direccion = UpperField(max_length=100, null=False, blank=False, unique=True)
+	telefono = UpperField(max_length=30, null=False, blank=False, unique=True)
+	email = UpperField(max_length=100, null=False, blank=False, unique=True)
+	web = UpperField(max_length=100, null=False, blank=False, unique=True)
+	contacto = UpperField(max_length=100, null=False, blank=False, unique=True)
+
+
 # *******************************************************
 # ** CLASES PARA MANEJO DE LOS PRODUCTOS EN EL SISTEMA **
 # *******************************************************
@@ -262,6 +274,13 @@ class Producto(models.Model):
 			return '{}{}'.format(MEDIA_URL, self.imagen)
 		return '{}{}'.format(MEDIA_URL, 'images/empty.png')
 
+	def _get_afecto(self):
+		if self.afecto_impuesto:
+			return ''
+		else:
+			return '*'
+	afecto = property(_get_afecto)
+
 	def toJSON(self):
 		item = model_to_dict(self)
 		item['full_name'] = '{} < {} >'.format(self.nombre_venta, self.id_fabricante.nombre)
@@ -472,7 +491,7 @@ class Venta(models.Model):
 	subtotal_noafecto = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
 	iva = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
 	total = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
-	id_empresa = models.PositiveIntegerField(default=1)
+	id_empresa = models.ForeignKey(Empresa, on_delete=models.CASCADE)
 	vendedor = models.PositiveIntegerField(default=1)
 	cajero = models.PositiveIntegerField(default=1)
 	correlativo_diario = models.PositiveIntegerField(default=1)
@@ -487,6 +506,7 @@ class Venta(models.Model):
 	def toJSON(self):
 		item = model_to_dict(self)
 		item['fecha'] = self.fecha.strftime('%Y-%m-%d')
+		item['det'] = [i.toJSON() for i in self.detalle_venta_set.all()]
 		return item
 
 	class Meta:
@@ -503,6 +523,24 @@ class Detalle_Venta(models.Model):
 	id_empresa = models.PositiveIntegerField(default=1)
 	precio_costo = models.DecimalField(max_digits=9, decimal_places=5)
 	precio_venta = models.DecimalField(max_digits=7, decimal_places=2)
+
+	def __str__(self):
+		return self.id_producto.nombre_venta
+
+	def _get_subtotal(self):
+		return self.cantidad * self.precio_venta
+	subtot = property(_get_subtotal)
+
+	def toJSON(self):
+		item = model_to_dict(self, exclude=['id_venta'])
+		#item['id_compra'] = self.id_compra.toJSON()
+		item['id_producto'] = self.id_producto.toJSON()
+		item['precio_costo'] = format(self.precio_costo, '.5f')
+		item['precio_venta'] = format(self.precio_venta, '.5f')
+		#item['pcp'] = format(self.precio_costo, '.5f')
+		item['nombre'] = self.id_producto.nombre_venta
+		item['subtotal'] = format(self.cantidad * self.precio_venta, '.5f')
+		return item
 
 
 class Compra(models.Model):
@@ -523,7 +561,7 @@ class Compra(models.Model):
 	subtotal_noafecto = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
 	iva = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
 	total = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
-	id_empresa = models.PositiveIntegerField(default=1)
+	id_empresa = models.ForeignKey(Empresa, on_delete=models.CASCADE)
 	usuario = models.PositiveIntegerField(default=1)
 	estado = models.CharField(max_length=1, default='A')
 	created_at = models.DateTimeField(auto_now_add=True)
@@ -531,7 +569,7 @@ class Compra(models.Model):
 	id_forma_pago = models.IntegerField(choices=COMPRA_STATUS, default=CONTADO_STATUS)
 
 	def __str__(self):
-		return face
+		return self.face
 
 	def toJSON(self):
 		item = model_to_dict(self)
@@ -562,6 +600,10 @@ class Detalle_Compra(models.Model):
 
 	def __str__(self):
 		return self.id_producto.nombre_compra
+
+	def _get_subtotal(self):
+		return self.cantidad * self.precio_costo
+	subtot = property(_get_subtotal)
 
 	def toJSON(self):
 		item = model_to_dict(self, exclude=['id_compra'])

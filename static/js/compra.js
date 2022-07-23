@@ -2,6 +2,7 @@ var tblProducts;
 var vents = {
     items: {
         id_proveedor: '',
+        id_empresa: '',
         serie: '',
         numero: '',
         face: '',
@@ -382,6 +383,7 @@ $(function () {
         //vents.items.email = $('input[name="email"]').val();
 		vents.items.id_sucursal = $('select[name="id_sucursal"]').val();
         vents.items.id_proveedor = $('select[name="id_proveedor"]').val();
+        vents.items.id_empresa = $('input[name="id_empresa"]').val();
         vents.items.id_forma_pago = $('select[name="id_forma_pago"]').val();
 		var parameters = new FormData();
 		parameters.append('action', $('input[name="action"]').val());

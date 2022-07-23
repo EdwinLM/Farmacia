@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+
+        * {
+            color: black;
+        }
+
+        body {
+            font-family: "Roboto", "Lucida Grande", Verdana, Arial, sans-serif;
+            padding: 0;
+            margin: 0;
+            color: black;
+        }
+
+        .name-company {
+            font-size: 30px;
+            padding: 0;
+            margin: 0;
+            font-weight: bold;
+            text-transform: uppercase;
+            text-align: center;
+        }
+
+        table thead tr th {
+            border: 1px solid black !important;
+            padding: 3px;
+        }
+
+        table tbody tr td {
+            border: 1px solid black;
+            padding: 3px;
+        }
+
+        .img-logo {
+            margin-top: 10px;
+            width: 75px;
+            height: 75px;
+            margin-bottom: 10px;
+        }
+
+    </style>
+</head>
+<body>
+<div class="container-fluid">
+    <img src="{% static 'img/logo.png' %}" class="img-fluid d-block mx-auto img-logo">
+    <h1 class="name-company">{{ sale.id_empresa.nombre }}</h1>
+    <p class="text-center">
+        {{ sale.id_empresa.direccion }}<br>
+        Teléfono: {{ sale.id_empresa.telefono }}<br>
+        Web: {{ sale.id_empresa.web }}<br>
+    </p>
+    <p>
+        <b>Proveedor:</b> {{ sale.id_proveedor.nombre }}<br>
+        <b>NIT:</b> {{ sale.id_proveedor.nit }}<br>
+        <b>Fecha de compra:</b> {{ sale.fecha|date:'c' }}<br>
+        <b>Factura Serie:</b> {{ sale.serie }}  <b>Número</b> {{ sale.numero }}  <b>FACE</b> {{ sale.face }}<br>
+    </p>
+    <table class="table" style="width: 100%;">
+        <thead>
+        <tr style="border: 1px solid black;">
+            <th style="width: 10%;" class="text-right">Cantidad</th>
+            <th style="width: 60%;">Producto</th>
+            <th style="width: 15%;" class="text-right">P.Unitario</th>
+            <th style="width: 15%;" class="text-right">Subtotal</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for det in sale.detalle_compra_set.all %}
+            <tr>
+                <td class="text-right">{{ det.cantidad }}</td>
+                <td>{{ det.id_producto.afecto }}{{ det.id_producto.nombre_compra }}</td>
+                <td class="text-right">{{ det.precio_costo|floatformat:2 }}</td>
+                <td class="text-right">{{ det.subtot|floatformat:2 }}</td>
+            </tr>
+        {% endfor %}
+        <tr>
+            <td colspan="3" class="text-right"><b>Subtotal Afecto</b></td>
+            <td class="text-right">{{ sale.subtotal_afecto|floatformat:2 }}</td>
+        </tr>
+        <tr>
+            <td colspan="3" class="text-right"><b>*Subtotal No Afecto</b></td>
+            <td class="text-right">{{ sale.subtotal_noafecto|floatformat:2 }}</td>
+        </tr>
+        <tr>
+            <td colspan="3" class="text-right"><b>Iva %</b></td>
+            <td class="text-right">{{ sale.iva|floatformat:2 }}</td>
+        </tr>
+        <tr>
+            <td colspan="3" class="text-right"><b>Total</b></td>
+            <td class="text-right"><b>{{ sale.total|floatformat:2 }}</b></td>
+        </tr>
+        <tr>
+            <td colspan="4">
+                <p class="text-uppercase font-weight-bold text-center">
+                    Total de productos {{ sale.detalle_compra_set.all.count }}<br>
+                    ¡Salud y ahorro siempre!<br>
+                </p>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

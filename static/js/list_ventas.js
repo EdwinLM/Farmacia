@@ -4,7 +4,7 @@ function format(d) {
     var html = '<table class="table">';
     html += '<thead class="thead-dark">';
     html += '<tr><th scope="col">Producto</th>';
-    html += '<th scope="col">Precio Costo</th>';
+    html += '<th scope="col">Precio Venta</th>';
     html += '<th scope="col">Cantidad</th>';
     html += '<th scope="col">Subtotal</th></tr>';
     html += '</thead>';
@@ -12,7 +12,7 @@ function format(d) {
     $.each(d.det, function (key, value) {
         html+='<tr>'
         html+='<td>'+value.nombre+'</td>'
-        html+='<td>'+value.precio_costo+'</td>'
+        html+='<td>'+value.precio_venta+'</td>'
         html+='<td>'+value.cantidad+'</td>'
         html+='<td>'+value.subtotal+'</td>'
         html+='</tr>';
@@ -44,10 +44,9 @@ $(function () {
                 "data": null,
                 "defaultContent": ''
             },
-            {"data": "fecha"},            
+            {"data": "fecha"},
+            {"data": "nit"},
             {"data": "nombre"},
-            {"data": "serie"},
-            {"data": "numero"},
             {"data": "total"},
             {"data": "id"},
         ],
@@ -70,10 +69,10 @@ $(function () {
                 class: 'text-center',
                 orderable: false,
                 render: function (data, type, row) {
-                    var buttons = '<a href="/compras/eliminar/' + row.id_compra + '" class="btn btn-danger btn-xs btn-flat"><i class="fas fa-trash-alt"></i></a> ';
-                    buttons += '<a href="/compras/editar/' + row.id_compra + '" class="btn btn-warning btn-xs btn-flat"><i class="fas fa-edit"></i></a> ';
+                    var buttons = '<a href="/ventas/eliminar/' + row.id_venta + '" class="btn btn-danger btn-xs btn-flat"><i class="fas fa-trash-alt"></i></a> ';
+                    buttons += '<a href="/ventas/editar/' + row.id_venta + '" class="btn btn-warning btn-xs btn-flat"><i class="fas fa-edit"></i></a> ';
                     buttons += '<a rel="details" class="btn btn-success btn-xs btn-flat"><i class="fas fa-search"></i></a> ';
-                    buttons += '<a href="/compras/pdf/'+row.id_compra+'" target="_blank" class="btn btn-info btn-xs btn-flat"><i class="fas fa-file-pdf"></i></a> ';
+                    buttons += '<a href="/ventas/pdf/'+row.id_venta+'" target="_blank" class="btn btn-info btn-xs btn-flat"><i class="fas fa-file-pdf"></i></a> ';
                     return buttons;
                 }
             },
@@ -100,13 +99,13 @@ $(function () {
                     type: 'POST',
                     data: {
                         'action': 'search_details_prod',
-                        'id': data.id_compra
+                        'id': data.id_venta
                     },
                     dataSrc: ""
                 },
                 columns: [
                     {"data": "nombre"},
-                    {"data": "precio_costo"},
+                    {"data": "precio_venta"},
                     {"data": "cantidad"},
                     {"data": "subtotal"},
                 ],
