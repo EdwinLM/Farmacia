@@ -121,6 +121,12 @@ function formatRepo(repo) {
         return repo.text;
     }
 
+    var html_componentes = '';
+    let arr = repo.comp.split('| ');
+    arr.forEach(function(item){
+        if (item !== ' ') html_componentes += '<span class="badge badge-success">' + item + '</span> ';
+    })
+
     var option = $(
         '<div class="wrapper container">' +
         '<div class="row">' +
@@ -131,7 +137,7 @@ function formatRepo(repo) {
         //'<br>' +
         '<p style="margin-bottom: 0;">' +
         '<b>Nombre:</b> ' + repo.full_name + '<br>' +
-        '<b>Componentes:</b> ' + repo.componentes + '<br>' +
+        '<b>Componentes:</b> ' + html_componentes + '<br>' +
         '<b>Stock:</b> ' + repo.stock + '<b>   Precio Venta:</b> <span class="badge badge-warning">Q' + repo.pvp + '</span>' +
         '</p>' +
         '</div>' +
@@ -291,6 +297,7 @@ $(function () {
                 type: 'POST',
                 data: {
                     'action': 'search_products',
+                    'id_sucursal': vents.items.id_sucursal,
                     'ids': JSON.stringify(vents.get_ids()),
                     'term': $('select[name="search"]').val()
                 },
@@ -397,6 +404,7 @@ $(function () {
                 var queryParameters = {
                     term: params.term,
                     action: 'search_autocomplete',
+                    id_sucursal: vents.items.id_sucursal,
                     ids: JSON.stringify(vents.get_ids())
                 }
                 return queryParameters;

@@ -1,6 +1,7 @@
 import datetime
 from django.shortcuts import render
 from django.db.models import F
+from django.db.models import Q
 from django.forms import model_to_dict
 from django.db import transaction
 from django.conf import settings
@@ -853,9 +854,6 @@ class ProductoCrear(CreateView):
             if action == 'add':
                 with transaction.atomic():
                     pa = request.POST.getlist('principios_activos')
-                    print(request.POST.getlist('principios_activos'))
-                    for x in request.POST.getlist('principios_activos'):
-                        print(x)
                     #form = self.get_form()
                     #data = form.save()
                     #data = {}
@@ -881,7 +879,8 @@ class ProductoCrear(CreateView):
                     product.conversion = request.POST['conversion']
                     product.id_via_administracion = viaad
                     product.prioridad = request.POST['prioridad']
-                    product.imagen = request.FILES['imagen']
+                    if request.FILES.get('imagen'):
+                        product.imagen = request.FILES['imagen']
                     product.id_tipo_prescripcion = tipop
                     isafect = True if request.POST.get("afecto_impuesto") == "true" else False
                     product.afecto_impuesto = isafect
@@ -966,7 +965,6 @@ def ProductoCrear2(request):
     if request.method == "POST":
         form = ProductoForm(request.POST)
         if form.is_valid():
-            print("Valido")
             product = Producto()
             product.codigo_barras_1 = form.cleaned_data['codigo_barras_1']
             product.codigo_barras_2 = form.cleaned_data['codigo_barras_2']
@@ -1604,24 +1602,27 @@ class VentaCrear(CreateView):
                 #products = Product.objects.filter(stock__gt=0)
                 products = Producto.objects.all()
                 if len(term):
-                    products = products.filter(nombre_venta__icontains=term)
+                    products = products.filter(Q(principios_activos__descripcion__icontains=term)|Q(nombre_venta__icontains=term)|Q(codigo_barras_1__icontains=term)|Q(codigo_barras_2__icontains=term))
                 for i in products.exclude(id_producto__in=ids_exclude)[0:10]:
                     item = i.toJSON()
                     item['value'] = i.nombre_venta
+                    item['stock'] = Inventario.objects.filter(id_sucursal=request.POST['id_sucursal'], id_producto=i.id_producto).first().existencia
                     # item['text'] = i.name
                     data.append(item)
             elif action == 'search_autocomplete':
+
                 data = []
                 ids_exclude = json.loads(request.POST['ids'])
                 term = request.POST['term'].strip()
                 #term = request.POST['term']
                 data.append({'id': term, 'text': term})
                 #products = Product.objects.filter(name__icontains=term, stock__gt=0)
-                products = Producto.objects.filter(nombre_venta__icontains=term)
+                products = Producto.objects.filter(Q(principios_activos__descripcion__icontains=term)|Q(nombre_venta__icontains=term)|Q(codigo_barras_1__icontains=term)|Q(codigo_barras_2__icontains=term))
                 for i in products.exclude(id_producto__in=ids_exclude)[0:10]:
                     item = i.toJSON()
                     item['id'] = i.id_producto
                     item['text'] = i.nombre_venta
+                    item['stock'] = Inventario.objects.filter(id_sucursal=request.POST['id_sucursal'], id_producto=i.id_producto).first().existencia
                     data.append(item)
             elif action == 'add':
                 with transaction.atomic():
@@ -1874,10 +1875,12 @@ class CompraCrear(CreateView):
                 #products = Product.objects.filter(stock__gt=0)
                 products = Producto.objects.all()
                 if len(term):
-                    products = products.filter(nombre_venta__icontains=term)
+                    #products = products.filter(nombre_venta__icontains=term)
+                    products = Producto.objects.filter(Q(nombre_compra__icontains=term)|Q(principios_activos__descripcion__icontains=term)|Q(codigo_barras_1__icontains=term)|Q(codigo_barras_2__icontains=term))
                 for i in products.exclude(id_producto__in=ids_exclude)[0:10]:
                     item = i.toJSON()
                     item['value'] = i.nombre_venta
+                    item['stock'] = Inventario.objects.filter(id_sucursal=request.POST['id_sucursal'], id_producto=i.id_producto).first().existencia
                     # item['text'] = i.name
                     data.append(item)
             elif action == 'search_autocomplete':
@@ -1887,11 +1890,13 @@ class CompraCrear(CreateView):
                 #term = request.POST['term']
                 data.append({'id': term, 'text': term})
                 #products = Product.objects.filter(name__icontains=term, stock__gt=0)
-                products = Producto.objects.filter(nombre_venta__icontains=term)
+                #products = Producto.objects.filter(nombre_venta__icontains=term)
+                products = Producto.objects.filter(Q(nombre_compra__icontains=term)|Q(principios_activos__descripcion__icontains=term)|Q(codigo_barras_1__icontains=term)|Q(codigo_barras_2__icontains=term))
                 for i in products.exclude(id_producto__in=ids_exclude)[0:10]:
                     item = i.toJSON()
                     item['id'] = i.id_producto
                     item['text'] = i.nombre_venta
+                    item['stock'] = Inventario.objects.filter(id_sucursal=request.POST['id_sucursal'], id_producto=i.id_producto).first().existencia
                     data.append(item)
             elif action == 'add':
                 with transaction.atomic():
@@ -2009,10 +2014,12 @@ class CompraActualizar(UpdateView):
                 #products = Product.objects.filter(stock__gt=0)
                 products = Producto.objects.all()
                 if len(term):
-                    products = products.filter(nombre_venta__icontains=term)
+                    #products = products.filter(nombre_venta__icontains=term)
+                    products = Producto.objects.filter(Q(nombre_compra__icontains=term)|Q(principios_activos__descripcion__icontains=term)|Q(codigo_barras_1__icontains=term)|Q(codigo_barras_2__icontains=term))
                 for i in products.exclude(id_producto__in=ids_exclude)[0:10]:
                     item = i.toJSON()
                     item['value'] = i.nombre_venta
+                    item['stock'] = Inventario.objects.filter(id_sucursal=request.POST['id_sucursal'], id_producto=i.id_producto).first().existencia
                     # item['text'] = i.name
                     data.append(item)
             elif action == 'search_autocomplete':
@@ -2022,11 +2029,13 @@ class CompraActualizar(UpdateView):
                 #term = request.POST['term']
                 data.append({'id': term, 'text': term})
                 #products = Product.objects.filter(name__icontains=term, stock__gt=0)
-                products = Producto.objects.filter(nombre_venta__icontains=term)
+                #products = Producto.objects.filter(nombre_venta__icontains=term)
+                products = Producto.objects.filter(Q(nombre_compra__icontains=term)|Q(principios_activos__descripcion__icontains=term)|Q(codigo_barras_1__icontains=term)|Q(codigo_barras_2__icontains=term))
                 for i in products.exclude(id_producto__in=ids_exclude)[0:10]:
                     item = i.toJSON()
                     item['id'] = i.id_producto
                     item['text'] = i.nombre_venta
+                    item['stock'] = Inventario.objects.filter(id_sucursal=request.POST['id_sucursal'], id_producto=i.id_producto).first().existencia
                     data.append(item)
             elif action == 'edit':
                 with transaction.atomic():
@@ -2118,7 +2127,6 @@ class CompraActualizar(UpdateView):
         data = []
         try:
             for i in Detalle_Compra.objects.filter(id_compra=self.get_object().id_compra):
-                print(i.id_producto.toJSON())
                 item = i.id_producto.toJSON()
                 #item = model_to_dict(i)
                 item['cant'] = i.cantidad

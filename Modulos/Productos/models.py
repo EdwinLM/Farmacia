@@ -281,8 +281,18 @@ class Producto(models.Model):
 			return '*'
 	afecto = property(_get_afecto)
 
+	def _get_cadena_busquedaVta(self):
+		txtcomponente = ''
+		for c in self.principios_activos.all():
+			txtcomponente = txtcomponente + ' | ' + c.descripcion
+		return self.codigo_barras_1 + ' | ' + self.codigo_barras_2 + ' | ' + self.nombre_venta + txtcomponente
+	cadenaBusquedaVta = property(_get_cadena_busquedaVta)
+
 	def toJSON(self):
-		item = model_to_dict(self)
+		txtcomponente = ''
+		for c in self.principios_activos.all():
+			txtcomponente = txtcomponente + ' | ' + c.descripcion
+		item = model_to_dict(self, exclude=['principios_activos'])
 		item['full_name'] = '{} < {} >'.format(self.nombre_venta, self.id_fabricante.nombre)
 		item['cat'] = self.id_categoria.toJSON()
 		item['imagen'] = self.get_image()
@@ -290,6 +300,8 @@ class Producto(models.Model):
 		item['pcp'] = format(self.precio_costo, '.5f')
 		item['precio_venta'] = format(self.precio_venta, '.5f')
 		item['precio_costo'] = format(self.precio_costo, '.5f')
+		item['comp'] = txtcomponente
+		item['concatenado'] = self.codigo_barras_1 + ' | ' + self.codigo_barras_2 + ' | ' + self.nombre_venta + txtcomponente
 		return item
 
 	class Meta:
@@ -370,6 +382,10 @@ class Inventario(models.Model):
 	created_at = models.DateTimeField(auto_now_add=True)
 	updated_at = models.DateTimeField(auto_now=True)
 	id_empresa = models.PositiveIntegerField(default=1)
+
+	def toJSON(self):
+		item = model_to_dict(self)
+		return item
 
 
 class Tipo_Cliente(models.Model):
