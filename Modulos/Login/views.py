@@ -5,6 +5,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView, LogoutView, TemplateView, PasswordResetView
 from django.http import JsonResponse, HttpResponseRedirect
 from django.urls import reverse_lazy
+from django.shortcuts import redirect
 from django.contrib.auth.models import Group
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
@@ -13,6 +14,7 @@ from django.views.generic import CreateView, UpdateView, DeleteView, View, FormV
 from Modulos.Productos.mixins import ValidatePermissionRequiredMixin
 from Modulos.Login.models import User
 from Modulos.Productos.forms import UserForm, UserProfileForm
+from Modulos.Productos.models import Empresa
 from random import randint
 
 #class UserListado(LoginRequiredMixin, ValidatePermissionRequiredMixin, ListView):
@@ -45,6 +47,7 @@ class UserListado(ListView):
 		context['title'] = 'Listado de Usuarios'
 		context['create_url'] = reverse_lazy('crearusr')
 		context['action'] = 'searchdata'
+		context['empresa'] = Empresa.objects.first().nombre
 		return context
 
 class UsuarioCrear(CreateView):
@@ -84,6 +87,7 @@ class UsuarioCrear(CreateView):
         context['entity'] = 'User'
         context['list_url'] = self.success_url
         context['action'] = 'add'
+        context['empresa'] = Empresa.objects.first().nombre
         return context
 
 class UsuarioActualizar(UpdateView):
@@ -125,6 +129,7 @@ class UsuarioActualizar(UpdateView):
         context['entity'] = 'User'
         context['list_url'] = self.success_url
         context['action'] = 'edit'
+        context['empresa'] = Empresa.objects.first().nombre
         return context
 
 class UsuarioEliminar(DeleteView):
@@ -151,6 +156,7 @@ class UsuarioEliminar(DeleteView):
 		context['title'] = 'Eliminación de un Usuario'
 		context['entity'] = 'User'
 		context['list_url'] = self.success_url
+		context['empresa'] = Empresa.objects.first().nombre
 		return context
 
 class UsuarioCambiarGrupo(LoginRequiredMixin, View):
@@ -196,6 +202,7 @@ class UserProfileView(LoginRequiredMixin, UpdateView):
         context['entity'] = 'Perfil'
         context['list_url'] = self.success_url
         context['action'] = 'edit'
+        context['empresa'] = Empresa.objects.first().nombre
         return context
 
 class UserChangePasswordView(LoginRequiredMixin, FormView):
@@ -238,6 +245,7 @@ class UserChangePasswordView(LoginRequiredMixin, FormView):
         context['entity'] = 'Password'
         context['list_url'] = self.success_url
         context['action'] = 'edit'
+        context['empresa'] = Empresa.objects.first().nombre
         return context
 
 class LoginFormView(LoginView):
@@ -245,12 +253,13 @@ class LoginFormView(LoginView):
 
 	def dispatch(self, request, *args, **kwargs):
 		if request.user.is_authenticated:
-			return redirect('leervia')
+			return redirect('dashboard')
 		return super().dispatch(request, *args, **kwargs)
 
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)
 		context['title'] = 'Iniciar Sesión'
+		context['empresa'] = Empresa.objects.first().nombre
 		return context
 
 class DashboardView(TemplateView):
@@ -324,4 +333,5 @@ class DashboardView(TemplateView):
 		context = super().get_context_data(**kwargs)
 		context['panel'] = 'Panel de administrador'
 		context['graph_sales_year_month'] = self.get_graph_sales_year_month()
+		context['empresa'] = Empresa.objects.first().nombre
 		return context

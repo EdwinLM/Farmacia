@@ -3,13 +3,14 @@ var vents = {
     items: {
         id_cliente: '',
         id_empresa: '',
+        id_vendedor: $('input[name="id_vendedor"]').val(),
         nit: '',
         nombre: '',
         direccion: '',
         telefono: '',
         email: '',
         se_factura: 'N',
-        id_sucursal: 3,
+        id_sucursal: $('input[name="id_sucursal"]').val(),
         fecha: '',
         subtotal_afecto: 0.00,
         subtotal_noafecto: 0.00,
@@ -127,6 +128,14 @@ function formatRepo(repo) {
         if (item !== ' ') html_componentes += '<span class="badge badge-success">' + item + '</span> ';
     })
 
+    var html_indicaciones = '';
+    let arr2 = repo.indi.split('| ');
+    arr2.forEach(function(item){
+        if (item !== ' ') html_indicaciones += '<span class="badge badge-pill badge-secondary">' + item + '</span> ';
+    })
+
+    if (repo.stock < 0 ) repo.stock = 0;
+    
     var option = $(
         '<div class="wrapper container">' +
         '<div class="row">' +
@@ -137,8 +146,8 @@ function formatRepo(repo) {
         //'<br>' +
         '<p style="margin-bottom: 0;">' +
         '<b>Nombre:</b> ' + repo.full_name + '<br>' +
-        '<b>Componentes:</b> ' + html_componentes + '<br>' +
-        '<b>Stock:</b> ' + repo.stock + '<b>   Precio Venta:</b> <span class="badge badge-warning">Q' + repo.pvp + '</span>' +
+        '<b>Componentes:</b> ' + html_componentes + html_indicaciones + '<br>' +
+        '<b>Stock:</b> <u>[ ' + repo.stock + ' ]</u> <b>   Precio Venta:</b> <span class="badge badge-warning">Q' + repo.pvp + '</span>' +
         '</p>' +
         '</div>' +
         '</div>' +
@@ -297,7 +306,7 @@ $(function () {
                 type: 'POST',
                 data: {
                     'action': 'search_products',
-                    'id_sucursal': vents.items.id_sucursal,
+                    'id_sucursal': $('input[name="id_sucursal"]').val(),
                     'ids': JSON.stringify(vents.get_ids()),
                     'term': $('select[name="search"]').val()
                 },
@@ -376,6 +385,8 @@ $(function () {
         vents.items.telefono = $('input[name="telefono"]').val();
         vents.items.direccion = $('input[name="direccion"]').val();
         vents.items.email = $('input[name="email"]').val();
+        vents.items.id_vendedor = $('input[name="id_vendedor"]').val();
+        vents.items.id_sucursal = $('input[name="id_sucursal"]').val();
         if (document.querySelector('input[name="se_factura"]').checked) {
             vents.items.se_factura = 'S';
         }
@@ -404,7 +415,7 @@ $(function () {
                 var queryParameters = {
                     term: params.term,
                     action: 'search_autocomplete',
-                    id_sucursal: vents.items.id_sucursal,
+                    id_sucursal: $('input[name="id_sucursal"]').val(),
                     ids: JSON.stringify(vents.get_ids())
                 }
                 return queryParameters;

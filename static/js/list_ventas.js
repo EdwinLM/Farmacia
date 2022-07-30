@@ -33,7 +33,8 @@ $(function () {
             url: window.location.pathname,
             type: 'POST',
             data: {
-                'action': 'searchdata'
+                'action': 'searchdata',
+                'id_sucursal': $('input[name="id_sucursal"]').val()
             },
             dataSrc: ""
         },
@@ -44,6 +45,7 @@ $(function () {
                 "data": null,
                 "defaultContent": ''
             },
+            {"data": "sucurs"},
             {"data": "fecha"},
             {"data": "nit"},
             {"data": "nombre"},

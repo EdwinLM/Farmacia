@@ -264,7 +264,8 @@ class Producto(models.Model):
 	created_at = models.DateTimeField(auto_now_add=True)
 	updated_at = models.DateTimeField(auto_now=True)
 	id_empresa = models.PositiveIntegerField(default=1)
-	principios_activos = models.ManyToManyField(Componente)
+	principios_activos = models.ManyToManyField(Componente, blank=True)
+	indicaciones = models.ManyToManyField(Indicacion, blank=True)
 
 	def __str__(self):
 		return self.nombre_venta
@@ -292,7 +293,10 @@ class Producto(models.Model):
 		txtcomponente = ''
 		for c in self.principios_activos.all():
 			txtcomponente = txtcomponente + ' | ' + c.descripcion
-		item = model_to_dict(self, exclude=['principios_activos'])
+		txtindicaciones = ''
+		for c in self.indicaciones.all():
+			txtindicaciones = txtindicaciones + ' | ' + c.descripcion
+		item = model_to_dict(self, exclude=['principios_activos', 'indicaciones'])
 		item['full_name'] = '{} < {} >'.format(self.nombre_venta, self.id_fabricante.nombre)
 		item['cat'] = self.id_categoria.toJSON()
 		item['imagen'] = self.get_image()
@@ -301,7 +305,8 @@ class Producto(models.Model):
 		item['precio_venta'] = format(self.precio_venta, '.5f')
 		item['precio_costo'] = format(self.precio_costo, '.5f')
 		item['comp'] = txtcomponente
-		item['concatenado'] = self.codigo_barras_1 + ' | ' + self.codigo_barras_2 + ' | ' + self.nombre_venta + txtcomponente
+		item['indi'] = txtindicaciones
+		item['concatenado'] = self.codigo_barras_1 + ' | ' + self.codigo_barras_2 + ' | ' + self.nombre_venta + txtcomponente + txtindicaciones
 		return item
 
 	class Meta:
@@ -522,6 +527,7 @@ class Venta(models.Model):
 	def toJSON(self):
 		item = model_to_dict(self)
 		item['fecha'] = self.fecha.strftime('%Y-%m-%d')
+		item['sucurs'] = self.id_sucursal.abreviatura
 		item['det'] = [i.toJSON() for i in self.detalle_venta_set.all()]
 		return item
 

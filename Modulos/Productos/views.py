@@ -1,7 +1,8 @@
-import datetime
+from datetime import *
 from django.shortcuts import render
 from django.db.models import F
 from django.db.models import Q
+from django.db.models import Max
 from django.forms import model_to_dict
 from django.db import transaction
 from django.conf import settings
@@ -12,6 +13,7 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from django.urls import reverse_lazy
 from django.template.loader import get_template
+from django.utils import timezone
 from weasyprint import HTML, CSS
 import json
 import os
@@ -69,6 +71,7 @@ class CategoriasListado(ValidatePermissionRequiredMixin, ListView):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Listado de Categorías'
         context['create_url'] = reverse_lazy('crearcat')
+        context['empresa'] = Empresa.objects.first().nombre
         return context
 
 class CategoriaCrear(SuccessMessageMixin, CreateView):
@@ -83,6 +86,7 @@ class CategoriaCrear(SuccessMessageMixin, CreateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Creación de Categorías'
+        context['empresa'] = Empresa.objects.first().nombre
         return context
  
     # Redireccionamos a la página principal luego de crear un registro o categoria
@@ -143,6 +147,7 @@ class LaboratoriosListado(ListView):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Listado de Laboratorios'
         context['create_url'] = reverse_lazy('crearlab')
+        context['empresa'] = Empresa.objects.first().nombre
         return context
 
 class LaboratorioCrear(SuccessMessageMixin, CreateView):
@@ -157,6 +162,7 @@ class LaboratorioCrear(SuccessMessageMixin, CreateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Creación de Laboratorios'
+        context['empresa'] = Empresa.objects.first().nombre
         return context
  
     # Redireccionamos a la página principal luego de crear un registro o categoria
@@ -217,6 +223,7 @@ class PresentacionesListado(ListView):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Listado de Presentaciones'
         context['create_url'] = reverse_lazy('crearpre')
+        context['empresa'] = Empresa.objects.first().nombre
         return context
 
 class PresentacionCrear(SuccessMessageMixin, CreateView):
@@ -231,6 +238,7 @@ class PresentacionCrear(SuccessMessageMixin, CreateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Creación de Presentaciones'
+        context['empresa'] = Empresa.objects.first().nombre
         return context
  
     # Redireccionamos a la página principal luego de crear un registro o categoria
@@ -291,6 +299,7 @@ class UnidadesListado(ListView):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Listado de Unidades de Medida'
         context['create_url'] = reverse_lazy('crearuni')
+        context['empresa'] = Empresa.objects.first().nombre
         return context
 
 class UnidadCrear(SuccessMessageMixin, CreateView):
@@ -305,6 +314,7 @@ class UnidadCrear(SuccessMessageMixin, CreateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Creación de Unidades de Medida'
+        context['empresa'] = Empresa.objects.first().nombre
         return context
  
     # Redireccionamos a la página principal luego de crear un registro o categoria
@@ -365,6 +375,7 @@ class ViasListado(ListView):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Listado de Vias de Administración'
         context['create_url'] = reverse_lazy('crearvia')
+        context['empresa'] = Empresa.objects.first().nombre
         return context
 
 class ViaCrear(SuccessMessageMixin, CreateView):
@@ -379,6 +390,7 @@ class ViaCrear(SuccessMessageMixin, CreateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Creación de Vias de Administración'
+        context['empresa'] = Empresa.objects.first().nombre
         return context
  
     # Redireccionamos a la página principal luego de crear un registro o categoria
@@ -439,6 +451,7 @@ class PrescripcionesListado(ListView):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Listado de Tipos de Prescripción'
         context['create_url'] = reverse_lazy('crearprr')
+        context['empresa'] = Empresa.objects.first().nombre
         return context
     
 class PrescripcionCrear(SuccessMessageMixin, CreateView):
@@ -453,6 +466,7 @@ class PrescripcionCrear(SuccessMessageMixin, CreateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Creación de Tipos de Prescripción'
+        context['empresa'] = Empresa.objects.first().nombre
         return context
  
     # Redireccionamos a la página principal luego de crear un registro o categoria
@@ -514,6 +528,7 @@ class ComponentesListado(ListView):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Listado de Componentes'
         context['create_url'] = reverse_lazy('crearcom')
+        context['empresa'] = Empresa.objects.first().nombre
         return context
 
 class ComponenteCrear(SuccessMessageMixin, CreateView):
@@ -528,6 +543,7 @@ class ComponenteCrear(SuccessMessageMixin, CreateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Creación de Componentes Activos'
+        context['empresa'] = Empresa.objects.first().nombre
         return context
  
     # Redireccionamos a la página principal luego de crear un registro o categoria
@@ -588,6 +604,7 @@ class IndicacionesListado(ListView):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Listado de Indicaciones'
         context['create_url'] = reverse_lazy('crearind')
+        context['empresa'] = Empresa.objects.first().nombre
         return context
 
 class IndicacionCrear(SuccessMessageMixin, CreateView):
@@ -602,6 +619,7 @@ class IndicacionCrear(SuccessMessageMixin, CreateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Creación de Indicaciones'
+        context['empresa'] = Empresa.objects.first().nombre
         return context
  
     # Redireccionamos a la página principal luego de crear un registro o categoria
@@ -663,6 +681,7 @@ class ImpuestosListado(ListView):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Listado de Impuestos'
         context['create_url'] = reverse_lazy('crearimp')
+        context['empresa'] = Empresa.objects.first().nombre
         return context
 
 class ImpuestoCrear(SuccessMessageMixin, CreateView):
@@ -677,6 +696,7 @@ class ImpuestoCrear(SuccessMessageMixin, CreateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Creación de Impuestos'
+        context['empresa'] = Empresa.objects.first().nombre
         return context
  
     # Redireccionamos a la página principal luego de crear un registro o categoria
@@ -738,6 +758,7 @@ class PaisesListado(ListView):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Listado de Paises'
         context['create_url'] = reverse_lazy('crearpai')
+        context['empresa'] = Empresa.objects.first().nombre
         return context
 
 class PaisCrear(SuccessMessageMixin, CreateView):
@@ -752,6 +773,7 @@ class PaisCrear(SuccessMessageMixin, CreateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Creación de Paises'
+        context['empresa'] = Empresa.objects.first().nombre
         return context
  
     # Redireccionamos a la página principal luego de crear un registro o categoria
@@ -815,6 +837,7 @@ class ProductosListado(ListView):
         context['create_url'] = reverse_lazy('crearpro')
         context['list_url'] = reverse_lazy('leerpro')
         context['entity'] = 'Producto'
+        context['empresa'] = Empresa.objects.first().nombre
         return context
 
 
@@ -854,6 +877,7 @@ class ProductoCrear(CreateView):
             if action == 'add':
                 with transaction.atomic():
                     pa = request.POST.getlist('principios_activos')
+                    indica = request.POST.getlist('indicaciones')
                     #form = self.get_form()
                     #data = form.save()
                     #data = {}
@@ -892,6 +916,7 @@ class ProductoCrear(CreateView):
                     product.id_empresa = 1
                     product.save()
                     product.principios_activos.set(pa)
+                    product.indicaciones.set(indica)
 
                     for s in Sucursal.objects.all():
                         i = Inventario()
@@ -950,6 +975,7 @@ class ProductoCrear(CreateView):
         context['frmMedida'] = UnidadMedidaForm()
         context['frmVia'] = ViaAdministracionForm()
         context['frmPrescripcion'] = TipoPrescripcionForm()
+        context['empresa'] = Empresa.objects.first().nombre
         return context
 
 
@@ -1061,6 +1087,7 @@ class CedisListado(ListView):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Listado de Centros de Distribución'
         context['create_url'] = reverse_lazy('crearced')
+        context['empresa'] = Empresa.objects.first().nombre
         return context
 
 class CedisCrear(SuccessMessageMixin, CreateView):
@@ -1110,6 +1137,7 @@ class CedisCrear(SuccessMessageMixin, CreateView):
         context['title'] = 'Creación de Centros de Distribución'
         context['action'] = 'add'
         context['list_url'] = reverse_lazy('leerced')
+        context['empresa'] = Empresa.objects.first().nombre
         return context
  
     # Redireccionamos a la página principal luego de crear un registro o categoria
@@ -1174,6 +1202,7 @@ class SucursalListado(ListView):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Listado de Sucursales'
         context['create_url'] = reverse_lazy('crearsuc')
+        context['empresa'] = Empresa.objects.first().nombre
         return context
 
 class SucursalCrear(SuccessMessageMixin, CreateView):
@@ -1223,6 +1252,7 @@ class SucursalCrear(SuccessMessageMixin, CreateView):
         context['title'] = 'Creación de Sucursales'
         context['action'] = 'add'
         context['list_url'] = reverse_lazy('leersuc')
+        context['empresa'] = Empresa.objects.first().nombre
         return context
  
     # Redireccionamos a la página principal luego de crear un registro o categoria
@@ -1284,6 +1314,7 @@ class FormasPagoListado(ListView):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Listado de Formas de Pago'
         context['create_url'] = reverse_lazy('crearfp')
+        context['empresa'] = Empresa.objects.first().nombre
         return context
 
 class FormasPagoCrear(SuccessMessageMixin, CreateView):
@@ -1298,6 +1329,7 @@ class FormasPagoCrear(SuccessMessageMixin, CreateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Creación de Formas de Pago'
+        context['empresa'] = Empresa.objects.first().nombre
         return context
  
     # Redireccionamos a la página principal luego de crear un registro o categoria
@@ -1359,6 +1391,7 @@ class GenerosListado(ListView):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Listado de Géneros'
         context['create_url'] = reverse_lazy('creargen')
+        context['empresa'] = Empresa.objects.first().nombre
         return context
 
 class GenerosCrear(SuccessMessageMixin, CreateView):
@@ -1373,6 +1406,7 @@ class GenerosCrear(SuccessMessageMixin, CreateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Creación de Géneros'
+        context['empresa'] = Empresa.objects.first().nombre
         return context
  
     # Redireccionamos a la página principal luego de crear un registro o categoria
@@ -1434,6 +1468,7 @@ class TiposClientesListado(ListView):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Listado de Tipos de Clientes'
         context['create_url'] = reverse_lazy('creartc')
+        context['empresa'] = Empresa.objects.first().nombre
         return context
 
 class TiposClientesCrear(SuccessMessageMixin, CreateView):
@@ -1448,6 +1483,7 @@ class TiposClientesCrear(SuccessMessageMixin, CreateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Creación de Tipos de Clientes'
+        context['empresa'] = Empresa.objects.first().nombre
         return context
  
     # Redireccionamos a la página principal luego de crear un registro o categoria
@@ -1509,6 +1545,7 @@ class ClientesListado(ListView):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Listado de Clientes'
         context['create_url'] = reverse_lazy('crearcli')
+        context['empresa'] = Empresa.objects.first().nombre
         return context
 
 class ClientesCrear(SuccessMessageMixin, CreateView):
@@ -1549,6 +1586,7 @@ class ClientesCrear(SuccessMessageMixin, CreateView):
         context['entity'] = 'Cliente'
         context['list_url'] = self.success_url
         context['action'] = 'add'
+        context['empresa'] = Empresa.objects.first().nombre
         return context
 
 class ClientesDetalle(DetailView):
@@ -1602,7 +1640,7 @@ class VentaCrear(CreateView):
                 #products = Product.objects.filter(stock__gt=0)
                 products = Producto.objects.all()
                 if len(term):
-                    products = products.filter(Q(principios_activos__descripcion__icontains=term)|Q(nombre_venta__icontains=term)|Q(codigo_barras_1__icontains=term)|Q(codigo_barras_2__icontains=term))
+                    products = products.filter(Q(indicaciones__descripcion__icontains=term)|Q(principios_activos__descripcion__icontains=term)|Q(nombre_venta__icontains=term)|Q(codigo_barras_1__icontains=term)|Q(codigo_barras_2__icontains=term))
                 for i in products.exclude(id_producto__in=ids_exclude)[0:10]:
                     item = i.toJSON()
                     item['value'] = i.nombre_venta
@@ -1617,7 +1655,7 @@ class VentaCrear(CreateView):
                 #term = request.POST['term']
                 data.append({'id': term, 'text': term})
                 #products = Product.objects.filter(name__icontains=term, stock__gt=0)
-                products = Producto.objects.filter(Q(principios_activos__descripcion__icontains=term)|Q(nombre_venta__icontains=term)|Q(codigo_barras_1__icontains=term)|Q(codigo_barras_2__icontains=term))
+                products = Producto.objects.filter(Q(indicaciones__descripcion__icontains=term)|Q(principios_activos__descripcion__icontains=term)|Q(nombre_venta__icontains=term)|Q(codigo_barras_1__icontains=term)|Q(codigo_barras_2__icontains=term))
                 for i in products.exclude(id_producto__in=ids_exclude)[0:10]:
                     item = i.toJSON()
                     item['id'] = i.id_producto
@@ -1633,7 +1671,7 @@ class VentaCrear(CreateView):
                     venta = Venta()
                     venta.id_sucursal = sucur
                     #venta.fecha = vents['fecha']
-                    venta.fecha = datetime.datetime.now() 
+                    venta.fecha = datetime.now() 
                     venta.id_cliente = clien
                     venta.nombre = vents['nombre']
                     venta.nit = vents['nit']
@@ -1649,9 +1687,13 @@ class VentaCrear(CreateView):
                     venta.iva = vents['iva']
                     venta.total = vents['total']
                     venta.id_empresa = empre
-                    venta.vendedor = 1
+                    venta.vendedor = vents['id_vendedor']
                     venta.cajero = 1
-                    venta.correlativo_diario = 1
+                    today_min = datetime.combine(timezone.now().date(), datetime.today().time().min)
+                    today_max = datetime.combine(timezone.now().date(), datetime.today().time().max)
+                    objetcs_for_today = Venta.objects.filter(fecha__range=(today_min, today_max), id_sucursal=sucur)
+                    newcorr = objetcs_for_today.aggregate(r=Max('correlativo_diario'))['r'] or 0
+                    venta.correlativo_diario = newcorr + 1
                     venta.id_forma_pago = Forma_Pago.objects.filter(id_forma_pago=vents['id_forma_pago']).first()
                     venta.save()
                     tm = Tipo_Mov.objects.filter(descripcion='VENTA').first()
@@ -1713,6 +1755,7 @@ class VentaCrear(CreateView):
         context['action'] = 'add'
         context['det'] = []
         context['frmClient'] = ClienteForm()
+        context['empresa'] = Empresa.objects.first().nombre
         return context
 
 class VentaListado(ListView):
@@ -1730,7 +1773,7 @@ class VentaListado(ListView):
             action = request.POST['action']
             if action == 'searchdata':
                 data = []
-                for i in Venta.objects.all():
+                for i in Venta.objects.all().filter(id_sucursal=request.POST['id_sucursal']):
                     data.append(i.toJSON())
             elif action == 'search_details_prod':
                 data = []
@@ -1748,6 +1791,7 @@ class VentaListado(ListView):
         context['create_url'] = reverse_lazy('crearvta')
         context['list_url'] = reverse_lazy('leervta')
         context['entity'] = 'Venta'
+        context['empresa'] = Empresa.objects.first().nombre
         return context
 
 
@@ -1804,6 +1848,7 @@ class ProveedoresListado(ListView):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Listado de Proveedores'
         context['create_url'] = reverse_lazy('crearprv')
+        context['empresa'] = Empresa.objects.first().nombre
         return context
 
 class ProveedoresCrear(SuccessMessageMixin, CreateView):
@@ -1818,6 +1863,7 @@ class ProveedoresCrear(SuccessMessageMixin, CreateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Creación de Proveedores'
+        context['empresa'] = Empresa.objects.first().nombre
         return context
  
     # Redireccionamos a la página principal luego de crear un registro o categoria
@@ -1857,7 +1903,7 @@ class CompraCrear(CreateView):
     model = Compra
     form_class = CompraForm
     template_name = 'compras/crear.html'
-    success_url = reverse_lazy('leercom')
+    success_url = reverse_lazy('leercpr')
     url_redirect = success_url
 
     @method_decorator(csrf_exempt)
@@ -1907,7 +1953,7 @@ class CompraCrear(CreateView):
                     venta = Compra()
                     venta.id_sucursal = sucur
                     #venta.fecha = vents['fecha']
-                    venta.fecha = datetime.datetime.now() 
+                    venta.fecha = datetime.now() 
                     venta.id_proveedor = prove
                     ####venta.nombre = vents['nombre']
                     venta.serie = vents['serie']
@@ -1920,7 +1966,7 @@ class CompraCrear(CreateView):
                     venta.iva = vents['iva']
                     venta.total = vents['total']
                     venta.id_empresa = empre
-                    venta.usuario = 1
+                    venta.usuario = vents['id_usuario']
                     venta.id_forma_pago = vents['id_forma_pago']
                     venta.save()
                     tm = Tipo_Mov.objects.filter(descripcion='COMPRA').first()
@@ -1983,6 +2029,7 @@ class CompraCrear(CreateView):
         context['action'] = 'add'
         context['det'] = []
         context['frmClient'] = ProveedorForm()
+        context['empresa'] = Empresa.objects.first().nombre
         return context
 
 
@@ -1990,7 +2037,7 @@ class CompraActualizar(UpdateView):
     model = Compra
     form_class = CompraForm
     template_name = 'compras/crear.html'
-    success_url = reverse_lazy('leercom')
+    success_url = reverse_lazy('leercpr')
     url_redirect = success_url
 
     @method_decorator(csrf_exempt)
@@ -2047,7 +2094,7 @@ class CompraActualizar(UpdateView):
                     #venta = Compra()
                     venta.id_sucursal = sucur
                     #venta.fecha = vents['fecha']
-                    venta.fecha = datetime.datetime.now() 
+                    venta.fecha = datetime.now() 
                     venta.id_proveedor = prove
                     ####venta.nombre = vents['nombre']
                     venta.serie = vents['serie']
@@ -2060,7 +2107,7 @@ class CompraActualizar(UpdateView):
                     venta.iva = vents['iva']
                     venta.total = vents['total']
                     venta.id_empresa = empre
-                    venta.usuario = 1
+                    venta.usuario = vents['id_usuario']
                     venta.id_forma_pago = vents['id_forma_pago']
                     venta.save()
                     tm = Tipo_Mov.objects.filter(descripcion='COMPRA').first()
@@ -2144,13 +2191,14 @@ class CompraActualizar(UpdateView):
         context['action'] = 'edit'
         context['det'] = json.dumps(self.get_details_product())
         context['frmClient'] = ProveedorForm()
+        context['empresa'] = Empresa.objects.first().nombre
         return context
 
 
 class CompraEliminar(DeleteView):
     model = Compra
     template_name = 'ventas/delete.html'
-    success_url = reverse_lazy('leercom')
+    success_url = reverse_lazy('leercpr')
     #permission_required = 'delete_sale'
     url_redirect = success_url
 
@@ -2184,6 +2232,7 @@ class CompraEliminar(DeleteView):
         context['title'] = 'Eliminación de una Compra'
         context['entity'] = 'Compra'
         context['list_url'] = self.success_url
+        context['empresa'] = Empresa.objects.first().nombre
         return context
 
 
@@ -2217,9 +2266,10 @@ class CompraListado(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Listado de Compras'
-        context['create_url'] = reverse_lazy('crearcom')
-        context['list_url'] = reverse_lazy('leercom')
+        context['create_url'] = reverse_lazy('crearcpr')
+        context['list_url'] = reverse_lazy('leercpr')
         context['entity'] = 'Compra'
+        context['empresa'] = Empresa.objects.first().nombre
         return context
 
 
@@ -2240,5 +2290,212 @@ class CompraPdfView(View):
         except Exception as e:
             print(str(e))
             pass
-        return HttpResponseRedirect(reverse_lazy('leercom'))
+        return HttpResponseRedirect(reverse_lazy('leercpr'))
+
+
+
+
+
+
+
+
+# ************
+# ** CAJERO **
+# ************
+
+class VentaCajeroCrear(CreateView):
+    model = Venta
+    form_class = VentaForm
+    template_name = 'cajero/crear.html'
+    success_url = reverse_lazy('leercaj')
+    url_redirect = success_url
+
+    @method_decorator(csrf_exempt)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        data = {}
+        try:
+            action = request.POST['action']
+            if action == 'search_products':
+                data = []
+                ids_exclude = json.loads(request.POST['ids'])
+                term = request.POST['term'].strip()
+                #products = Product.objects.filter(stock__gt=0)
+                products = Producto.objects.all()
+                if len(term):
+                    products = products.filter(Q(indicaciones__descripcion__icontains=term)|Q(principios_activos__descripcion__icontains=term)|Q(nombre_venta__icontains=term)|Q(codigo_barras_1__icontains=term)|Q(codigo_barras_2__icontains=term))
+                for i in products.exclude(id_producto__in=ids_exclude)[0:10]:
+                    item = i.toJSON()
+                    item['value'] = i.nombre_venta
+                    item['stock'] = Inventario.objects.filter(id_sucursal=request.POST['id_sucursal'], id_producto=i.id_producto).first().existencia
+                    # item['text'] = i.name
+                    data.append(item)
+            elif action == 'search_autocomplete':
+
+                data = []
+                ids_exclude = json.loads(request.POST['ids'])
+                term = request.POST['term'].strip()
+                #term = request.POST['term']
+                data.append({'id': term, 'text': term})
+                #products = Product.objects.filter(name__icontains=term, stock__gt=0)
+                products = Producto.objects.filter(Q(indicaciones__descripcion__icontains=term)|Q(principios_activos__descripcion__icontains=term)|Q(nombre_venta__icontains=term)|Q(codigo_barras_1__icontains=term)|Q(codigo_barras_2__icontains=term))
+                for i in products.exclude(id_producto__in=ids_exclude)[0:10]:
+                    item = i.toJSON()
+                    item['id'] = i.id_producto
+                    item['text'] = i.nombre_venta
+                    item['stock'] = Inventario.objects.filter(id_sucursal=request.POST['id_sucursal'], id_producto=i.id_producto).first().existencia
+                    data.append(item)
+            elif action == 'add':
+                with transaction.atomic():
+                    vents = json.loads(request.POST['vents'])
+                    sucur = Sucursal.objects.filter(id_sucursal=vents['id_sucursal']).first()
+                    clien = Cliente.objects.filter(id_cliente=vents['id_cliente']).first()
+                    empre = Empresa.objects.filter(id_empresa=vents['id_empresa']).first()
+                    venta = Venta()
+                    venta.id_sucursal = sucur
+                    #venta.fecha = vents['fecha']
+                    venta.fecha = datetime.now() 
+                    venta.id_cliente = clien
+                    venta.nombre = vents['nombre']
+                    venta.nit = vents['nit']
+                    venta.telefono = vents['telefono']
+                    venta.direccion = vents['direccion']
+                    venta.email = vents['email']
+                    isfact = False
+                    if vents["se_factura"] == 'S':
+                        isfact = True
+                    venta.se_factura = isfact
+                    venta.subtotal_afecto = vents['subtotal_afecto']
+                    venta.subtotal_noafecto = vents['subtotal_noafecto']
+                    venta.iva = vents['iva']
+                    venta.total = vents['total']
+                    venta.id_empresa = empre
+                    venta.vendedor = vents['id_vendedor']
+                    venta.cajero = 1
+                    today_min = datetime.combine(timezone.now().date(), datetime.today().time().min)
+                    today_max = datetime.combine(timezone.now().date(), datetime.today().time().max)
+                    objetcs_for_today = Venta.objects.filter(fecha__range=(today_min, today_max), id_sucursal=sucur)
+                    newcorr = objetcs_for_today.aggregate(r=Max('correlativo_diario'))['r'] or 0
+                    venta.correlativo_diario = newcorr + 1
+                    venta.id_forma_pago = Forma_Pago.objects.filter(id_forma_pago=vents['id_forma_pago']).first()
+                    venta.save()
+                    tm = Tipo_Mov.objects.filter(descripcion='VENTA').first()
+                    for i in vents['products']:
+                        p = Producto.objects.filter(id_producto=i['id_producto']).first()
+                        detalle = Detalle_Venta()
+                        detalle.id_venta = venta
+                        ###detalle.id_producto = p
+                        detalle.id_producto_id = i['id_producto']
+                        detalle.cantidad = i['cant']
+                        detalle.id_empresa = 1
+                        detalle.precio_costo = p.precio_costo
+                        detalle.precio_venta = p.precio_venta
+                        detalle.save()
+                        #Modificar Inventario
+                        resultado = Inventario.objects.filter(id_sucursal=vents['id_sucursal'], id_producto=i['id_producto'])
+                        #resultado.existencia -= i['cant']
+                        resultado.update(existencia=F('existencia') - i['cant'])
+                        #Movimiento de Inventario
+                        mi = Mov_Inventario()
+                        mi.id_tipo_mov = tm
+                        mi.numero_mov = detalle.id_detalle_venta
+                        mi.signo = '-'
+                        mi.id_sucursal = sucur
+                        mi.id_producto = p
+                        mi.cantidad = i['cant']
+                        mi.estado = 'A'
+                        mi.id_empresa = 1
+                        mi.save()
+
+                    data = {'id': venta.id_venta}
+            elif action == 'buscar_clientes':
+                data = []
+                term = request.POST['term']
+                clients = Cliente.objects.filter(nombre__icontains=term)
+                    #Q(names__icontains=term) | Q(surnames__icontains=term) | Q(dni__icontains=term))[0:10]
+                    #Q(nombre__icontains=term))[0:10]
+
+                for i in clients:
+                    item = i.toJSON()
+                    item['id'] = i.id_cliente
+                    item['text'] = i.get_full_name()
+                    data.append(item)
+            elif action == 'create_client':
+                with transaction.atomic():
+                    frmClient = ClienteForm(request.POST)
+                    data = frmClient.save()
+            else:
+                data['error'] = 'No se ha ingresado a ninguna opción'
+        except Exception as e:
+            data['error'] = str(e)
+        return JsonResponse(data, safe=False)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Creación de una Venta'
+        context['entity'] = 'Ventas'
+        context['list_url'] = self.success_url
+        context['action'] = 'add'
+        context['det'] = []
+        context['frmClient'] = ClienteForm()
+        context['empresa'] = Empresa.objects.first().nombre
+        return context
+
+class VentaCajeroListado(ListView):
+    model = Venta
+    #template_name = 'compras/list.html'
+    #permission_required = 'view_sale'
+
+    @method_decorator(csrf_exempt)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        data = {}
+        try:
+            action = request.POST['action']
+            if action == 'searchdata':
+                data = []
+                for i in Venta.objects.all().filter(id_sucursal=request.POST['id_sucursal']):
+                    data.append(i.toJSON())
+            elif action == 'search_details_prod':
+                data = []
+                for i in Detalle_Venta.objects.filter(id_venta_id=request.POST['id']):
+                    data.append(i.toJSON())
+            else:
+                data['error'] = 'Ha ocurrido un error'
+        except Exception as e:
+            data['error'] = str(e)
+        return JsonResponse(data, safe=False)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Listado de Ventas'
+        context['create_url'] = reverse_lazy('crearcaj')
+        context['list_url'] = reverse_lazy('leercaj')
+        context['entity'] = 'Ventas'
+        context['empresa'] = Empresa.objects.first().nombre
+        return context
+
+
+class VentaCajeroPdfView(View):
+
+    def get(self, request, *args, **kwargs):
+        try:
+            template = get_template('cajero/venta.html')
+            context = {
+                'sale': Venta.objects.get(pk=self.kwargs['pk']),
+                'company': {'name': 'FARMACIAS BIENESTAR', 'ruc': '9999999999999', 'address': 'Río Dulce, Izabal, Guatemala', 'telefono': '54545454', 'web': 'www.farmaciasbienestar.com.gt'},
+                'icon': '{}{}'.format(settings.MEDIA_URL, 'logo.png')
+            }
+            html = template.render(context)
+            css_url = os.path.join(settings.BASE_DIR, 'static/lib/bootstrap-4.4.1-dist/css/bootstrap.min.css')
+            pdf = HTML(string=html, base_url=request.build_absolute_uri()).write_pdf(stylesheets=[CSS(css_url)])
+            return HttpResponse(pdf, content_type='application/pdf')
+        except Exception as e:
+            print(str(e))
+            pass
+        return HttpResponseRedirect(reverse_lazy('leercaj'))
 

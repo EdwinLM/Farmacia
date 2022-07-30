@@ -3,6 +3,7 @@ var vents = {
     items: {
         id_proveedor: '',
         id_empresa: '',
+        id_usuario: $('input[name="id_usuario"]').val(),
         serie: '',
         numero: '',
         face: '',
@@ -390,6 +391,7 @@ $(function () {
         vents.items.face = $('input[name="face"]').val();
         //vents.items.direccion = $('input[name="direccion"]').val();
         //vents.items.email = $('input[name="email"]').val();
+        vents.items.id_usuario = $('input[name="id_usuario"]').val();
 		vents.items.id_sucursal = $('select[name="id_sucursal"]').val();
         vents.items.id_proveedor = $('select[name="id_proveedor"]').val();
         vents.items.id_empresa = $('input[name="id_empresa"]').val();

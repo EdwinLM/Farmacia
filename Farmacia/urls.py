@@ -39,8 +39,9 @@ from Modulos.Productos.views import GenerosListado, GenerosDetalle, GenerosCrear
 from Modulos.Productos.views import ProveedoresListado, ProveedoresDetalle, ProveedoresCrear, ProveedoresActualizar, ProveedoresEliminar
 from Modulos.Productos.views import CompraListado, CompraCrear, CompraActualizar, CompraEliminar, CompraPdfView
 from Modulos.Productos.views import VentaListado, VentaCrear, VentaPdfView
+from Modulos.Productos.views import VentaCajeroListado, VentaCajeroCrear, VentaCajeroPdfView
 from Modulos.Login.views import UserListado, UsuarioCrear, UsuarioActualizar, UsuarioEliminar, UsuarioCambiarGrupo, UserProfileView, UserChangePasswordView, LoginFormView, LogoutView, DashboardView
-from reportes.views import ReporteVentaView
+from reportes.views import ReporteVentaView, ReporteVentaCajeroView
 
 
 urlpatterns = [
@@ -165,16 +166,21 @@ urlpatterns = [
     path('proveedores/editar/<int:pk>', ProveedoresActualizar.as_view(template_name = "proveedores/actualizar.html"), name='actualizarprv'),
     path('proveedores/eliminar/<int:pk>', ProveedoresEliminar.as_view(), name='eliminarprv'),
 
-    path('compras/', CompraListado.as_view(template_name = "compras/index.html"), name='leercom'),
-    path('compras/crear', CompraCrear.as_view(template_name = "compras/crear.html"), name='crearcom'),
-    path('compras/editar/<int:pk>', CompraActualizar.as_view(template_name = "compras/crear.html"), name='actualizarcom'),
-    path('compras/eliminar/<int:pk>', CompraEliminar.as_view(template_name = "compras/delete.html"), name='eliminarcom'),
+    path('compras/', CompraListado.as_view(template_name = "compras/index.html"), name='leercpr'),
+    path('compras/crear', CompraCrear.as_view(template_name = "compras/crear.html"), name='crearcpr'),
+    path('compras/editar/<int:pk>', CompraActualizar.as_view(template_name = "compras/crear.html"), name='actualizarcpr'),
+    path('compras/eliminar/<int:pk>', CompraEliminar.as_view(template_name = "compras/delete.html"), name='eliminarcpr'),
     #path('compras/pdf/<int:pk>', CompraPdfView.as_view(template_name = "compras/compra.html"), name='pdfcom'),
-    path('compras/pdf/<int:pk>/', CompraPdfView.as_view(), name='pdfcom'),
+    path('compras/pdf/<int:pk>/', CompraPdfView.as_view(), name='pdfcpr'),
 
     path('ventas/', VentaListado.as_view(template_name = "ventas/index.html"), name='leervta'),
     path('ventas/crear', VentaCrear.as_view(template_name = "ventas/crear.html"), name='crearvta'),
     path('ventas/pdf/<int:pk>/', VentaPdfView.as_view(), name='pdfvta'),
+
+    path('cajero/', VentaCajeroListado.as_view(template_name = "cajero/index.html"), name='leercaj'),
+    path('cajero/crear', VentaCajeroCrear.as_view(template_name = "cajero/crear.html"), name='crearcaj'),
+    path('cajero/pdf/<int:pk>/', VentaCajeroPdfView.as_view(), name='pdfcaj'),
+    path('cajero/rptventa', ReporteVentaCajeroView.as_view(template_name = "cajero/rptventa.html"), name='rptventacaj'),
 
     path('rpt/rptventa', ReporteVentaView.as_view(template_name = "rpt/rptventa.html"), name='rptventa'),
     

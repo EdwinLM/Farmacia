@@ -1,0 +1,37 @@
+{% extends 'basescaj.html' %}
+{% load static %}
+
+
+{% block content %}
+	<div class="card card-primary">
+		<div class="card-header">
+			<h3 class="card-title">
+               <i class="fas fa-search"></i>
+               {{title}}
+             </h3>
+		</div>
+		{% block titulitos %}
+		{% endblock %}
+		<div class="card-body">
+			<table class="table" id="myTable">
+				<thead>
+					{% block columns %}
+					{% endblock %}
+				</thead>
+				<tbody>
+					{% block rows %}
+					{% endblock %}
+				</tbody>
+			</table>
+		</div>
+		<div class="card-footer">
+			
+		</div>
+	</div>
+
+	{% block content2 %}
+	{% endblock %}
+
+{% endblock %}
+
+	

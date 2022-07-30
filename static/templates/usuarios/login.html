@@ -6,25 +6,49 @@
 	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>ERP | Farmacias Bienestar</title>
+	<title>ERP | Login</title>
+
+	<!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="{% static 'lib/adminlte-3.0.4/plugins/font-awesome-5.11.1/css/all.min.css' %}">
+	<script src="{% static 'libs/adminlte-3.2/plugins/jquery/jquery.min.js' %}"></script>
+	<!-- Bootstrap 4 -->
+	<script src="{% static 'libs/adminlte-3.2/plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+	<!-- AdminLTE App -->
+	<script src="{% static 'libs/adminlte-3.2/js/adminlte.min.js' %}"></script>
+	<!-- AdminLTE for demo purposes -->
+	<script src="{% static 'libs/adminlte-3.2/js/demo.js' %}"></script>
 
 	<!-- Google Font: Source Sans Pro -->
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
-  <!-- Font Awesome -->
-  <link rel="stylesheet" href="{% static 'libs/adminlte-3.2/plugins/fontawesome-free/css/all.min.css' %}">
-  <!-- Theme style -->
-  <link rel="stylesheet" href="{% static 'libs/adminlte-3.2/css/adminlte.min.css' %}">
+  	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+  	<!-- Theme style -->
+  	<link rel="stylesheet" href="{% static 'libs/adminlte-3.2/css/adminlte.min.css' %}">
+  	<!-- Sweetalert2 -->
+    <script src="{% static 'lib/sweetalert2-9.10.0/sweetalert2.all.min.js' %}"></script>
 
-  <script src="{% static 'libs/sweetalert2.js' %}"></script>
+  	<link rel="stylesheet" href="{% static 'css/login.css' %}">
+
+
+	<link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+	<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<!------ Include the above in your HEAD tag ---------->
 
 </head>
-<body class="login-page" style="min-height: 496.8px;">
-	<div class="login-box">
+    
 
-		<div class="login-logo">
-			<a class="h1"><b>FE-</b>ERP</a>
-		</div>
-		<div class="card">
+<!--Coded with love by Mutiullah Samim-->
+<body>
+	<div class="container h-100">
+		<div class="d-flex justify-content-center h-100">
+			<div class="user_card">
+				<div class="d-flex justify-content-center">
+					<div class="brand_logo_container">
+						<img src="{% static 'media/images/logo.png' %}" class="brand_logo" alt="Logo">
+					</div>
+				</div>
+
+
+				<div class="card">
 			<div class="card-body login-card-body">
 				<p class="login-box-msg">Regístrese para iniciar su sesión</p>
 				<form action="." method="post">
@@ -53,40 +77,27 @@
 					</div>
 				</form>
 
-			</div>
+				<script type="application/javascript">
+			      {% if form.errors %}
+    			    var errores = '';
+		        	{% for field in form %}
+	    		      {% for error in field.errors %}
+    	        		errores += '{{ error }}\n';
+		        	  {% endfor%}
+	    		    {% endfor%}
+			        {% for error in form.non_field_errors %}
+	    		    	errores += '{{ error }}\n';
+			        {% endfor%}
+    			    Swal.fire({
+		        	  title: 'Error!',
+	    		      text: errores,
+		    	      icon: 'error'
+        			});
+			      {% endif %}
+    			</script>
+
 
 		</div>
-
-		<script type="application/javascript">
-	      {% if form.errors %}
-    	    var errores = '';
-        	{% for field in form %}
-	          {% for error in field.errors %}
-    	        errores += '{{ error }}\n';
-        	  {% endfor%}
-	        {% endfor%}
-	        {% for error in form.non_field_errors %}
-	        	errores += '{{ error }}\n';
-	        {% endfor%}
-    	    Swal.fire({
-        	  title: 'Error!',
-	          text: errores,
-    	      icon: 'error'
-        	});
-	      {% endif %}
-    	</script>
-
-	</div>
-
-
-<script src="{% static 'libs/adminlte-3.2/plugins/jquery/jquery.min.js' %}"></script>
-<!-- Bootstrap 4 -->
-<script src="{% static 'libs/adminlte-3.2/plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
-<!-- AdminLTE App -->
-<script src="{% static 'libs/adminlte-3.2/js/adminlte.min.js' %}"></script>
-<!-- AdminLTE for demo purposes -->
-<script src="{% static 'libs/adminlte-3.2/js/demo.js' %}"></script>
-
 
 </body>
 </html>

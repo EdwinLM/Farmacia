@@ -22,6 +22,7 @@ class User(AbstractUser):
 		item['full_name'] = self.get_full_name()
 		item['image'] = self.get_image()
 		item['groups'] = [{'id': g.id, 'name': g.name} for g in self.groups.all()]
+		item['sucursales'] = [{'id': g.id_sucursal, 'name': g.descripcion} for g in self.sucursales.all()]
 		return item
 
 	def get_group_session(self):

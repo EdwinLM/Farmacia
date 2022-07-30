@@ -5,7 +5,8 @@ function generate_report(){
 	var parameters = {
 		'action': 'search_rptventa',
 		'start_date': date_now,
-		'end_date': date_now
+		'end_date': date_now,
+        'id_sucursal': $('input[name="id_sucursal"]').val()
 	};
 
 	if (date_range !== null){
@@ -93,12 +94,12 @@ function generate_report(){
             }
         ],
         //columns: [
-        //    {"data": "full_name"},
-        //    {"data": "username"},
-        //    {"data": "date_joined"},
-        //    {"data": "image"},
-        //    {"data": "groups"},
-        //    {"data": "id"},
+        //    {"data": "id_venta"},
+        //    {"data": "abreviatura"},
+        //    {"data": "nombre"},
+        //    {"data": "fecha"},
+        //    {"data": "total"},
+        //    {"data": "id_venta"},
         //],
         columnDefs: [
             {

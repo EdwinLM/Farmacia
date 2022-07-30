@@ -1,6 +1,7 @@
 {% extends "bases.html" %}
 {% load static %}
 {% load widget_tweaks %}
+{% block title %}{{ empresa }}{% endblock %}
 
 {% block head_list %}
 	<link href="{% static 'lib/jquery-ui-1.12.1/jquery-ui.min.css' %}" rel="stylesheet"/>
@@ -26,7 +27,7 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1>Farmacias Bienestar</h1>
+            <h1>{{ empresa }}</h1>
           </div>
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
@@ -164,6 +165,8 @@
 							{{ form.id_forma_pago|add_class:"form-control"|attr:"autocomplete:off" }}
 						</div>
 						<div class="form-group">
+							<input type="hidden" name="id_sucursal" value="{{ request.user.sucursales.first.id_sucursal }}" class="form-control">
+							<input type="hidden" name="id_vendedor" value="{{ request.user.id }}" class="form-control">
 		        		    <input type="hidden" name="estado" value="A" class="form-control">
 				            <input type="hidden" name="id_empresa" value="1" class="form-control">
           				</div>

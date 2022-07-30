@@ -294,6 +294,10 @@ class ProductoForm(ModelForm):
         self.fields['principios_activos'].widget.attrs['multiple'] = 'multiple'
         self.fields['principios_activos'].widget.attrs['theme'] = 'bootstrap4'
         self.fields['principios_activos'].label = 'Principios Activos'
+        self.fields['indicaciones'].widget.attrs['style'] = 'width: 100%'
+        self.fields['indicaciones'].widget.attrs['multiple'] = 'multiple'
+        self.fields['indicaciones'].widget.attrs['theme'] = 'bootstrap4'
+        self.fields['indicaciones'].label = 'Indicaciones'
 
 
     class Meta:
@@ -503,12 +507,16 @@ class UserForm(ModelForm):
                 }
             ),
             'groups': SelectMultiple(attrs={
+            #'groups': Select(attrs={
                 'class': 'form-control select2',
+                #'class': 'form-control',
                 'style': 'width: 100%',
                 'multiple': 'multiple'
             }),
             'sucursales': SelectMultiple(attrs={
+            #'sucursales': Select(attrs={
                 'class': 'form-control select2',
+                #'class': 'form-control',
                 'style': 'width: 100%',
                 'multiple': 'multiple'
             })

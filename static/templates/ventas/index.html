@@ -1,6 +1,6 @@
 {% extends "list.html" %}
 {% load static %}
-{% block title %}ERP Farmacias Bienestar{% endblock %}
+{% block title %}{{ empresa }}{% endblock %}
 
 {% block head_list %}
     <script src="{% static 'js/list_ventas.js' %}"></script>
@@ -11,7 +11,7 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1>Farmacias Bienestar</h1>
+            <h1>{{ empresa }}</h1>
           </div>
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
@@ -38,6 +38,7 @@
 {% block columns %}
 <tr>
   <th scope="col"> </th>
+  <th scope="col">Sucursal</th>
   <th scope="col">Fecha</th>
   <th scope="col">Nit</th>
   <th scope="col">Nombre</th>
@@ -62,6 +63,9 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
+                <form>
+                    <input type="hidden" name="id_sucursal" value="{{ request.user.sucursales.first.id_sucursal }}" class="form-control">
+                </form>
                 <div class="modal-body">
                     <table class="table table-bordered" id="tblDet">
                         <thead>
