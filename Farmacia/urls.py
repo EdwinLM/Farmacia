@@ -40,7 +40,7 @@ from Modulos.Productos.views import ProveedoresListado, ProveedoresDetalle, Prov
 from Modulos.Productos.views import CompraListado, CompraCrear, CompraActualizar, CompraEliminar, CompraPdfView
 from Modulos.Productos.views import VentaListado, VentaCrear, VentaPdfView
 from Modulos.Productos.views import VentaCajeroListado, VentaCajeroCrear, VentaCajeroPdfView
-from Modulos.Login.views import UserListado, UsuarioCrear, UsuarioActualizar, UsuarioEliminar, UsuarioCambiarGrupo, UserProfileView, UserChangePasswordView, LoginFormView, LogoutView, DashboardView
+from Modulos.Login.views import UserListado, UsuarioCrear, UsuarioActualizar, UsuarioEliminar, UsuarioCambiarGrupo, UserProfileView, UserChangePasswordView, LoginFormView, LogoutView, DashboardView, DashboardCajeroView, OpcionView
 from reportes.views import ReporteVentaView, ReporteVentaCajeroView
 
 
@@ -49,6 +49,8 @@ urlpatterns = [
     path('login/', LoginFormView.as_view(), name='login'),
     path('logout/', LogoutView.as_view(next_page='login'), name='logout'),
     path('dashboard/', DashboardView.as_view(), name='dashboard'),
+    path('dashboardcaj/', DashboardCajeroView.as_view(), name='dashboardcaj'),
+    path('opcion/', OpcionView.as_view(), name='opcion'),
 
     path('usuarios/', UserListado.as_view(template_name = "usuarios/index.html"), name='leerusr'),
     path('usuarios/crear', UsuarioCrear.as_view(template_name = "usuarios/crear.html"), name='crearusr'),
