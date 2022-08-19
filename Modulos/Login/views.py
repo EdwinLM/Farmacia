@@ -173,7 +173,7 @@ class UserProfileView(LoginRequiredMixin, UpdateView):
     model = User
     form_class = UserProfileForm
     template_name = 'usuarios/profile.html'
-    success_url = reverse_lazy('dashboard')
+    success_url = reverse_lazy('login')
 
     @method_decorator(csrf_exempt)
     def dispatch(self, request, *args, **kwargs):

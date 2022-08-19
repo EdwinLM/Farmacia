@@ -144,7 +144,7 @@ function formatRepo(repo) {
         '<div class="col-lg-11 text-left shadow-sm">' +
         //'<br>' +
         '<p style="margin-bottom: 0;">' +
-        '<b>Nombre:</b> ' + repo.full_name + '<br>' +
+        '<b>Nombre:</b> ' + repo.full_name_c + '<br>' +
         '<b>Componentes:</b> ' + html_componentes + '<br>' +
         '<b>Stock:</b> ' + repo.stock + '<b>   Precio Costo:</b> <span class="badge badge-warning">Q' + repo.pcp + '</span>' +
         '</p>' +
@@ -218,7 +218,7 @@ $(function () {
         submit_with_ajax(window.location.pathname, 'Notificación',
             '¿Estas seguro de crear al siguiente cliente?', parameters, function (response) {
                 //console.log(response);
-                var newOption = new Option(response.full_name, response.id_proveedor, false, true);
+                var newOption = new Option(response.full_name_c, response.id_proveedor, false, true);
                 $('select[name="id_proveedor"]').append(newOption).trigger('change');
                 $('#myModalClient').modal('hide');
             });
@@ -319,7 +319,7 @@ $(function () {
                 dataSrc: ""
             },
             columns: [
-                {"data": "full_name"},
+                {"data": "full_name_c"},
                 {"data": "imagen"},
                 {"data": "id_producto"},
                 {"data": "pcp"},

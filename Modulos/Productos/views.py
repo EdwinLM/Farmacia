@@ -1640,7 +1640,7 @@ class VentaCrear(CreateView):
                 #products = Product.objects.filter(stock__gt=0)
                 products = Producto.objects.all()
                 if len(term):
-                    products = products.filter(Q(indicaciones__descripcion__icontains=term)|Q(principios_activos__descripcion__icontains=term)|Q(nombre_venta__icontains=term)|Q(codigo_barras_1__icontains=term)|Q(codigo_barras_2__icontains=term))
+                    products = products.filter(Q(indicaciones__descripcion__icontains=term)|Q(principios_activos__descripcion__icontains=term)|Q(nombre_venta__icontains=term)|Q(codigo_barras_1__icontains=term)|Q(codigo_barras_2__icontains=term)).distinct()
                 for i in products.exclude(id_producto__in=ids_exclude)[0:10]:
                     item = i.toJSON()
                     item['value'] = i.nombre_venta
@@ -1655,7 +1655,7 @@ class VentaCrear(CreateView):
                 #term = request.POST['term']
                 data.append({'id': term, 'text': term})
                 #products = Product.objects.filter(name__icontains=term, stock__gt=0)
-                products = Producto.objects.filter(Q(indicaciones__descripcion__icontains=term)|Q(principios_activos__descripcion__icontains=term)|Q(nombre_venta__icontains=term)|Q(codigo_barras_1__icontains=term)|Q(codigo_barras_2__icontains=term))
+                products = Producto.objects.filter(Q(indicaciones__descripcion__icontains=term)|Q(principios_activos__descripcion__icontains=term)|Q(nombre_venta__icontains=term)|Q(codigo_barras_1__icontains=term)|Q(codigo_barras_2__icontains=term)).distinct()
                 for i in products.exclude(id_producto__in=ids_exclude)[0:10]:
                     item = i.toJSON()
                     item['id'] = i.id_producto
@@ -1922,7 +1922,7 @@ class CompraCrear(CreateView):
                 products = Producto.objects.all()
                 if len(term):
                     #products = products.filter(nombre_venta__icontains=term)
-                    products = Producto.objects.filter(Q(nombre_compra__icontains=term)|Q(principios_activos__descripcion__icontains=term)|Q(codigo_barras_1__icontains=term)|Q(codigo_barras_2__icontains=term))
+                    products = Producto.objects.filter(Q(nombre_compra__icontains=term)|Q(principios_activos__descripcion__icontains=term)|Q(codigo_barras_1__icontains=term)|Q(codigo_barras_2__icontains=term)).distinct()
                 for i in products.exclude(id_producto__in=ids_exclude)[0:10]:
                     item = i.toJSON()
                     item['value'] = i.nombre_venta
@@ -1937,7 +1937,7 @@ class CompraCrear(CreateView):
                 data.append({'id': term, 'text': term})
                 #products = Product.objects.filter(name__icontains=term, stock__gt=0)
                 #products = Producto.objects.filter(nombre_venta__icontains=term)
-                products = Producto.objects.filter(Q(nombre_compra__icontains=term)|Q(principios_activos__descripcion__icontains=term)|Q(codigo_barras_1__icontains=term)|Q(codigo_barras_2__icontains=term))
+                products = Producto.objects.filter(Q(nombre_compra__icontains=term)|Q(principios_activos__descripcion__icontains=term)|Q(codigo_barras_1__icontains=term)|Q(codigo_barras_2__icontains=term)).distinct()
                 for i in products.exclude(id_producto__in=ids_exclude)[0:10]:
                     item = i.toJSON()
                     item['id'] = i.id_producto
@@ -2062,7 +2062,7 @@ class CompraActualizar(UpdateView):
                 products = Producto.objects.all()
                 if len(term):
                     #products = products.filter(nombre_venta__icontains=term)
-                    products = Producto.objects.filter(Q(nombre_compra__icontains=term)|Q(principios_activos__descripcion__icontains=term)|Q(codigo_barras_1__icontains=term)|Q(codigo_barras_2__icontains=term))
+                    products = Producto.objects.filter(Q(nombre_compra__icontains=term)|Q(principios_activos__descripcion__icontains=term)|Q(codigo_barras_1__icontains=term)|Q(codigo_barras_2__icontains=term)).distinct()
                 for i in products.exclude(id_producto__in=ids_exclude)[0:10]:
                     item = i.toJSON()
                     item['value'] = i.nombre_venta
@@ -2077,7 +2077,7 @@ class CompraActualizar(UpdateView):
                 data.append({'id': term, 'text': term})
                 #products = Product.objects.filter(name__icontains=term, stock__gt=0)
                 #products = Producto.objects.filter(nombre_venta__icontains=term)
-                products = Producto.objects.filter(Q(nombre_compra__icontains=term)|Q(principios_activos__descripcion__icontains=term)|Q(codigo_barras_1__icontains=term)|Q(codigo_barras_2__icontains=term))
+                products = Producto.objects.filter(Q(nombre_compra__icontains=term)|Q(principios_activos__descripcion__icontains=term)|Q(codigo_barras_1__icontains=term)|Q(codigo_barras_2__icontains=term)).distinct()
                 for i in products.exclude(id_producto__in=ids_exclude)[0:10]:
                     item = i.toJSON()
                     item['id'] = i.id_producto
@@ -2325,7 +2325,7 @@ class VentaCajeroCrear(CreateView):
                 #products = Product.objects.filter(stock__gt=0)
                 products = Producto.objects.all()
                 if len(term):
-                    products = products.filter(Q(indicaciones__descripcion__icontains=term)|Q(principios_activos__descripcion__icontains=term)|Q(nombre_venta__icontains=term)|Q(codigo_barras_1__icontains=term)|Q(codigo_barras_2__icontains=term))
+                    products = products.filter(Q(indicaciones__descripcion__icontains=term)|Q(principios_activos__descripcion__icontains=term)|Q(nombre_venta__icontains=term)|Q(codigo_barras_1__icontains=term)|Q(codigo_barras_2__icontains=term)).distinct()
                 for i in products.exclude(id_producto__in=ids_exclude)[0:10]:
                     item = i.toJSON()
                     item['value'] = i.nombre_venta
@@ -2340,7 +2340,7 @@ class VentaCajeroCrear(CreateView):
                 #term = request.POST['term']
                 data.append({'id': term, 'text': term})
                 #products = Product.objects.filter(name__icontains=term, stock__gt=0)
-                products = Producto.objects.filter(Q(indicaciones__descripcion__icontains=term)|Q(principios_activos__descripcion__icontains=term)|Q(nombre_venta__icontains=term)|Q(codigo_barras_1__icontains=term)|Q(codigo_barras_2__icontains=term))
+                products = Producto.objects.filter(Q(indicaciones__descripcion__icontains=term)|Q(principios_activos__descripcion__icontains=term)|Q(nombre_venta__icontains=term)|Q(codigo_barras_1__icontains=term)|Q(codigo_barras_2__icontains=term)).distinct()
                 for i in products.exclude(id_producto__in=ids_exclude)[0:10]:
                     item = i.toJSON()
                     item['id'] = i.id_producto

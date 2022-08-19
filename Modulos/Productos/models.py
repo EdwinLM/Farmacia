@@ -273,7 +273,7 @@ class Producto(models.Model):
 	def get_image(self):
 		if self.imagen:
 			return '{}{}'.format(MEDIA_URL, self.imagen)
-		return '{}{}'.format(MEDIA_URL, 'images/empty.png')
+		return '{}{}'.format(STATIC_URL, 'img/empty.png')
 
 	def _get_afecto(self):
 		if self.afecto_impuesto:
@@ -281,6 +281,10 @@ class Producto(models.Model):
 		else:
 			return '*'
 	afecto = property(_get_afecto)
+
+	def _get_pvp(self):
+		return self.precio_venta / self.conversion
+	pvp = property(_get_pvp)
 
 	def _get_cadena_busquedaVta(self):
 		txtcomponente = ''
@@ -298,9 +302,10 @@ class Producto(models.Model):
 			txtindicaciones = txtindicaciones + ' | ' + c.descripcion
 		item = model_to_dict(self, exclude=['principios_activos', 'indicaciones'])
 		item['full_name'] = '{} < {} >'.format(self.nombre_venta, self.id_fabricante.nombre)
+		item['full_name_c'] = '{} < {} >'.format(self.nombre_compra, self.id_fabricante.nombre)
 		item['cat'] = self.id_categoria.toJSON()
 		item['imagen'] = self.get_image()
-		item['pvp'] = format(self.precio_venta, '.2f')
+		item['pvp'] = format(self.pvp, '.2f')
 		item['pcp'] = format(self.precio_costo, '.5f')
 		item['precio_venta'] = format(self.precio_venta, '.5f')
 		item['precio_costo'] = format(self.precio_costo, '.5f')
